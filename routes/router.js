@@ -1,0 +1,55 @@
+const express = require("express")
+const router = express.Router()
+const loginController = require('../controller/loginController')
+const signupController = require('../controller/signupController')
+const adminController = require('../controller/adminController')
+const adminPanelController = require('../controller/adminPanelController')
+const homeController = require('../controller/homeController')
+const userManagementController = require('../controller/userManagementController')
+const userProfileController = require('../controller/userProfileController')
+const userEditProfileController = require('../controller/userEditProfileController')
+const categoryManagementController = require('../controller/categoryManagementController')
+const subCategoryManagement = require('../controller/subCategoryManagementController')
+const productManagement = require('../controller/productManagementController')
+const editCategoryController = require('../controller/editCategoryController')
+
+
+
+
+router.get('/', loginController.showLoginForm);
+router.post('/', loginController.handleLogin);
+
+router.get('/signup',signupController.showSignupForm)
+router.post('/signup',signupController.handleSignup)
+
+router.get('/admin',adminController.showAdminLogin)
+router.post('/admin',adminController.handleAdminLogin)
+
+router.get('/adminPanel',adminPanelController.showadminPanel)
+
+router.get('/home/:id',homeController.showHome)
+router.post('/home/logout',homeController.logOut)
+
+router.get('/user-management',userManagementController.showData)
+router.post('/user-insertion',userManagementController.handleData)
+
+router.get('/adminPanel/block/:id', userManagementController.blockUser);
+router.get('/adminPanel/unblock/:id', userManagementController.unblockUser);
+
+router.get('/user-profile/:id', userProfileController.showUserData)
+
+router.get('/user-edit-profile',userEditProfileController.showData)
+
+router.get('/category-management',categoryManagementController.showData)
+router.post('/category-management',categoryManagementController.handleData)
+
+router.get('/sub-category-management',subCategoryManagement.showData)
+router.post('/sub-category-management',subCategoryManagement.handleData)
+
+router.get('/product-management',productManagement.showData)
+
+router.get('/adminPanel/edit/:id',editCategoryController.showEditData)
+router.post('/adminPanel/edit/:id',editCategoryController.handleEditData)
+
+
+module.exports=router
