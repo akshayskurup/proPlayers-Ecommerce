@@ -28,6 +28,12 @@
   <!-- Custom Fonts -->
   <link href="css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
 </head>
+<style>
+  .table-description {
+    max-width: 200px;
+   
+  }
+</style>
 
 <body>
 
@@ -142,7 +148,7 @@
           <a href="#"><i class="fa fa-files-o fa-fw"></i> Product-Management<span class="fa arrow"></span></a>
           <ul class="nav nav-second-level">
             <li>
-              <a href="blank.html">Products</a>
+              <a href="/product-management">Products</a>
             </li>
             <li>
               <a href="/category-management">Categories</a>
@@ -150,9 +156,7 @@
             <li>
               <a href="/sub-category-management">Sub-Categories</a>
             </li>
-            <li>
-              <a href="login.html">genre</a>
-            </li>
+            
           </ul>
           <!-- /.nav-second-level -->
         </li>
@@ -165,7 +169,7 @@
 
 
 
-  <form class="form-horizontal" style="margin-top: 60px; margin-left: 50px;">
+  <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management" onsubmit="return validateForm()">
     <fieldset>
 
       <!-- Form Name -->
@@ -173,15 +177,17 @@
         <legend>Product Management</legend>
       </center>
 
-      <!-- Text input-->
-      
-
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="alert alert-info text-center" id="error-message-container" style="color: black;" role="alert"><%=message%></div>
+  
+        </div>
       <!-- Text input-->
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>
         <div class="col-md-4">
-          <input id="product_name" name="product_name" placeholder="PRODUCT NAME" class="form-control input-md"
-            required="" type="text">
+          <input id="product_name" name="productName" placeholder="PRODUCT NAME" class="form-control input-md"
+             type="text">
 
         </div>
       </div>
@@ -190,7 +196,12 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
         <div class="col-md-4">
-          <select id="product_categorie" name="product_categorie" class="form-control">
+          <select id="product_categorie" name="productCategory" class="form-control">
+            <% categories.forEach(category=> { %>
+              <option value="<%= category.categoryName %>">
+                  <%= category.categoryName %>
+              </option>
+              <% }); %>
           </select>
         </div>
       </div>
@@ -198,7 +209,12 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_categorie">SUB CATEGORY</label>
         <div class="col-md-4">
-          <select id="product_categorie" name="product_categorie" class="form-control">
+          <select id="product_Subcategorie" name="subCategory" class="form-control">
+            <% subCategories.forEach(subCategory=> { %>
+              <option value="<%= subCategory.subCategoryName %>">
+                  <%= subCategory.subCategoryName %>
+              </option>
+              <% }); %>
           </select>
         </div>
       </div>
@@ -206,8 +222,8 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_name">PUBLISHER</label>
         <div class="col-md-4">
-          <input id="product_name" name="product_name" placeholder="PUBLISHER" class="form-control input-md"
-            required="" type="text">
+          <input id="publisher_name" name="publisher" placeholder="PUBLISHER" class="form-control input-md"
+             type="text">
 
         </div>
       </div>
@@ -215,8 +231,8 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_name">SIZE</label>
         <div class="col-md-4">
-          <input id="product_name" name="product_name" placeholder="SIZE" class="form-control input-md"
-            required="" type="text">
+          <input id="product_size" name="size" placeholder="SIZE" class="form-control input-md"
+            type="text">
 
         </div>
       </div>
@@ -225,8 +241,8 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="available_quantity">TOTAL QUANTITY</label>
         <div class="col-md-4">
-          <input id="available_quantity" name="available_quantity" placeholder="TOTAL QUANTITY"
-            class="form-control input-md" required="" type="text">
+          <input id="toal_quantity" name="totalQuantity" placeholder="TOTAL QUANTITY"
+            class="form-control input-md" type="text">
 
         </div>
       </div>
@@ -235,7 +251,7 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_description">PRODUCT DESCRIPTION</label>
         <div class="col-md-4">
-          <textarea class="form-control" id="product_description" name="product_description"></textarea>
+          <textarea class="form-control" id="product_description" name="description"></textarea>
         </div>
       </div>
 
@@ -246,8 +262,8 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="online_date">RELEASED DATE</label>
         <div class="col-md-4">
-          <input id="online_date" name="online_date" placeholder="RELEASED DATE" class="form-control input-md" required=""
-            type="text">
+          <input id="released_date" name="releasedDate" placeholder="RELEASED DATE" class="form-control input-md" 
+            type="date">
 
         </div>
       </div>
@@ -256,7 +272,7 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="online_date">PRICE</label>
         <div class="col-md-4">
-          <input id="online_date" name="online_date" placeholder="PRICE" class="form-control input-md" required=""
+          <input id="product_price" name="price" placeholder="PRICE" class="form-control input-md"
             type="text">
 
         </div>
@@ -266,20 +282,15 @@
           <div class="form-group">
             <label class="col-md-4 control-label" for="filebutton">main_image</label>
             <div class="col-md-4">
-              <input id="filebutton" name="filebutton" class="input-file" type="file">
+              <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
             </div>
           </div>
           <!-- File Button -->
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="filebutton">auxiliary_images</label>
-            <div class="col-md-4">
-              <input id="filebutton" name="filebutton" class="input-file" type="file">
-            </div>
-          </div>
+          
 
           <!-- Button -->
           <div class="form-group">
-            <label class="col-md-4 control-label" for="singlebutton">Single Button</label>
+            <label class="col-md-4 control-label" for="filebutton"></label>
             <div class="col-md-4">
               <button id="singlebutton" name="SUBMIT" class="btn btn-primary">SUBMIT</button>
             </div>
@@ -287,6 +298,73 @@
 
     </fieldset>
   </form>
+
+  <div id="page-wrapper" style="margin-left: 0px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Tables</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12" >
+                <div class="panel panel-default">
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="">
+                                <thead>
+                                    <tr>
+                                        <th>productName</th>
+                                        <th>productCategory</th>
+                                        <th>subCategory</th>
+                                        <th>publisher</th>
+                                        <th>size</th>
+                                        <th>totalQuantity</th>
+                                        <th class="table-description">description</th>
+                                        <th>releasedDate</th>
+                                        <th>price</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% products.forEach(product => { %>
+                                        <tr>
+                                            <td><%= product.productName %></td>
+                                            <td><%= product.productCategory %></td>
+                                            <td><%= product.subCategory %></td>
+                                            <td><%= product.publisher %></td>
+                                            <td><%= product.size %></td>
+                                            <td><%= product.totalQuantity %></td>
+                                            <td class="table-description"><p><%= product.description %></p></td>
+                                            <td><%= product.releasedDate %></td>
+                                            <td><%= product.price %></td>
+                                            <td><%= product.isListed ? 'Listed' : 'Unlisted' %></td>
+
+                                            <td class="iconss">
+                                              <a class="edit" href="/product-management/toggle-list/<%= product._id %>" title="<%= product.isListed ? 'Unlist' : 'List' %>" data-toggle="tooltip">
+                                                <%= product.isListed ? 'Unlist' : 'List' %>
+                                            </a>
+                                            
+                                            
+                                                <a href="/product-management/edit/<%= product._id %>" >Edit</a>
+                                            </td>
+                                            
+
+                                           </tr>
+                                            <% }); %>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
   <!-- jQuery -->
@@ -312,6 +390,69 @@
         responsive: true
       });
     });
+
+
+  // Function to validate the form
+  function validateForm() {
+    var productName = document.getElementById('product_name').value.trim();
+    var productCategory = document.getElementById('product_categorie').value;
+    var subCategory = document.getElementById('product_Subcategorie').value;
+    var publisher = document.getElementById('publisher_name').value.trim();
+    var size = document.getElementById('product_size').value.trim();
+    var totalQuantity = document.getElementById('toal_quantity').value;
+    var description = document.getElementById('product_description').value.trim();
+    var releasedDate = document.getElementById('released_date').value;
+    var price = document.getElementById('product_price').value;
+    var imageUploader = document.getElementById('image_uploader')
+
+
+    // Clear previous error messages
+    document.getElementById('error-message-container').innerHTML = '';
+
+    // Perform your validation checks
+    if (productName === '' || productCategory === '' || subCategory === '' || publisher === '' || size === '' || description === '' || releasedDate === '' || imageUploader === '') {
+      displayErrorMessage('Please fill out all fields');
+      return false;
+    }
+
+    // Check if totalQuantity is a number
+    if (isNaN(totalQuantity|| totalQuantity < 0)) {
+      displayErrorMessage('Total Quantity must be a non negative number');
+      return false;
+    }
+
+    // Check if price is a number
+    if (isNaN(price || price < 0)) {
+      displayErrorMessage('Price must be a non negative number');
+      return false;
+    }
+    if (price < 0){
+      displayErrorMessage('Price must be a non negative number');
+      return false;
+    }
+    if (totalQuantity < 0) {
+      displayErrorMessage('quantity must be a non negative number');
+      return false;
+    }
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+        if (!allowedExtensions.exec(imageUploader.value)) {
+          displayErrorMessage("Invalid file type. Please upload a valid image file.");
+            return false;
+        }
+    // If all checks pass, the form is valid
+    return true;
+  }
+
+  // Function to display error messages
+  function displayErrorMessage(message) {
+    var errorMessageContainer = document.getElementById('error-message-container');
+    var errorMessage = document.createElement('div');
+    errorMessage.className = 'alert alert-danger text-center';
+    errorMessage.innerHTML = message;
+    errorMessageContainer.appendChild(errorMessage);
+  }
+
+
   </script>
 </body>
 

@@ -51,65 +51,23 @@
 
 
     <script>
-        function isValidName(name) {
-            // Regular expression that checks if the name contains only letters and spaces
-            const nameRegex = /^[A-Za-z\s]+$/;
-            return nameRegex.test(name);
-        }
 
 
         function validate() {
-            let username = document.getElementById("name");
-            let useremail = document.getElementById("email");
-            let userpassword = document.getElementById("password");
-            const usernumber = document.getElementById("phone");
+            let subcategoryname = document.getElementById("subCategoryName").value.trim()
+           
 
-            // Get the entered value
-            let enteredValue = usernumber.value.trim();
+            var errorMessageContainer = document.getElementById('error-message-container');
+        
+        errorMessageContainer.innerHTML = ''; // Clear previous error messages
 
-            // Check if the entered value is a valid number
-            if (isNaN(enteredValue) || enteredValue === "") {
-                alert("Please enter a valid number");
-                return false;
-            }
-
-            let trimmedUsername = username.value.trim();
-            let trimmedUserpassword = userpassword.value.trim();
-
-
-            if (trimmedUsername === "") {
-                alert("Please fill username input");
-                return false;
-            } else if (trimmedUsername === "" && useremail.value === "" && trimmedUserpassword === "" && enteredValue === "") {
-                alert("Please fill all the fields");
-                return false;
-            } else if (useremail.value === "") {
-                alert("Please fill email input");
-                return false;
-            } else if (trimmedUserpassword === "") {
-                alert("Please fill password input");
-                return false;
-            } else if (trimmedUsername.length <= 3 || trimmedUserpassword.length <= 4 || trimmedUserpassword.length >= 15) {
-                alert("Please add more length to your name and password");
-                return false;
-            }
-            else if (!isValidName(trimmedUsername)) {
-                alert("Please enter a valid name without numbers");
-                return false;
-            }
-            else if (trimmedUsername.length >= 20) {
-                alert("Name is too lengthy");
-                return false;
-            } else if (enteredValue.length >= 11) {
-                alert("phone number should be 10 digit");
-                return false;
-            } else if (enteredValue.length < 10) {
-                alert("phone number should be 10 digit");
-                return false;
-            } else {
-                return true;
-            }
+        if (subcategoryname === "") {
+            errorMessageContainer.innerText = "Please fill Subcategory input";
+            return false;
         }
+
+        return true;
+    }        
 
     </script>
 
@@ -231,7 +189,7 @@
                     <a href="#"><i class="fa fa-files-o fa-fw"></i> Product-Management<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a href="blank.html">Products</a>
+                            <a href="/product-management">Products</a>
                         </li>
                         <li>
                             <a href="/category-management">Categories</a>
@@ -239,9 +197,7 @@
                         <li>
                             <a href="/sub-category-management">Sub-Categories</a>
                         </li>
-                        <li>
-                            <a href="login.html">genre</a>
-                        </li>
+                        
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
@@ -259,7 +215,7 @@
             <div class="custom-form">
                 <h2 class="mb-4">Sub-Category-Management</h2>
 
-
+                <div class="bg-danger" name="parentCategoryName" id="error-message-container"><%=message%></div>
                 <div class="form-group">
                     <label for="parentCategory">Parent Category:</label>
                     <select class="form-control" name="parentCategory" id="parentCategory">
@@ -325,11 +281,12 @@
                                                     <%= subCategory.isListed ? 'Active' : 'Blocked' %>
                                                 </td>
                                                 <td>
-                                                    <a class="edit" href="/adminPanel/unlist/<%= subCategory._id %>"
+                                                    <a class="edit" href="/sub-category-management/toggle-list/<%= subCategory._id %>"
                                                         title="<%= subCategory.isListed ? 'list' : 'unlist' %>"
                                                         data-toggle="tooltip">
                                                         <%= subCategory.isListed ? 'unlist' : 'list' %>
                                                     </a>
+                                                    <a href="/sub-category-management/edit/<%= subCategory._id %>" style="margin-left: 15px;">Edit</a>
                                                 </td>
 
 

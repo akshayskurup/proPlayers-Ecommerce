@@ -12,6 +12,11 @@ const categoryManagementController = require('../controller/categoryManagementCo
 const subCategoryManagement = require('../controller/subCategoryManagementController')
 const productManagement = require('../controller/productManagementController')
 const editCategoryController = require('../controller/editCategoryController')
+const productPageController = require('../controller/productPageController')
+const categoryProductsController = require('../controller/categoryProductsController')
+const passwordResetController = require('../controller/passwordResetController')
+const editProductController = require('../controller/editProductController')
+const productManagementController = require("../controller/productManagementController")
 
 
 
@@ -22,10 +27,23 @@ router.post('/', loginController.handleLogin);
 router.get('/signup',signupController.showSignupForm)
 router.post('/signup',signupController.handleSignup)
 
+router.get('/signup-otp',signupController.showOTP)
+router.post('/signup-otp',signupController.verifyOTP)
+router.post('/resendOtp',signupController.resendOtp)
+
+router.get('/reset-password', passwordResetController.forgotPasswordForm);
+router.post('/reset-password/request', passwordResetController.requestPasswordReset);
+router.get('/reset-password/verify-otp', passwordResetController.showOTPForm);
+router.post('/reset-password/verify-otp', passwordResetController.verifyOTPForPasswordReset);
+router.get('/reset-password/new-password', passwordResetController.showPasswordResetForm);
+router.post('/reset-password/new-password', passwordResetController.resetPassword);
+
+
 router.get('/admin',adminController.showAdminLogin)
 router.post('/admin',adminController.handleAdminLogin)
 
 router.get('/adminPanel',adminPanelController.showadminPanel)
+router.post('/adminPanel/logout',adminPanelController.logOut)
 
 router.get('/home/:id',homeController.showHome)
 router.post('/home/logout',homeController.logOut)
@@ -47,9 +65,25 @@ router.get('/sub-category-management',subCategoryManagement.showData)
 router.post('/sub-category-management',subCategoryManagement.handleData)
 
 router.get('/product-management',productManagement.showData)
+router.post('/product-management',productManagement.handleData)
 
 router.get('/adminPanel/edit/:id',editCategoryController.showEditData)
 router.post('/adminPanel/edit/:id',editCategoryController.handleEditData)
 
+router.get('/product-page/:id',productPageController.showData)
 
+router.get('/products/:category',categoryProductsController.showData)
+
+router.get('/product-management/edit/:id',editProductController.showForm)
+router.post('/product-management/edit/:id',editProductController.handleData)
+
+router.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
+
+router.get('/sub-category-management/edit/:id',subCategoryManagement.editData)
+router.post('/sub-category-management/edit/:id',subCategoryManagement.saveEditData)
+
+
+router.get('/category-management/toggle-list/:id', categoryManagementController.toggleListCategory);
+
+router.get('/sub-category-management/toggle-list/:id', subCategoryManagement.toggleListSubCategory);
 module.exports=router

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="/css/signupOTP.css">
+</head>
+<body>
+    <section class="container-fluid bg-body-tertiary d-block">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
+              <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
+                <div class="card-body p-5 text-center">
+                  <h4>Verify</h4>
+                  <p>Your code was sent to you via email</p>
+                  
+
+                  <form action="/reset-password/verify-otp" method="post">
+                    <div class="otp-field mb-4">
+                      <label for="enteredOTP">Enter OTP:</label>
+                      <input id="enteredOTP" style="width: 300px;" type="number" name="enteredOTP" required />
+                      
+                    </div>
+      
+                    <button class="btn btn-primary mb-3" type="submit">Verify</button>
+                  </form>
+                  
+                  <form method="post" action="/resendOtp">
+                    <p class="resend text-muted mb-0">
+                      Didn't receive code? <a href="#" id="resendLink" onclick="resendOTP()">Request again</a>
+                    </p>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+      </section>
+<!-- 
+    <script>
+      let countdown = 15; // Countdown in seconds
+      let timer;
+
+      // Function to update the countdown and button state
+      function updateCountdown() {
+        document.getElementById('resendLink').textContent = `Resend OTP (${countdown}s)`;
+        if (countdown <= 0) {
+          document.getElementById('resendLink').textContent = 'Request again';
+          document.getElementById('resendLink').classList.remove('disabled');
+          clearInterval(timer);
+        }
+      }
+
+      // Function to handle the resend button click
+      function resendOTP() {
+        // Disable the "Request again" link and start the countdown timer
+        document.getElementById('resendLink').classList.add('disabled');
+        countdown = 15;
+        timer = setInterval(() => {
+          countdown--;
+          updateCountdown();
+          if (countdown <= 0) {
+            clearInterval(timer);
+          }
+        }, 1000);
+
+        // Make an AJAX request to the server to resend OTP
+        fetch('/resendOtp', { method: 'POST' })
+          .then(response => response.json())
+          .then(data => {
+            // Check if the resend was successful
+            if (!data.success) {
+              // Handle the case where the resend failed
+              console.error('Resend failed:', data.message);
+            }
+          })
+          .catch(error => console.error('Error during resend:', error));
+      }
+
+      // Initial countdown update
+      updateCountdown();
+    </script> -->
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+ <!-- Bootstrap Core CSS -->
+ <link href="/css/vendors/bootstrap.min.css" rel="stylesheet">
+
+ <!-- MetisMenu CSS -->
+ <link href="/css/vendors/metisMenu.min.css" rel="stylesheet">
+
+ <!-- DataTables CSS -->
+ <link href="/css/vendors/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+ <!-- DataTables Responsive CSS -->
+ <link href="/css/vendors/dataTables/dataTables.responsive.css" rel="stylesheet">
+
+ <!-- Custom CSS -->
+ <link href="/css/vendors/startmin.css" rel="stylesheet">
+
+ <!-- Custom Fonts -->
+ <link href="/css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+<style>
+ .table-description {
+   max-width: 100px;
+  
+ }
+</style>
+
+<body>
+    <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management/edit/<%=productId%>" onsubmit="return validateForm()">
+        <fieldset>
+    
+          <!-- Form Name -->
+          <center>
+            <legend>Product Management</legend>
+          </center>
+    
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <div class="alert alert-info text-center" id="error-message-container" style="color: black;" role="alert"><%=message%></div>
+      
+            </div>
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">PRODUCT NAME</label>
+            <div class="col-md-4">
+              <input id="productName" name="productName" value="<%=product.productName%>" class="form-control input-md"
+                 type="text">
+    
+            </div>
+          </div>
+    
+          <!-- Select Basic -->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
+            <div class="col-md-4">
+              <select id="product_categorie" name="productCategory" class="form-control"> 
+                <% categories.forEach(category=> { %>
+                  <option value="<%= category.categoryName %>"  <%= product.productCategory === category.categoryName ? 'selected' : '' %>>
+                      <%= category.categoryName %>
+                  </option>
+                  <% }); %>
+              </select>
+            </div>
+          </div>
+    
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="product_categorie">SUB CATEGORY</label>
+            <div class="col-md-4">
+              <select id="product_Subcategorie" name="subCategory" class="form-control">
+                <% subCategories.forEach(subCategory=> { %>
+                  <option value="<%= subCategory.subCategoryName %>" <%= product.subCategory === subCategory.subCategoryName ? 'selected' : '' %>>
+                      <%= subCategory.subCategoryName %>
+                  </option>
+                  <% }); %>
+              </select>
+            </div>
+          </div>
+    
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">PUBLISHER</label>
+            <div class="col-md-4">
+              <input id="publisher_name" name="publisher" placeholder="PUBLISHER" class="form-control input-md"
+                 type="text" value="<%=product.publisher%>" required>
+    
+            </div>
+          </div>
+    
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">SIZE</label>
+            <div class="col-md-4">
+              <input id="product_size" name="size" placeholder="SIZE" class="form-control input-md"
+                type="text" value="<%=product.size%>" required>
+    
+            </div>
+          </div>
+    
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="available_quantity">TOTAL QUANTITY</label>
+            <div class="col-md-4">
+              <input id="toal_quantity" name="totalQuantity" placeholder="TOTAL QUANTITY"
+                class="form-control input-md" type="text" value="<%=product.totalQuantity%>" required>
+    
+            </div>
+          </div>
+    
+          <!-- Textarea -->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="product_description">PRODUCT DESCRIPTION</label>
+            <div class="col-md-4">
+              <textarea class="form-control" id="product_description" name="description" required><%= product.description %></textarea>
+            </div>
+          </div>
+    
+    
+    
+    
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="online_date">RELEASED DATE</label>
+            <div class="col-md-4">
+              <input id="released_date" name="releasedDate" placeholder="RELEASED DATE" class="form-control input-md" 
+                type="date">
+    
+            </div>
+          </div>
+    
+          <!-- Text input-->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="online_date">PRICE</label>
+            <div class="col-md-4">
+              <input id="product_price" name="price" placeholder="PRICE" class="form-control input-md"
+                type="text" value="<%=product.price%>" required>
+    
+            </div>
+          </div>
+    
+              <!-- File Button -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="filebutton">main_image</label>
+                <div class="col-md-4">
+                  <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
+                </div>
+              </div>
+              <!-- File Button -->
+    
+              <!-- Button -->
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="filebutton"></label>
+                <div class="col-md-4">
+                  <button id="singlebutton" name="SUBMIT" class="btn btn-primary">SUBMIT</button>
+                </div>
+              </div>
+    
+        </fieldset>
+      </form>
+      <script>
+        // Function to validate the form
+  function validateForm() {
+    var productName = document.getElementById('productName').value.trim();
+    var productCategory = document.getElementById('product_categorie').value;
+    var subCategory = document.getElementById('product_Subcategorie').value;
+    var publisher = document.getElementById('publisher_name').value.trim();
+    var size = document.getElementById('product_size').value.trim();
+    var totalQuantity = document.getElementById('toal_quantity').value;
+    var description = document.getElementById('product_description').value.trim();
+    var releasedDate = document.getElementById('released_date').value;
+    var price = document.getElementById('product_price').value;
+    var imageUploader = document.getElementById('image_uploader')
+    document.getElementById('error-message-container').innerHTML = '';
+
+
+    if (productName === '' || productCategory === '' || subCategory === '' || publisher === '' || size === '' || description === '' || releasedDate === '' || imageUploader === '') {
+      displayErrorMessage('Please fill out all fields');
+      return false;
+    }
+    if (isNaN(totalQuantity) || totalQuantity < 0) {
+  displayErrorMessage('Total Quantity must be a non-negative number');
+  return false;
+}
+
+if (isNaN(price) || price < 0) {
+  displayErrorMessage('Price must be a non-negative number');
+  return false;
+}
+    if (price < 0){
+      displayErrorMessage('Price must be a non negative number');
+      return false;
+    }
+    if (totalQuantity < 0) {
+      displayErrorMessage('quantity must be a non negative number');
+      return false;
+    }
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+        if (!allowedExtensions.exec(imageUploader.value)) {
+          displayErrorMessage("Invalid file type. Please upload a valid image file.");
+            return false;
+        }
+        if (!imageUploader.files.length) {
+          displayErrorMessage('Please select an image file');
+            return false;
+}
+    return true;
+  }
+
+  // Function to display error messages
+  function displayErrorMessage(message) {
+    var errorMessageContainer = document.getElementById('error-message-container');
+    var errorMessage = document.createElement('div');
+    errorMessage.className = 'alert alert-danger text-center';
+    errorMessage.innerHTML = message;
+    errorMessageContainer.appendChild(errorMessage);
+  }
+
+
+
+      </script>
+</body>
+</html>

@@ -4,8 +4,13 @@ let adminController = {}
 
 
 adminController.showAdminLogin = (req,res)=>{
-    res.render('admin',{message:""})
-}
+    if(!req.session.AdminLogin){
+        res.render('admin',{message:""})
+    }
+    else{
+        res.redirect('/adminPanel')
+    }
+    }
 
 adminController.handleAdminLogin = async (req, res) => {
     let { email, password } = req.body;
@@ -16,10 +21,11 @@ adminController.handleAdminLogin = async (req, res) => {
     } else if (req.body.password !== admin.password) {
          res.render("admin", { message: "Password is incorrect" });
     }
-
+    req.session.AdminLogin = true;
     console.log('Successfully logged in');
     res.render("adminPanel");
 };
+
 
 
 module.exports = adminController

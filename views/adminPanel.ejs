@@ -8,7 +8,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Startmin - Bootstrap Admin Theme</title>
+        <title>Pro Players</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="/css/vendors/bootstrap.min.css" rel="stylesheet">
@@ -43,7 +43,7 @@
             <!-- Navigation -->
             <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="index.html">Startmin</a>
+                    <a class="navbar-brand" href="#">Pro Players</a>
                 </div>
 
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -125,7 +125,9 @@
                             </li>
                             <li class="divider"></li>
                             <li>
-                                <a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <form action="/adminPanel/logout" method="post">
+                                    <button type="submit"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
+                                </form>
                             </li>
                         </ul>
                     </li>
@@ -138,7 +140,7 @@
                     <ul class="nav" id="side-menu">
                         
                         <li>
-                            <a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="/adminPanel" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <!-- <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
@@ -161,13 +163,13 @@
                             <a href="#"><i class="fa fa-files-o fa-fw"></i>Product-Management<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="blank.html">Products</a>
+                                    <a href="/product-management">Products</a>
                                 </li>
                                 <li>
-                                    <a href="login.html">Categories</a>
+                                    <a href="/category-management">Categories</a>
                                 </li>
                                 <li>
-                                    <a href="login.html">genre</a>
+                                    <a href="/sub-category-management">Sub-Categories</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

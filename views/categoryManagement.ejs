@@ -230,7 +230,7 @@
                             <a href="#"><i class="fa fa-files-o fa-fw"></i> Product-Management<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="blank.html">Products</a>
+                                    <a href="/product-management">Products</a>
                                 </li>
                                 <li>
                                     <a href="/category-management">Categories</a>
@@ -238,9 +238,7 @@
                                 <li>
                                     <a href="/sub-category-management">Sub-Categories</a>
                                 </li>
-                                <li>
-                                    <a href="login.html">genre</a>
-                                </li>
+                                
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
@@ -258,7 +256,7 @@
                 <div class="custom-form">
                     <h2 class="mb-4">Category-Management</h2>
                     
-                    <div class="bg-danger"><%=message%></div>
+                    <div class="bg-danger" id="error-message-container"><%=message%></div>
                         <div class="form-group">
                             <label for="name">Category Name:</label>
                             <input type="text" class="form-control" name="categoryName" id="categoryName">
@@ -308,7 +306,7 @@
                                             <td><%= category.categoryName %></td>
                                             <td><%= category.isListed ? 'Active' : 'Blocked' %></td>
                                             <td>
-                                            <a href="/adminPanel/unlist/<%= category._id %>" title="<%= category.isListed ? 'list' : 'unlist' %>" data-toggle="tooltip">
+                                            <a href="/category-management/toggle-list/<%= category._id %>" title="<%= category.isListed ? 'list' : 'unlist' %>" data-toggle="tooltip">
                                                 <%= category.isListed ? 'unlist' : 'list' %>
                                             </a>
                                             <a class="edit" href="/adminPanel/edit/<%= category._id %>">Edit</a>
@@ -348,6 +346,24 @@
                     responsive: true
                 });
             });
+
+            function validate() {
+      let categoryname= document.getElementById("categoryName");
+     
+      const errorMessageContainer = document.getElementById("error-message-container");
+
+      let trimmedCategoryname = categoryname.value.trim();
+
+      errorMessageContainer.innerText = ""; // Clear previous error messages
+
+      if (trimmedCategoryname === "") {
+        errorMessageContainer.innerText = "Please fill the field";
+        return false;
+      }
+      else{
+        return true
+      }
+    }
         </script>
 
     </body>

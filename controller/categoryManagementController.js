@@ -5,7 +5,12 @@ let categoryManagementController = {}
 
 categoryManagementController.showData = async (req,res)=>{
     const categories = await category.find()
-    res.render('categoryManagement',{categories,message:""})
+    if(req.session.AdminLogin){
+      res.render('categoryManagement',{categories,message:""})
+    }
+    else{
+      res.redirect('/admin')
+    }
 }
 
 categoryManagementController.handleData = async (req,res)=>{
@@ -20,7 +25,6 @@ categoryManagementController.handleData = async (req,res)=>{
     try{
         const existingCategory = await category.findOne({ categoryName });
         if (existingCategory) {
-            // Handle the case where the category already exists
             return res.render("categoryManagement", { message: "Category already exists",categories});
           }
         const savedCategory = await newCategory.save()
@@ -31,6 +35,25 @@ categoryManagementController.handleData = async (req,res)=>{
         console.error("Error during adding category:", err);
       }
 }
+
+
+categoryManagementController.toggleListCategory = async (req, res) => {
+    const categoryId = req.params.id;
+    try {
+      const categories = await category.findById(categoryId);
+      if (categories) {
+        // Toggle isListed value
+        categories.isListed = !categories.isListed;
+        await categories.save();
+        res.redirect('/category-management');
+      } else {
+        res.status(404).send('category not found');
+      }
+    } catch (error) {
+      console.error('Error toggling category list status:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
 
 
 

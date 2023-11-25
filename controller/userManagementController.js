@@ -7,7 +7,11 @@ userManagementController.showData = async(req,res)=>{
     try{
         const message = req.query.message
         const users = await User.find()
-        res.render('userManagement',{users,message})
+        if(req.session.AdminLogin){
+            res.render('userManagement',{users,message})
+        }else{
+            res.redirect('/')
+        }
     }
     catch(err){
         res.status(500).send("Server Error")

@@ -230,16 +230,13 @@
                             <a href="#"><i class="fa fa-files-o fa-fw"></i> Product-Management<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="blank.html">Products</a>
+                                    <a href="/product-management">Products</a>
                                 </li>
                                 <li>
                                     <a href="/category-management">Categories</a>
                                 </li>
                                 <li>
                                     <a href="/sub-category-management">Sub-Categories</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">genre</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -257,11 +254,11 @@
             <div class="container">
                 <div class="custom-form">
                     <h2 class="mb-4">Category-Management</h2>
-                    <div class="bg-danger"><%=message%></div>
+                    <div class="bg-danger" id="error-message-container"><%=message%></div>
                     
                         <div class="form-group">
                             <label for="name">Category Name:</label>
-                            <input type="text" class="form-control" name="categoryName" id="categoryName" value="<%=categoryName.categoryName%>">
+                            <input type="text" class="form-control" name="categoryName" id="category_Name" value="<%=categoryName.categoryName%>">
                         </div>
             
                         
@@ -295,6 +292,20 @@
                     responsive: true
                 });
             });
+            function validate() {
+        let categoryName = document.getElementById("category_Name").value.trim();
+        var errorMessageContainer = document.getElementById('error-message-container');
+        
+        errorMessageContainer.innerHTML = ''; // Clear previous error messages
+
+        if (categoryName === "") {
+            errorMessageContainer.innerText = "Please fill in the category input";
+            return false;
+        }
+
+        return true;
+    }
+
         </script>
 
     </body>
