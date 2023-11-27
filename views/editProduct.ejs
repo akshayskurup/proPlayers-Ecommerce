@@ -68,18 +68,7 @@
             </div>
           </div>
     
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="product_categorie">SUB CATEGORY</label>
-            <div class="col-md-4">
-              <select id="product_Subcategorie" name="subCategory" class="form-control">
-                <% subCategories.forEach(subCategory=> { %>
-                  <option value="<%= subCategory.subCategoryName %>" <%= product.subCategory === subCategory.subCategoryName ? 'selected' : '' %>>
-                      <%= subCategory.subCategoryName %>
-                  </option>
-                  <% }); %>
-              </select>
-            </div>
-          </div>
+          
     
           <div class="form-group">
             <label class="col-md-4 control-label" for="product_name">PUBLISHER</label>
@@ -125,7 +114,7 @@
             <label class="col-md-4 control-label" for="online_date">RELEASED DATE</label>
             <div class="col-md-4">
               <input id="released_date" name="releasedDate" placeholder="RELEASED DATE" class="form-control input-md" 
-                type="date">
+                type="date" value="<%=formattedReleasedDate%>">
     
             </div>
           </div>
@@ -144,7 +133,11 @@
               <div class="form-group">
                 <label class="col-md-4 control-label" for="filebutton">main_image</label>
                 <div class="col-md-4">
-                  <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
+                  <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp" >
+                  <input id="hidden_image" name="hiddenImage" type="hidden" value="<%= product.image && product.image.length > 0 ? product.image[0] : '' %>">
+                  <% if (product.image && product.image.length > 0) { %>
+                    <span><%= product.image[0] %></span>
+                <% } %>
                 </div>
               </div>
               <!-- File Button -->
@@ -164,7 +157,6 @@
   function validateForm() {
     var productName = document.getElementById('productName').value.trim();
     var productCategory = document.getElementById('product_categorie').value;
-    var subCategory = document.getElementById('product_Subcategorie').value;
     var publisher = document.getElementById('publisher_name').value.trim();
     var size = document.getElementById('product_size').value.trim();
     var totalQuantity = document.getElementById('toal_quantity').value;
@@ -175,7 +167,7 @@
     document.getElementById('error-message-container').innerHTML = '';
 
 
-    if (productName === '' || productCategory === '' || subCategory === '' || publisher === '' || size === '' || description === '' || releasedDate === '' || imageUploader === '') {
+    if (productName === '' || productCategory === '' || publisher === '' || size === '' || description === '' || releasedDate === '' || imageUploader === '') {
       displayErrorMessage('Please fill out all fields');
       return false;
     }
@@ -197,13 +189,17 @@ if (isNaN(price) || price < 0) {
       return false;
     }
         var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
-        if (!allowedExtensions.exec(imageUploader.value)) {
-          displayErrorMessage("Invalid file type. Please upload a valid image file.");
-            return false;
-        }
-        if (!imageUploader.files.length) {
-          displayErrorMessage('Please select an image file');
-            return false;
+        if (imageUploader.files.length) {
+    var fileName = imageUploader.files[0].name;
+
+    // Check against the regular expression (case-insensitive)
+    if (!allowedExtensions.test(fileName.toLowerCase())) {
+        displayErrorMessage("Invalid file type. Please upload a valid image file.");
+        return false;
+    }
+} else {
+    displayErrorMessage('Please select an image file');
+    return false;
 }
     return true;
   }
@@ -216,6 +212,14 @@ if (isNaN(price) || price < 0) {
     errorMessage.innerHTML = message;
     errorMessageContainer.appendChild(errorMessage);
   }
+  const hiddenImageInput = document.getElementById('hidden_image');
+    const fileInput = document.getElementById('image_uploader');
+    
+    // Check if there is a value in the hidden input
+    if (hiddenImageInput.value) {
+        // Set the value of the file input
+        fileInput.value = hiddenImageInput.value;
+    }
 
 
 

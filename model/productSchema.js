@@ -7,7 +7,6 @@ let productSchema = mongoose.Schema({
         unique:true
     },
     productCategory:String,
-    subCategory:String,
     publisher:String,
     size:String,
     totalQuantity:Number,

@@ -153,9 +153,6 @@
             <li>
               <a href="/category-management">Categories</a>
             </li>
-            <li>
-              <a href="/sub-category-management">Sub-Categories</a>
-            </li>
             
           </ul>
           <!-- /.nav-second-level -->
@@ -206,18 +203,6 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label class="col-md-4 control-label" for="product_categorie">SUB CATEGORY</label>
-        <div class="col-md-4">
-          <select id="product_Subcategorie" name="subCategory" class="form-control">
-            <% subCategories.forEach(subCategory=> { %>
-              <option value="<%= subCategory.subCategoryName %>">
-                  <%= subCategory.subCategoryName %>
-              </option>
-              <% }); %>
-          </select>
-        </div>
-      </div>
 
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_name">PUBLISHER</label>
@@ -319,7 +304,6 @@
                                     <tr>
                                         <th>productName</th>
                                         <th>productCategory</th>
-                                        <th>subCategory</th>
                                         <th>publisher</th>
                                         <th>size</th>
                                         <th>totalQuantity</th>
@@ -334,7 +318,6 @@
                                         <tr>
                                             <td><%= product.productName %></td>
                                             <td><%= product.productCategory %></td>
-                                            <td><%= product.subCategory %></td>
                                             <td><%= product.publisher %></td>
                                             <td><%= product.size %></td>
                                             <td><%= product.totalQuantity %></td>
@@ -396,7 +379,6 @@
   function validateForm() {
     var productName = document.getElementById('product_name').value.trim();
     var productCategory = document.getElementById('product_categorie').value;
-    var subCategory = document.getElementById('product_Subcategorie').value;
     var publisher = document.getElementById('publisher_name').value.trim();
     var size = document.getElementById('product_size').value.trim();
     var totalQuantity = document.getElementById('toal_quantity').value;
@@ -410,7 +392,7 @@
     document.getElementById('error-message-container').innerHTML = '';
 
     // Perform your validation checks
-    if (productName === '' || productCategory === '' || subCategory === '' || publisher === '' || size === '' || description === '' || releasedDate === '' || imageUploader === '') {
+      if (productName === '' || productCategory === '' || publisher === '' || size === '' || description === '' || releasedDate === '' || imageUploader === '') {
       displayErrorMessage('Please fill out all fields');
       return false;
     }

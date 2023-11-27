@@ -19,7 +19,7 @@ editCategoryController.handleEditData = async (req, res) => {
         if (existingCategory) {
             return res.render("editCategory", { message: "Category already exists",categoryName:categoryID});
           }
-        const updatedCategory = await category.findByIdAndUpdate(categoryId,{ parentCategoryName: req.body.parentCategoryName, subCategoryName: req.body.subCategoryName }, { new: true });
+        const updatedCategory = await category.findByIdAndUpdate(categoryId,{ parentCategoryName: req.body.parentCategoryName}, { new: true });
 
         if (!updatedCategory) {
             return res.status(404).send('Category not found');

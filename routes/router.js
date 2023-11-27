@@ -9,7 +9,6 @@ const userManagementController = require('../controller/userManagementController
 const userProfileController = require('../controller/userProfileController')
 const userEditProfileController = require('../controller/userEditProfileController')
 const categoryManagementController = require('../controller/categoryManagementController')
-const subCategoryManagement = require('../controller/subCategoryManagementController')
 const productManagement = require('../controller/productManagementController')
 const editCategoryController = require('../controller/editCategoryController')
 const productPageController = require('../controller/productPageController')
@@ -61,8 +60,6 @@ router.get('/user-edit-profile',userEditProfileController.showData)
 router.get('/category-management',categoryManagementController.showData)
 router.post('/category-management',categoryManagementController.handleData)
 
-router.get('/sub-category-management',subCategoryManagement.showData)
-router.post('/sub-category-management',subCategoryManagement.handleData)
 
 router.get('/product-management',productManagement.showData)
 router.post('/product-management',productManagement.handleData)
@@ -79,11 +76,7 @@ router.post('/product-management/edit/:id',editProductController.handleData)
 
 router.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
 
-router.get('/sub-category-management/edit/:id',subCategoryManagement.editData)
-router.post('/sub-category-management/edit/:id',subCategoryManagement.saveEditData)
 
 
 router.get('/category-management/toggle-list/:id', categoryManagementController.toggleListCategory);
-
-router.get('/sub-category-management/toggle-list/:id', subCategoryManagement.toggleListSubCategory);
 module.exports=router

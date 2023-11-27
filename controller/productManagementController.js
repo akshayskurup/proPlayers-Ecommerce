@@ -1,14 +1,13 @@
 const productManagementController = {}
 const productSchema = require('../model/productSchema')
 const category = require('../model/categorySchema')
-const subCategorySchema = require('../model/subCategorySchema')
 
 productManagementController.showData = async (req,res)=>{
     let categories = await category.find()
-    let subCategories = await subCategorySchema.find()
+
     let products = await productSchema.find()
     if(req.session.AdminLogin){
-      res.render('productManagement',{categories,subCategories,products,message:""})
+      res.render('productManagement',{categories,products,message:""})
     }
     else{
       res.redirect('/admin')
@@ -16,13 +15,14 @@ productManagementController.showData = async (req,res)=>{
 }
 
 
+
+
 productManagementController.handleData = async (req,res)=>{
-    const {productName,productCategory,subCategory,publisher,size,totalQuantity,description,releasedDate,price,image} = req.body
+    const {productName,productCategory,publisher,size,totalQuantity,description,releasedDate,price,image} = req.body
     let categories = await category.find()
     const newProduct = new productSchema({
         productName,
         productCategory,
-        subCategory,
         publisher,
         size,
         totalQuantity,
@@ -32,10 +32,9 @@ productManagementController.handleData = async (req,res)=>{
         image
       });
       const existingProduct = await productSchema.findOne({productName});
-      let subCategories = await subCategorySchema.find()
       let products = await productSchema.find()
       if (existingProduct) {
-        return res.render("productManagement", {categories,subCategories,products, message: "Product already exists"});
+        return res.render("productManagement", {categories,products, message: "Product already exists"});
       }
       try {
         const savedProduct = await newProduct.save();
