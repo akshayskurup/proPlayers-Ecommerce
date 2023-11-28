@@ -16,6 +16,7 @@ let userSchema = new mongoose.Schema({
     
     address: {
         houseName: String,
+        street:String,
         city: String,
         pincode: String,
         state: String,

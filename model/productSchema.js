@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const categories = require('../model/categorySchema')
 
 
 let productSchema = mongoose.Schema({
@@ -6,13 +7,16 @@ let productSchema = mongoose.Schema({
         type:String,
         unique:true
     },
-    productCategory:String,
+    productCategory: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'categories'
+    },
     publisher:String,
     size:String,
     totalQuantity:Number,
     description:String,
     releasedDate:Date,
-    price:String,
+    price:Number,
     image:Array,
     isListed:{
         type:Boolean,

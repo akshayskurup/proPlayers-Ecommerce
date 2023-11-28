@@ -60,7 +60,7 @@
             <div class="col-md-4">
               <select id="product_categorie" name="productCategory" class="form-control"> 
                 <% categories.forEach(category=> { %>
-                  <option value="<%= category.categoryName %>"  <%= product.productCategory === category.categoryName ? 'selected' : '' %>>
+                  <option value="<%= category._id %>"  <%= product.productCategory === category.categoryName ? 'selected' : '' %>>
                       <%= category.categoryName %>
                   </option>
                   <% }); %>
@@ -79,14 +79,19 @@
             </div>
           </div>
     
-          <div class="form-group">
+          <div class="form-group row">
             <label class="col-md-4 control-label" for="product_name">SIZE</label>
             <div class="col-md-4">
-              <input id="product_size" name="size" placeholder="SIZE" class="form-control input-md"
-                type="text" value="<%=product.size%>" required>
-    
+                <input id="product_size" name="size" placeholder="SIZE" class="form-control input-md" type="text" oninput="convertSize()" value="<%=product.size%>">
             </div>
-          </div>
+            <div class="col-md-1">
+                <select name="sizeUnit" id="sizeUnit" class="form-control size" onchange="convertSize()">
+                    <option value="MB">MB</option>
+                    <option value="GB">GB</option>
+                </select>
+            </div>
+            <input type="hidden" name="convertedSize" id="convertedSize" value="">
+        </div>
     
           <!-- Text input-->
           <div class="form-group">
@@ -221,7 +226,25 @@ if (isNaN(price) || price < 0) {
         fileInput.value = hiddenImageInput.value;
     }
 
+    function convertSize() {
+    // Get the input element, size unit element, and the hidden input for converted size
+    var inputElement = document.getElementById('product_size');
+    var sizeUnitElement = document.getElementById('sizeUnit');
+    var convertedSizeElement = document.getElementById('convertedSize');
+    
+    // Parse the input value as a number
+    var sizeValue = parseFloat(inputElement.value);
 
+    // If the input is a valid number
+    if (!isNaN(sizeValue)) {
+        // Convert the size based on the selected unit
+        var convertedSize = sizeUnitElement.value === 'MB' ? sizeValue / 1024 : sizeValue;
+        convertedSize = convertedSize.toFixed(2);
+        // Update the hidden input value with the converted size
+        convertedSizeElement.value = convertedSize;
+    }
+
+}
 
       </script>
 </body>

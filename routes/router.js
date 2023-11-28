@@ -16,6 +16,7 @@ const categoryProductsController = require('../controller/categoryProductsContro
 const passwordResetController = require('../controller/passwordResetController')
 const editProductController = require('../controller/editProductController')
 const productManagementController = require("../controller/productManagementController")
+const addCategoryController = require('../controller/addCategoryController')
 
 
 
@@ -56,10 +57,12 @@ router.get('/adminPanel/unblock/:id', userManagementController.unblockUser);
 router.get('/user-profile/:id', userProfileController.showUserData)
 
 router.get('/user-edit-profile',userEditProfileController.showData)
+router.post('/user-edit-profile',userEditProfileController.handleUserData)
 
 router.get('/category-management',categoryManagementController.showData)
-router.post('/category-management',categoryManagementController.handleData)
 
+router.get('/category-management/add',addCategoryController.showaddForm)
+router.post('/category-management/add',addCategoryController.handledata)
 
 router.get('/product-management',productManagement.showData)
 router.post('/product-management',productManagement.handleData)

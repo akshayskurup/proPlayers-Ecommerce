@@ -33,6 +33,12 @@
     max-width: 200px;
    
   }
+  .size{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 
 <body>
@@ -193,15 +199,16 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
         <div class="col-md-4">
-          <select id="product_categorie" name="productCategory" class="form-control">
-            <% categories.forEach(category=> { %>
-              <option value="<%= category.categoryName %>">
-                  <%= category.categoryName %>
-              </option>
-              <% }); %>
-          </select>
+            <select id="product_categorie" name="productCategory" class="form-control">
+                <% categories.forEach(category => { %>
+                    <option value="<%= category._id %>">
+                        <%= category.categoryName %>
+                    </option>
+                <% }); %>
+            </select>
         </div>
-      </div>
+    </div>
+    
 
 
       <div class="form-group">
@@ -213,15 +220,20 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group row">
         <label class="col-md-4 control-label" for="product_name">SIZE</label>
         <div class="col-md-4">
-          <input id="product_size" name="size" placeholder="SIZE" class="form-control input-md"
-            type="text">
-
+            <input id="product_size" name="size" placeholder="SIZE" class="form-control input-md" type="number" oninput="convertSize()">
         </div>
-      </div>
-
+        <div class="col-md-1">
+            <select name="sizeUnit" id="sizeUnit" class="form-control size" onchange="convertSize()">
+                <option value="MB">MB</option>
+                <option value="GB">GB</option>
+            </select>
+        </div>
+        <input type="hidden" name="convertedSize" id="convertedSize" value="">
+    </div>
+    
       <!-- Text input-->
       <div class="form-group">
         <label class="col-md-4 control-label" for="available_quantity">TOTAL QUANTITY</label>
@@ -319,7 +331,7 @@
                                             <td><%= product.productName %></td>
                                             <td><%= product.productCategory %></td>
                                             <td><%= product.publisher %></td>
-                                            <td><%= product.size %></td>
+                                            <td><%= product.size %> GB</td>
                                             <td><%= product.totalQuantity %></td>
                                             <td class="table-description"><p><%= product.description %></p></td>
                                             <td><%= product.releasedDate %></td>
@@ -433,6 +445,31 @@
     errorMessage.innerHTML = message;
     errorMessageContainer.appendChild(errorMessage);
   }
+
+
+
+function convertSize() {
+    // Get the input element, size unit element, and the hidden input for converted size
+    var inputElement = document.getElementById('product_size');
+    var sizeUnitElement = document.getElementById('sizeUnit');
+    var convertedSizeElement = document.getElementById('convertedSize');
+    
+    // Parse the input value as a number
+    var sizeValue = parseFloat(inputElement.value);
+
+    // If the input is a valid number
+    if (!isNaN(sizeValue)) {
+        // Convert the size based on the selected unit
+        var convertedSize = sizeUnitElement.value === 'MB' ? sizeValue / 1024 : sizeValue;
+        convertedSize = convertedSize.toFixed(2);
+        // Update the hidden input value with the converted size
+        convertedSizeElement.value = convertedSize;
+    }
+
+}
+
+
+
 
 
   </script>
