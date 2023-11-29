@@ -20,7 +20,7 @@ homeController.showHome = async (req, res) => {
     
         const product = await productSchema.find({ isListed: true }).populate('productCategory');
         const categories = await category.find();
-        console.log('id', userId);
+        console.log('user id', userId);
         console.log('home', req.session.UserLogin);
 
         // Render the home page

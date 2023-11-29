@@ -17,6 +17,7 @@ const passwordResetController = require('../controller/passwordResetController')
 const editProductController = require('../controller/editProductController')
 const productManagementController = require("../controller/productManagementController")
 const addCategoryController = require('../controller/addCategoryController')
+const cartController = require('../controller/cartController')
 
 
 
@@ -71,6 +72,7 @@ router.get('/adminPanel/edit/:id',editCategoryController.showEditData)
 router.post('/adminPanel/edit/:id',editCategoryController.handleEditData)
 
 router.get('/product-page/:id',productPageController.showData)
+router.post('/product-page/add-to-cart/:id',productPageController.addToCart)
 
 router.get('/products/:category',categoryProductsController.showData)
 
@@ -79,7 +81,10 @@ router.post('/product-management/edit/:id',editProductController.handleData)
 
 router.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
 
-
-
 router.get('/category-management/toggle-list/:id', categoryManagementController.toggleListCategory);
+
+router.get('/cart',cartController.showCart)
+router.post('/cart-item-remove/:id',cartController.removeItem)
+
+
 module.exports=router
