@@ -85,6 +85,7 @@ router.get('/category-management/toggle-list/:id', categoryManagementController.
 
 router.get('/cart',cartController.showCart)
 router.post('/cart-item-remove/:id',cartController.removeItem)
+router.put('/cart-update-quantity/:productId',cartController.updateQuantity)
 
 
 module.exports=router

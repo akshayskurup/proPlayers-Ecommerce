@@ -42,6 +42,7 @@ productPageController.showData = async (req, res) => {
 productPageController.addToCart = async (req, res) => {
     const userId = req.session.userId;
     const productId = req.params.id;
+    const quantity = req.body.quantityValue || 1;
 
     console.log("product ID: ", productId);
 
@@ -62,7 +63,7 @@ productPageController.addToCart = async (req, res) => {
 
         if (!isProductInCart) {
             // Add the product to the cart's items array
-            userCart.items.push({ productId });
+            userCart.items.push({ productId,quantity });
             await userCart.save();
         }
 
