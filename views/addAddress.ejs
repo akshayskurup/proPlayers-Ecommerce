@@ -16,6 +16,11 @@
 
     <!-- External CSS StyleSheet -->
     <link rel="stylesheet" href="css/userProfile.css" />
+    <style>
+        .main-body{
+            margin-top: 100px;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,7 +30,7 @@
 
         <nav class="navbar navbar-expand-lg bg-white fixed-top navbar-light p-3 shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="/home/<%=user._id%>"><i class="fa-solid fa-shop me-2"></i> <strong>Pro Players</strong></a>
+                <a class="navbar-brand" href="/home/"><i class="fa-solid fa-shop me-2"></i> <strong>Pro Players</strong></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -71,51 +76,17 @@
 
                 <div class="row gutters-sm d-flex">
 
-                    <div class="col-md-4 col-md-3 col-lg-4 ">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex flex-column align-items-center text-center">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
-                                        class="rounded-circle" width="150" />
-                                    <div class="mt-3">
-                                        <h4><%=user.name%></h4>
-                                        
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
+                    
                     <div class="col-md-8 ">
                     	<div class="card">
-                            <form action="/user-edit-profile" method="post" onsubmit="return validate()">
+                            <form action="/checkOut/addAddress" method="post" onsubmit="return validate()">
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="bg-danger text-white" id="error-message-container"></div>
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">Full Name</h6>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="name" id="name" value="<%=user.name%>">
-                                    </div>
+                                    
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">Email</h6>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="email" id="email" value="<%=user.email%>" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">Mobile</h6>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="mobile" id="phone" value="<%=user.phone%>">
-                                    </div>
-                                </div>
+                                
+                                
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
                                         <h5 class="mb-0">Address</h5>
@@ -124,10 +95,18 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
+                                        <h6 class="mb-0">Mobile</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <input type="text" class="form-control" name="mobile" id="phone" value="">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-3">
                                         <h6 class="mb-0">House Name</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="houseName" id="houseName" value="<%=user.address[0].houseName%>">
+                                        <input type="text" class="form-control" name="houseName" id="houseName" value="">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -135,7 +114,7 @@
                                         <h6 class="mb-0">Street</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="street" id="street" value="<%=user.address[0].street%>">
+                                        <input type="text" class="form-control" name="street" id="street" value="">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -143,7 +122,7 @@
                                         <h6 class="mb-0">City</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="city" id="city" value="<%=user.address[0].city%>">
+                                        <input type="text" class="form-control" name="city" id="city" value="">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -151,7 +130,7 @@
                                         <h6 class="mb-0">Pincode</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="pincode" id="pincode" value="<%=user.address[0].pincode%>">
+                                        <input type="text" class="form-control" name="pincode" id="pincode" value="">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -159,13 +138,13 @@
                                         <h6 class="mb-0">State</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="state" id="state" value="<%=user.address[0].state%>">
+                                        <input type="text" class="form-control" name="state" id="state" value="">
                                     </div>
                                 </div>
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <button class="btn btn-info" type="submit">Save Changes</button> 
+                                        <button class="btn btn-info" type="submit">Add</button> 
                                     </div>
                                 </div>
                             </form>
@@ -185,7 +164,6 @@
 
 <script>
     function validate(){
-            let username = document.getElementById("name");
             let usernumber = document.getElementById("phone");
             let userhousename = document.getElementById("houseName");
             let userstreet = document.getElementById("street");
@@ -199,7 +177,6 @@
 
             // Get the entered value
             let trimmedUsernumber = usernumber.value.trim();
-            let trimmedUsername = username.value.trim();
             let trimmedUserhousename= userhousename.value.trim();
             let trimmedUserstreet = userstreet.value.trim();
             let trimmedUsercity = usercity.value.trim();
@@ -207,10 +184,7 @@
             let trimmedUserstate = userstate.value.trim();
             
 
-            if (trimmedUsername === "") {
-                errorMessageContainer.innerText = "Please fill username input";
-                return false;
-            }  if (trimmedUsernumber === "" && trimmedUsername=== "" && trimmedUserhousename === "" && trimmedUserstreet === ""
+            if (trimmedUsernumber === "" && trimmedUserhousename === "" && trimmedUserstreet === ""
             && trimmedUsercity === "" && trimmedUserpincode === "" && trimmedUserstate === "") {
                 errorMessageContainer.innerText = "Please fill all the fields";
                 return false;
@@ -235,26 +209,13 @@
             }  if (trimmedUserstate === "") {
                 errorMessageContainer.innerText = "Please fill state input";
                 return false;
-            }  if (trimmedUsername.length <= 2) {
-                errorMessageContainer.innerText = "Please add more length to your name and password";
-                return false;
-            }  if (/\d/.test(trimmedUsername)){
-                errorMessageContainer.innerText = 'Name cannot contain numbers';
-                return false;
-            
-            }  if (trimmedUsername.length >= 20) {
-                errorMessageContainer.innerText = "Name is too lengthy";
-                return false;
-            }  if (trimmedUsernumber.length >= 11) {
+            }   if (trimmedUsernumber.length >= 11) {
                 errorMessageContainer.innerText = "Phone number should be 10 digits";
                 return false;
             }  if (trimmedUsernumber.length < 10) {
                 errorMessageContainer.innerText = "Phone number should be 10 digits";
                 return false;
-            } if (/[!@#$%^&*(),.?":{}|<>]/.test(trimmedUsername)) {
-                errorMessageContainer.innerText = "Please enter a valid name without symbols";
-                return false;
-            } if (!/^\d{10}$/.test(trimmedUsernumber)) {
+            }if (!/^\d{10}$/.test(trimmedUsernumber)) {
                 errorMessageContainer.innerText = "Please enter a valid 10-digit phone number without symbols";
                 return false;
             }

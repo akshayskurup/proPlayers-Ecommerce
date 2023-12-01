@@ -72,4 +72,9 @@ cartController.updateQuantity = async (req, res) => {
 };
 
 
-module.exports = cartController
+module.exports = {
+    showCart: cartController.showCart,
+    removeItem: cartController.removeItem,
+    updateQuantity: cartController.updateQuantity,
+    calculateTotalPrice: calculateTotalPrice, // Export the function here
+};

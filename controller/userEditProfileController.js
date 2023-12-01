@@ -24,24 +24,28 @@ userEditProfileController.handleUserData = async (req, res) => {
     const userId = req.session.userId;
 
     try {
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.status(404).render('userEditProfile', { user, error: 'User not found' });
-        }
-
-        user.name = name;
-        user.phone = phone;
-        user.address.houseName = houseName;
-        user.address.street = street;
-        user.address.city = city;
-        user.address.pincode = pincode;
-        user.address.state = state;
-
-        const updatedUser = await user.save();
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    name,
+                    phone,
+                },
+                $addToSet: {
+                    address: {
+                        houseName,
+                        street,
+                        city,
+                        pincode,
+                        state,
+                    },
+                },
+            },
+            { new: true }
+        );
 
         if (!updatedUser) {
-            return res.status(404).send('Product not found');
+            return res.status(404).send('User not found');
         }
 
         res.redirect(`/user-profile/${userId}`);

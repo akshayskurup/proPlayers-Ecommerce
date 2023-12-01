@@ -18,6 +18,9 @@ const editProductController = require('../controller/editProductController')
 const productManagementController = require("../controller/productManagementController")
 const addCategoryController = require('../controller/addCategoryController')
 const cartController = require('../controller/cartController')
+const checkOutController = require('../controller/checkOutController')
+const addAddressController = require('../controller/addAddressController')
+const orderConfirmedController = require('../controller/orderConfirmedController')
 
 
 
@@ -87,5 +90,14 @@ router.get('/cart',cartController.showCart)
 router.post('/cart-item-remove/:id',cartController.removeItem)
 router.put('/cart-update-quantity/:productId',cartController.updateQuantity)
 
+router.get('/checkout',checkOutController.showData)
+router.post('/checkout',checkOutController.handleData)
+router.post('/edit-address',checkOutController.editAddress)
+router.post('/updateAddress',checkOutController.UpdateAddress)
+
+router.get('/checkOut/addAddress',addAddressController.showForm)
+router.post('/checkOut/addAddress',addAddressController.handleData)
+
+router.get('/order-confirmed',orderConfirmedController.showData)
 
 module.exports=router

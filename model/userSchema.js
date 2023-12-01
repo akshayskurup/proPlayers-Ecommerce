@@ -14,13 +14,16 @@ let userSchema = new mongoose.Schema({
         default: false
     },
     
-    address: {
+    address:[{
+        mobile:Number,
         houseName: String,
         street:String,
         city: String,
         pincode: String,
-        state: String,
-    },
+        state: String
+    }
+    ]
+    
 })
 
 const User = mongoose.model('User',userSchema);

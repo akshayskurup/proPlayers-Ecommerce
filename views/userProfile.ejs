@@ -134,7 +134,7 @@
                                         <h6 class="mb-0">House Name</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <%=user.address.houseName%>
+                                        <%=user.address[0].houseName%>
                                     </div>
                                 </div>
                                 <hr />
@@ -143,7 +143,16 @@
                                         <h6 class="mb-0">Street</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <%=user.address.street%>
+                                        <%=user.address[0].street%>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <h6 class="mb-0">City</h6>
+                                    </div>
+                                    <div class="col-sm-9 text-secondary">
+                                        <%=user.address[0].city%>
                                     </div>
                                 </div>
                                 <hr />
@@ -152,7 +161,7 @@
                                         <h6 class="mb-0">Pincode</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <%=user.address.pincode%>
+                                        <%=user.address[0].pincode%>
                                     </div>
                                 </div>
                                 <hr />
@@ -161,7 +170,7 @@
                                         <h6 class="mb-0">State</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <%=user.address.state%>
+                                        <%=user.address[0].state%>
                                     </div>
                                 </div>
                                 <hr />
