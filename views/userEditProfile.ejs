@@ -123,45 +123,50 @@
                                     
                                 </div>
                                 <div class="row mb-3">
+                                    
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">House Name</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="houseName" id="houseName" value="<%=user.address[0].houseName%>">
+                                        <input type="text" class="form-control" name="houseName" id="houseName" value="<%= user.address && user.address.length > 0 ? user.address[0].houseName : '' %>">
                                     </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">Street</h6>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Street</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input type="text" class="form-control" name="street" id="street" value="<%= user.address && user.address.length > 0 ? user.address[0].street : '' %>">
+                                        </div>
                                     </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="street" id="street" value="<%=user.address[0].street%>">
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">City</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input type="text" class="form-control" name="city" id="city" value="<%= user.address && user.address.length > 0 ? user.address[0].city : '' %>">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">City</h6>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Pincode</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input type="text" class="form-control" name="pincode" id="pincode" value="<%= user.address && user.address.length > 0 ? user.address[0].pincode : '' %>">
+                                        </div>
                                     </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="city" id="city" value="<%=user.address[0].city%>">
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">State</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input type="text" class="form-control" name="state" id="state" value="<%= user.address && user.address.length > 0 ? user.address[0].state : '' %>">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">Pincode</h6>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="pincode" id="pincode" value="<%=user.address[0].pincode%>">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h6 class="mb-0">State</h6>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="state" id="state" value="<%=user.address[0].state%>">
-                                    </div>
-                                </div>
+                                    
                                 
                                 <div class="row">
                                     <div class="col-sm-12">

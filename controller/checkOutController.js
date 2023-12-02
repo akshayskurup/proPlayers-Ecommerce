@@ -84,50 +84,76 @@ checkOutController.UpdateAddress = async (req, res) => {
 
 checkOutController.handleData = async (req, res) => {
     try {
-        const userId = req.session.userId;
-        const { selectedAddress, paymentMethod } = req.body;
-        console.log("Address",selectedAddress)
-
-        // Fetch user's cart data
-        const userCart = await cart.findOne({ userId }).populate('items.productId');
-        const items = userCart.items;
-
-        // Calculate total price from the cart
-        const totalPrice = cartController.calculateTotalPrice(items);
-
-        // Create a new order instance
-        const newOrder = new Order({
-            customer: userId,
-            addressIndex: selectedAddress,
-            items: items.map(item => ({
-                product: item.productId._id,
-                quantity: item.quantity
-            })),
-            totalAmount: totalPrice,
-            OrderStatus: 'Order Placed',  // You might adjust this based on your business logic
-            paymentMethod: paymentMethod,
-            orderId: generateOrderId(),  // You need to implement a function to generate a unique order ID
-        });
-
-        // Save the new order to the database
-        await newOrder.save();
-
-        // You may want to clear the user's cart or perform other actions here
-
-        // Redirect to a thank you or confirmation page
-        res.redirect("/order-confirmed");
+      const userId = req.session.userId;
+      const { selectedAddress, paymentMethod } = req.body;
+  
+      // Fetch user's cart data
+      const userCart = await cart.findOne({ userId }).populate('items.productId');
+      const items = userCart.items;
+  
+      // Get the selected address details using the index
+      const user = await User.findById(userId);
+      const selectedAddressDetails = user.address[selectedAddress];
+  
+      // Calculate total price from the cart
+      const totalPrice = cartController.calculateTotalPrice(items);
+  
+      // Create a new order instance
+      const newOrder = new Order({
+        customer: userId,
+        address: {
+          mobile: selectedAddressDetails.mobile,
+          houseName: selectedAddressDetails.houseName,
+          street: selectedAddressDetails.street,
+          city: selectedAddressDetails.city,
+          pincode: selectedAddressDetails.pincode,
+          state: selectedAddressDetails.state,
+        },
+        items: items.map(item => ({
+          product: item.productId._id,
+          quantity: item.quantity
+        })),
+        totalAmount: totalPrice,
+        OrderStatus: 'Order Placed',
+        paymentMethod: paymentMethod,
+        orderId: generateOrderId(),
+      });
+  
+      // Save the new order to the database
+      await newOrder.save();
+  
+      // You may want to clear the user's cart or perform other actions here
+  
+      // Redirect to a thank you or confirmation page
+      res.redirect("/order-confirmed");
     } catch (err) {
-        console.error('Error handling checkout data:', err);
-        res.status(500).send('Internal Server Error');
+      console.error('Error handling checkout data:', err);
+      res.status(500).send('Internal Server Error');
     }
-}
-
+  }
+  
 // You need to implement a function to generate a unique order ID
 function generateOrderId() {
     // Implement your logic to generate a unique order ID
     // For example, you can use a combination of timestamp and a random number
     return Date.now().toString() + Math.floor(Math.random() * 1000);
 }
+
+checkOutController.orderConfirmed = async (req, res) => {
+    try {
+        // Fetch the latest order for the current user
+        const userId = req.session.userId;
+        const latestOrder = await Order.findOne({ customer: userId }).sort({ orderDate: -1 }).populate('items.product');
+        const user = await User.findById(userId);
+
+        console.log("latest order",latestOrder)
+        // Render the 'orderConfirmed' view with the latest order details
+        res.render('orderConfirmed', { latestOrder,userName:user.name , user });
+    } catch (err) {
+        console.error('Error fetching latest order:', err);
+        res.status(500).send('Internal Server Error');
+    }
+};
 
 module.exports = checkOutController
 

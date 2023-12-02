@@ -4,27 +4,34 @@ const calculateTotalPrice = (items) => {
     const totalPrice = items.reduce((total, item) => total + item.productId.price * item.quantity, 0);
     return totalPrice.toFixed(2);
 };
-cartController.showCart = async (req,res)=>{
-    try{
-        const userId = req.session.userId
-        const userCart = await cart.findOne({userId}).populate('items.productId')
-        const items = userCart.items
-        userCart.items.forEach(product=>{
-            console.log("Quantity : ",product.productId.totalQuantity)
-        })
-        
-        if(userCart){
-            const totalPrice = calculateTotalPrice(items);
-            res.render("cart",{items,userId,totalPrice})
-        }
-        else{
-            res.render('cart',{items,userId,totalPrice})
-        }
-    }
-    catch(err){
+cartController.showCart = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const userCart = await cart.findOne({ userId }).populate('items.productId');
 
+        if (userCart) {
+            const items = userCart.items;
+            userCart.items.forEach(product => {
+                console.log("Quantity : ", product.productId.totalQuantity);
+            });
+
+            const totalPrice = calculateTotalPrice(items);
+
+            res.render("cart", { items, userId, totalPrice, isEmptyCart: false });
+        } else {
+            res.render("cart", { userId, isEmptyCart: true });
+        }
+    } catch (err) {
+        console.log("Error in showing data", err);
+        res.status(500).send("Internal Server Error");
     }
+};
+
+cartController.emptyCart = (req,res)=>{
+    const userId = req.session.userId;
+    res.render("emptyCart",{userId})
 }
+
 cartController.removeItem = async (req,res)=>{
     const userId = req.session.userId
     const productIdToRemove = req.params.id
@@ -77,4 +84,5 @@ module.exports = {
     removeItem: cartController.removeItem,
     updateQuantity: cartController.updateQuantity,
     calculateTotalPrice: calculateTotalPrice, // Export the function here
+    emptyCart:cartController.emptyCart
 };

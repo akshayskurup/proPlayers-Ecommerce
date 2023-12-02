@@ -5,9 +5,13 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users'
   },
-  addressIndex:{
-    type:Number,
-    default:0
+  address:{
+    mobile:Number,
+    houseName: String,
+    street:String,
+    city: String,
+    pincode: String,
+    state: String
   },
   items: [
     {

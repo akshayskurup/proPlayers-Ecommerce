@@ -25,12 +25,19 @@
       <section class="bg-light py-5">
         <div class="container">
             <h2>Checkout</h2>
-            <form action="/checkout" method="post">
+            <form action="/checkout" method="post" onsubmit="return validateForm()">
             <div class="row py-3">
               <% userAddresses.forEach((userAddress,index)=>{%>
                 <div class="col-sm-4 py-2">
                   <div class="card">
-                    <input type="radio" class="addressSelecter" id="addressSelecter<%= index %>" name="selectedAddress" value="<%= index %>">                    
+                    <input type="radio" class="addressSelecter" id="addressSelecter<%= index %>" name="selectedAddress" value="<%= index %>"
+       data-mobile="<%= userAddress.mobile %>"
+       data-houseName="<%= userAddress.houseName %>"
+       data-street="<%= userAddress.street %>"
+       data-city="<%= userAddress.city %>"
+       data-pincode="<%= userAddress.pincode %>"
+       data-state="<%= userAddress.state %>">
+                    
                     <div class="card-body">
                       <h5 class="card-title">Address <%= index+1 %></h5>
                       <p class="card-text">Name: <%=user.name%></p>
@@ -137,7 +144,7 @@
                           </div>
                         </div>                       
                       </div>
-                    
+                      <div class="bg-danger text-white" id="error-message-container"></div>
       
                   <div class="float-end">
                     <button class="btn btn-light border">Cancel</button>
@@ -190,6 +197,24 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  function validateForm() {
+      // Get the selected address
+      var selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+
+      // Check if an address is selected
+      if (!selectedAddress) {
+          // Display an error message for address
+          document.getElementById('error-message-container').innerHTML = '<p class="text-white">Please select an address</p>';
+          return false; // Prevent form submission
+      }
+
+      // Clear any existing error messages
+      document.getElementById('error-message-container').innerHTML = '';
+      return true; // Allow form submission
+  }
+</script>
+
 
   
 </body>
