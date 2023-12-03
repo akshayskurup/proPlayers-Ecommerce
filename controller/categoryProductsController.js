@@ -18,11 +18,11 @@ categoryProductsController.showData = async (req, res) => {
         try {
             // Check if the category is listed
             const category = await Category.findOne({ categoryName: productCategory, isListed: true });
-
+            const categories = await Category.find()
             if (category) {
                 const products = await productSchema.find({ productCategory: category._id, isListed: true });
                 console.log('Filtered Products:', products);
-                res.render('categoryProducts', { products, productCategory, userId });
+                res.render('categoryProducts', { products, productCategory, userId,categories});
             } else {
                 // If the category is not listed, you might want to handle this case (e.g., display a message)
                 console.log(`Category '${productCategory}' not listed`);

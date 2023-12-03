@@ -18,7 +18,7 @@ checkOutController.showData = async (req, res) => {
         const userCart = await cart.findOne({ userId }).populate('items.productId');
         const items = userCart.items;
         console.log("caart items",items)
-        const totalPrice = cartController.calculateTotalPrice(items);
+        const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
         const userAddresses = user.address;
         res.render("checkOutPage", { user, userAddresses, totalPrice,items });
 
@@ -81,7 +81,7 @@ checkOutController.handleData = async (req, res) => {
       const items = userCart.items;
 
       const user = await User.findById(userId);
-      const totalPrice = cartController.calculateTotalPrice(items);
+      const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
       for (const item of items) {
         const productId = item.productId._id;
         console.log("Product idddd",productId)
@@ -99,7 +99,9 @@ checkOutController.handleData = async (req, res) => {
           pincode: selectedPincode,
           state: selectedState,
         },
-        items: items.map(item => ({
+        items: items
+        .filter(item => item.productId.totalQuantity > 0)
+        .map(item => ({
           product: item.productId._id,
           quantity: item.quantity
         })),

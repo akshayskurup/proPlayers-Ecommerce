@@ -16,7 +16,7 @@
                   <h4>Verify</h4>
                   <p>Your code was sent to you via email</p>
                   <div class="bg-danger"><%= message %></div>
-
+                  <p id="countdown-timer" class="text-muted mb-0"></p>
                   <form action="/signup-otp" method="post">
                     <div class="otp-field mb-4">
                       <label for="enteredOTP">Enter OTP:</label>
@@ -38,48 +38,67 @@
           </div>
       </section>
 
-    <script>
-      let countdown = 15; // Countdown in seconds
-      let timer;
+<!-- Add this script after the existing script in your OTP page -->
+<script>
+  let countdown = 50; // Resend cooldown in seconds
+  let timer;
 
-      // Function to update the countdown and button state
-      function updateCountdown() {
-        document.getElementById('resendLink').textContent = `Resend OTP (${countdown}s)`;
-        if (countdown <= 0) {
-          document.getElementById('resendLink').textContent = 'Request again';
-          document.getElementById('resendLink').classList.remove('disabled');
-          clearInterval(timer);
+  function updateCountdown() {
+    const countdownTimer = document.getElementById('countdown-timer');
+    const resendLink = document.getElementById('resendLink');
+
+    if (countdown > 0) {
+      countdownTimer.textContent = `Resend OTP in ${countdown}s`;
+      countdown--;
+    } else {
+      countdownTimer.textContent = '';
+      resendLink.textContent = 'Request again';
+      resendLink.classList.remove('disabled');
+      clearInterval(timer);
+    }
+  }
+
+  function startCountdown() {
+    timer = setInterval(updateCountdown, 1000);
+    updateCountdown(); // Initial update
+  }
+
+  function resendOTP() {
+    const resendLink = document.getElementById('resendLink');
+
+    // Check if the countdown is still active
+    if (countdown > 0) {
+      console.log('Resend cooldown still active.');
+      return;
+    }
+
+    // Disable the "Request again" link and start the countdown timer
+    resendLink.textContent = 'Resending...';
+    resendLink.classList.add('disabled');
+
+    // Make an AJAX request to the server to resend OTP
+    fetch('/resendOtp', { method: 'POST' })
+      .then(response => response.json())
+      .then(data => {
+        // Check if the resend was successful
+        if (!data.success) {
+          // Handle the case where the resend failed
+          console.error('Resend failed:', data.message);
+        } else {
+          // Reset the countdown timer after successful resend
+          countdown = 50;
+          startCountdown();
         }
-      }
+      })
+      .catch(error => console.error('Error during resend:', error));
+  }
 
-      // Function to handle the resend button click
-      function resendOTP() {
-        // Disable the "Request again" link and start the countdown timer
-        document.getElementById('resendLink').classList.add('disabled');
-        countdown = 15;
-        timer = setInterval(() => {
-          countdown--;
-          updateCountdown();
-          if (countdown <= 0) {
-            clearInterval(timer);
-          }
-        }, 1000);
+  // Initialize the countdown
+  startCountdown();
+</script>
 
-        // Make an AJAX request to the server to resend OTP
-        fetch('/resendOtp', { method: 'POST' })
-          .then(response => response.json())
-          .then(data => {
-            // Check if the resend was successful
-            if (!data.success) {
-              // Handle the case where the resend failed
-              console.error('Resend failed:', data.message);
-            }
-          })
-          .catch(error => console.error('Error during resend:', error));
-      }
 
-      // Initial countdown update
-      updateCountdown();
-    </script>
+
+
 </body>
 </html>

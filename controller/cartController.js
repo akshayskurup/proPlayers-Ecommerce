@@ -1,14 +1,23 @@
 const cart = require('../model/cartSchema')
 const cartController = {}
+const category = require('../model/categorySchema')
 const calculateTotalPrice = (items) => {
-    const totalPrice = items.reduce((total, item) => total + item.productId.price * item.quantity, 0);
+    const totalPrice = items.reduce((total, item) => {
+        // Check if the item is in stock (totalQuantity > 0)
+        if (item.productId.totalQuantity > 0) {
+            return total + item.productId.price * item.quantity;
+        }
+        return total;
+    }, 0);
+
     return totalPrice.toFixed(2);
 };
+
 cartController.showCart = async (req, res) => {
     try {
         const userId = req.session.userId;
         const userCart = await cart.findOne({ userId }).populate('items.productId');
-
+        const categories = await category.find()
         if (userCart) {
             const items = userCart.items;
             userCart.items.forEach(product => {
@@ -16,10 +25,10 @@ cartController.showCart = async (req, res) => {
             });
 
             const totalPrice = calculateTotalPrice(items);
-            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 });
+            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 , categories});
 
         } else {
-            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 });
+            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 ,categories});
 
         }
     } catch (err) {
@@ -84,6 +93,6 @@ module.exports = {
     showCart: cartController.showCart,
     removeItem: cartController.removeItem,
     updateQuantity: cartController.updateQuantity,
-    calculateTotalPrice: calculateTotalPrice, // Export the function here
+    calculateTotalPrice: calculateTotalPrice, 
     emptyCart:cartController.emptyCart
 };

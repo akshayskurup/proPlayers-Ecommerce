@@ -5,13 +5,17 @@ const bodyParser = require('body-parser');
 const routes = require('./routes/router');
 const connectDB = require('./model/database');
 const nocache = require("nocache");
+const crypto = require('crypto');
+
+// Generate a random, secure session secret
+const sessionSecret = crypto.randomBytes(32).toString('hex');
 
 // Add nocache middleware
 app.use(nocache());
 
 // Set up session middleware
 app.use(session({
-    secret: "akshay",
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: true
 }));

@@ -13,7 +13,10 @@ let productSchema = mongoose.Schema({
     },
     publisher:String,
     size:String,
-    totalQuantity:Number,
+    totalQuantity:{
+        type:Number,
+        min:0
+    },
     description:String,
     releasedDate:Date,
     price:Number,
