@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Startmin - Bootstrap Admin Theme</title>
+    <title>Pro Players</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/vendors/bootstrap.min.css" rel="stylesheet">
@@ -63,7 +63,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="navbar-header">
-            <a class="navbar-brand" href="index.html">Startmin</a>
+            <a class="navbar-brand" href="index.html">Pro Players</a>
         </div>
 
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -134,7 +134,7 @@
             </li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i> secondtruth <b class="caret"></b>
+                    <i class="fa fa-user fa-fw"></i> Akshay <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
                     <li>
@@ -164,7 +164,9 @@
                     <a href="/user-management"><i class="fa fa-table fa-fw"></i> user-management</a>
                 </li>
 
-
+                <li>
+                    <a href="/order-management"><i class="fa fa-table fa-fw"></i> order-management</a>
+                </li>
 
                 <li>
                     <a href="#"><i class="fa fa-files-o fa-fw"></i> Product-Management<span class="fa arrow"></span></a>
@@ -187,40 +189,7 @@
 
 
 
-    <form action="/user-insertion" method="post" onsubmit="return validate()">
-        <div class="container">
-            <div class="custom-form">
-                <h2 class="mb-4">User Management</h2>
-                <% if (message) { %>
-                    <div class="alert alert-info" id="error-message-container" role="alert">
-                        <%= message %>
-                    </div>
-                    <% } %>
-
-                        <div class="form-group">
-                            <label for="name">Name:</label>
-                            <input type="text" class="form-control" name="name" id="name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" name="email" id="email">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="phone">Phone:</label>
-                            <input type="text" class="form-control" name="phone" id="phone">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Password:</label>
-                            <input type="name" class="form-control" name="password" id="password">
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-
-            </div>
-        </div>
-    </form>
+    
 
 
 
@@ -231,7 +200,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Tables</h1>
+                    <h1 class="page-header">Users</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>

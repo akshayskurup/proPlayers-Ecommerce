@@ -15,7 +15,8 @@
     <script src="https://kit.fontawesome.com/1694914d74.js" crossorigin="anonymous"></script>
 
     <!-- External CSS StyleSheet -->
-    <link rel="stylesheet" href="/css/userProfile.css" />
+    <link rel="stylesheet" href="css/userProfile.css" />
+    
 </head>
 
 <body>
@@ -74,12 +75,13 @@
                     
                     <div class="col-md-8 ">
                     	<div class="card">
-                            <form action="/checkOut/addAddress" method="post" onsubmit="return validate()">
+                            <form action="/updateAddress" method="post" onsubmit="return validate()">
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="bg-danger text-white" id="error-message-container"></div>
                                     
                                 </div>
+                                <input type="hidden" name="addressIndex" value="<%= addressIndex %>">
                                 
                                 
                                 <div class="row mb-3">
@@ -93,7 +95,7 @@
                                         <h6 class="mb-0">Mobile</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="mobile" id="phone" value="">
+                                        <input type="text" class="form-control" name="mobile" id="phone" value="<%= userAddressToEdit.mobile %>">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -101,7 +103,7 @@
                                         <h6 class="mb-0">House Name</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="houseName" id="houseName" value="">
+                                        <input type="text" class="form-control" name="houseName" id="houseName" value="<%= userAddressToEdit.houseName %>">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -109,7 +111,7 @@
                                         <h6 class="mb-0">Street</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="street" id="street" value="">
+                                        <input type="text" class="form-control" name="street" id="street" value="<%= userAddressToEdit.street %>">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -117,7 +119,7 @@
                                         <h6 class="mb-0">City</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="city" id="city" value="">
+                                        <input type="text" class="form-control" name="city" id="city" value="<%= userAddressToEdit.city %>">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -125,7 +127,7 @@
                                         <h6 class="mb-0">Pincode</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="pincode" id="pincode" value="">
+                                        <input type="text" class="form-control" name="pincode" id="pincode" value="<%= userAddressToEdit.pincode %>">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -133,13 +135,13 @@
                                         <h6 class="mb-0">State</h6>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        <input type="text" class="form-control" name="state" id="state" value="">
+                                        <input type="text" class="form-control" name="state" id="state" value="<%= userAddressToEdit.state %>">
                                     </div>
                                 </div>
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <button class="btn btn-info" type="submit">Add</button> 
+                                        <button class="btn btn-info" type="submit">Save Changes</button> 
                                     </div>
                                 </div>
                             </form>
@@ -204,13 +206,16 @@
             }  if (trimmedUserstate === "") {
                 errorMessageContainer.innerText = "Please fill state input";
                 return false;
-            }   if (trimmedUsernumber.length >= 11) {
+            }  if (trimmedUsername.length <= 2) {
+                errorMessageContainer.innerText = "Please add more length to your name and password";
+                return false;
+            }  if (trimmedUsernumber.length >= 11) {
                 errorMessageContainer.innerText = "Phone number should be 10 digits";
                 return false;
             }  if (trimmedUsernumber.length < 10) {
                 errorMessageContainer.innerText = "Phone number should be 10 digits";
                 return false;
-            }if (!/^\d{10}$/.test(trimmedUsernumber)) {
+            } if (!/^\d{10}$/.test(trimmedUsernumber)) {
                 errorMessageContainer.innerText = "Please enter a valid 10-digit phone number without symbols";
                 return false;
             }

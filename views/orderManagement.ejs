@@ -196,7 +196,7 @@
 
 
 <div id="page-wrapper" style="margin-top: 20px;">
-    <a href="/category-management/add"><div class=" btn btn-success w-10">Add categories</div></a>
+   
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
@@ -214,32 +214,42 @@
                             <table class="table table-striped table-bordered table-hover" id="">
                                 <thead>
                                     <tr>
-                                        <th>Category</th>
+                                        <th>Order ID</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>Date</th>
+                                        <th>Payement Method</th>
+                                        <th>Total Amount</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    
-
-
-                                    <% categories.forEach(category => { %>
+                                <% orderDetails.forEach(order=>{%>
+                                    <tbody>
                                         <tr>
-                                            <td><%= category.categoryName %></td>
-                                            <td><%= category.isListed ? 'Active' : 'Blocked' %></td>
+                                            <td><%=order._id%></td>
+                                            <td><%=order.OrderStatus%></td>
+                                            <td><%=order.orderDate.toLocaleDateString()%></td>
+                                            <td><%=order.paymentMethod%></td>
+                                            <td><%=order.totalAmount%></td>
                                             <td>
-                                            <a href="/category-management/toggle-list/<%= category._id %>" title="<%= category.isListed ? 'list' : 'unlist' %>" data-toggle="tooltip">
-                                                <%= category.isListed ? 'unlist' : 'list' %>
-                                            </a>
-                                            <a class="edit" href="/adminPanel/edit/<%= category._id %>">Edit</a>
+                                                <form action="/order-management-update/<%= order._id %>" method="post" class="update-status-form">
+                                                <select name="order_status" onchange="this.form.submit()">
+                                                <option value="Order Placed" <%= order.OrderStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
+                                                <option value="Shipped" <%= order.OrderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                                <option value="Delivered" <%= order.OrderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                                <option value="Returned" <%= order.OrderStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
+                                                <option value="Cancelled" <%= order.OrderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                              </select>
+                                            </form>
                                             </td>
                                         </tr>
-                                            <% }); %>
+                                            
 
 
 
                                     
                                 </tbody>
+                                <%})%>
+                                
                             </table>
                         </div>
 

@@ -3,6 +3,7 @@ let User = require("../model/userSchema");
 let cart = require("../model/cartSchema")
 let cartController = require("../controller/cartController")
 let Order = require('../model/orderSchema')
+let Product = require('../model/productSchema')
 
 
 
@@ -12,21 +13,13 @@ checkOutController.showData = async (req, res) => {
     console.log("user id:", userId);
 
     try {
-        // Fetch user data
-        const user = await User.findById(userId);
 
-        // Fetch user's cart data
+        const user = await User.findById(userId);
         const userCart = await cart.findOne({ userId }).populate('items.productId');
         const items = userCart.items;
         console.log("caart items",items)
-
-        // Calculate total price from the cart
         const totalPrice = cartController.calculateTotalPrice(items);
-
-        // Fetch user addresses
         const userAddresses = user.address;
-
-        // Render the checkout page with user data, addresses, and total price
         res.render("checkOutPage", { user, userAddresses, totalPrice,items });
 
     } catch (err) {
@@ -41,7 +34,6 @@ checkOutController.editAddress = async (req, res) => {
     const { addressIndex } = req.body;
     console.log("addressIndex",addressIndex)
 
-    // Retrieve the user's data and the specific address to edit using the index
     try {
         const user = await User.findById(userId);
         const userAddressToEdit = user.address[addressIndex];
@@ -56,7 +48,6 @@ checkOutController.UpdateAddress = async (req, res) => {
     const { addressIndex,mobile, houseName, street, city, pincode, state } = req.body;
     console.log("addressIndex",addressIndex)
 
-    // Update the specific address in the user's array
     try {
         const updatedUser = await User.findByIdAndUpdate(
             userId,
@@ -74,7 +65,7 @@ checkOutController.UpdateAddress = async (req, res) => {
             { new: true }
         );
 
-        // Redirect to the user profile or another appropriate page
+        
         res.redirect("/checkOut");
     } catch (err) {
         console.error('Error updating address:', err);
@@ -85,29 +76,28 @@ checkOutController.UpdateAddress = async (req, res) => {
 checkOutController.handleData = async (req, res) => {
     try {
       const userId = req.session.userId;
-      const { selectedAddress, paymentMethod } = req.body;
-  
-      // Fetch user's cart data
+      const { selectedMobile, selectedHouseName, selectedStreet, selectedCity, selectedPincode, selectedState, paymentMethod } = req.body;
       const userCart = await cart.findOne({ userId }).populate('items.productId');
       const items = userCart.items;
-  
-      // Get the selected address details using the index
+
       const user = await User.findById(userId);
-      const selectedAddressDetails = user.address[selectedAddress];
-  
-      // Calculate total price from the cart
       const totalPrice = cartController.calculateTotalPrice(items);
-  
-      // Create a new order instance
+      for (const item of items) {
+        const productId = item.productId._id;
+        console.log("Product idddd",productId)
+        const quantityToReduce = item.quantity;
+        console.log("Product qunatityyyy",quantityToReduce)
+        await Product.updateOne({ _id: productId }, { $inc: { totalQuantity: -quantityToReduce } });
+      }
       const newOrder = new Order({
         customer: userId,
         address: {
-          mobile: selectedAddressDetails.mobile,
-          houseName: selectedAddressDetails.houseName,
-          street: selectedAddressDetails.street,
-          city: selectedAddressDetails.city,
-          pincode: selectedAddressDetails.pincode,
-          state: selectedAddressDetails.state,
+          mobile: selectedMobile,
+          houseName: selectedHouseName,
+          street: selectedStreet,
+          city: selectedCity,
+          pincode: selectedPincode,
+          state: selectedState,
         },
         items: items.map(item => ({
           product: item.productId._id,
@@ -119,12 +109,7 @@ checkOutController.handleData = async (req, res) => {
         orderId: generateOrderId(),
       });
   
-      // Save the new order to the database
       await newOrder.save();
-  
-      // You may want to clear the user's cart or perform other actions here
-  
-      // Redirect to a thank you or confirmation page
       res.redirect("/order-confirmed");
     } catch (err) {
       console.error('Error handling checkout data:', err);
@@ -132,10 +117,8 @@ checkOutController.handleData = async (req, res) => {
     }
   }
   
-// You need to implement a function to generate a unique order ID
+
 function generateOrderId() {
-    // Implement your logic to generate a unique order ID
-    // For example, you can use a combination of timestamp and a random number
     return Date.now().toString() + Math.floor(Math.random() * 1000);
 }
 

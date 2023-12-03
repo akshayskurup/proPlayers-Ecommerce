@@ -30,7 +30,7 @@ addAddressController.handleData = async (req,res)=>{
             return res.status(404).send('User not found');
         }
 
-        res.redirect(`/user-profile/${userId}`);
+        res.redirect("/checkOut");
     } catch (err) {
         console.error('Error during adding address:', err);
         res.status(500).send('Internal Server Error');

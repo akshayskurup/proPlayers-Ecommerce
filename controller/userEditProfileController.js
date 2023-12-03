@@ -20,7 +20,7 @@ userEditProfileController.showData = async (req,res)=>{
 }
 
 userEditProfileController.handleUserData = async (req, res) => {
-    const { name, phone, houseName, street, city, pincode, state } = req.body;
+    const { name, mobile, houseName, street, city, pincode, state } = req.body;
     const userId = req.session.userId;
 
     try {
@@ -29,7 +29,7 @@ userEditProfileController.handleUserData = async (req, res) => {
             {
                 $set: {
                     name,
-                    phone,
+                    phone:mobile,
                 },
                 $addToSet: {
                     address: {

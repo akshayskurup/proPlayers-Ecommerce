@@ -18,31 +18,6 @@ userManagementController.showData = async(req,res)=>{
     }
 }
 
-userManagementController.handleData = async (req,res)=>{
-    
-    const {name,email,phone,password} = req.body
-    const existingUser = await User.findOne({ email });
-    const users = await User.find()
-
-      if (existingUser) {
-        // Handle the case where the email already exists
-        return res.redirect('/user-management?message=Email already exists');
-      }
-    const saltround = 10;
-    const hashedPassword = await bcrypt.hash(password,saltround);
-    const newUser = new User({
-        name,
-        email,
-        phone,
-        password:hashedPassword
-    })
-    await newUser
-    .save()
-    .then(()=> res.redirect('/user-management?message=Successfully inserted'))
-    .catch((err) =>
-      console.error('Error during inserting data:', err)
-      
-      )} 
 
 
 

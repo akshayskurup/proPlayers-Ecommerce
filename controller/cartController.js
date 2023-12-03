@@ -16,10 +16,11 @@ cartController.showCart = async (req, res) => {
             });
 
             const totalPrice = calculateTotalPrice(items);
+            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 });
 
-            res.render("cart", { items, userId, totalPrice, isEmptyCart: false });
         } else {
-            res.render("cart", { userId, isEmptyCart: true });
+            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 });
+
         }
     } catch (err) {
         console.log("Error in showing data", err);

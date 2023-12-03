@@ -35,5 +35,82 @@ userProfileController.showUserData = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+userProfileController.addAddress = (req,res)=>{
+    res.render('userAddAddress')
+}
 
+userProfileController.handleAddAddress = async (req,res)=>{
+    const { mobile, houseName, street, city, pincode, state } = req.body;
+    const userId = req.session.userId;
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $push: {
+                    address: {
+                        mobile,
+                        houseName,
+                        street,
+                        city,
+                        pincode,
+                        state,
+                    },
+                },
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).send('User not found');
+        }
+
+        res.redirect(`/user-profile/${userId}`);
+    } catch (err) {
+        console.error('Error during adding address:', err);
+        res.status(500).send('Internal Server Error');
+    }
+}
+userProfileController.editAddress = async (req, res) => {
+    const userId = req.session.userId;
+    const { addressIndex } = req.body;
+    console.log("addressIndex",addressIndex)
+
+    try {
+        const user = await User.findById(userId);
+        const userAddressToEdit = user.address[addressIndex];
+        res.render('userEditAddress', { user, userAddressToEdit, addressIndex });
+    } catch (err) {
+        console.error('Error fetching user data:', err);
+        res.status(500).send('Internal Server Error');
+    }
+};
+userProfileController.UpdateAddress = async (req, res) => {
+    const userId = req.session.userId;
+    const { addressIndex,mobile, houseName, street, city, pincode, state } = req.body;
+    console.log("addressIndex",addressIndex)
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    [`address.${addressIndex}.mobile`]: mobile,
+                    [`address.${addressIndex}.houseName`]: houseName,
+                    [`address.${addressIndex}.street`]: street,
+                    [`address.${addressIndex}.city`]: city,
+                    [`address.${addressIndex}.pincode`]: pincode,
+                    [`address.${addressIndex}.state`]: state
+                    
+                },
+            },
+            { new: true }
+        );
+
+        
+        res.redirect(`/user-profile/${userId}`);
+    } catch (err) {
+        console.error('Error updating address:', err);
+        res.status(500).send('Internal Server Error');
+    }
+}
 module.exports = userProfileController;

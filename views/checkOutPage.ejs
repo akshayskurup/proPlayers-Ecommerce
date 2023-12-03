@@ -25,35 +25,38 @@
       <section class="bg-light py-5">
         <div class="container">
             <h2>Checkout</h2>
-            <form action="/checkout" method="post" onsubmit="return validateForm()">
+            
             <div class="row py-3">
-              <% userAddresses.forEach((userAddress,index)=>{%>
+              
+              <% userAddresses.forEach((userAddress, index) => { %>
                 <div class="col-sm-4 py-2">
-                  <div class="card">
-                    <input type="radio" class="addressSelecter" id="addressSelecter<%= index %>" name="selectedAddress" value="<%= index %>"
-       data-mobile="<%= userAddress.mobile %>"
-       data-houseName="<%= userAddress.houseName %>"
-       data-street="<%= userAddress.street %>"
-       data-city="<%= userAddress.city %>"
-       data-pincode="<%= userAddress.pincode %>"
-       data-state="<%= userAddress.state %>">
-                    
-                    <div class="card-body">
-                      <h5 class="card-title">Address <%= index+1 %></h5>
-                      <p class="card-text">Name: <%=user.name%></p>
-                     
-                        <p class="card-text"><%=userAddress.houseName%>,<%=userAddress.street%>,<%=userAddress.city%>,
-                          <%=userAddress.pincode%>,<%=userAddress.state%>,<%=userAddress.mobile%></p>
-                        
-                        <form action="/edit-address" method="post">
-                        <input type="hidden" name="addressIndex" value="<%= index %>">
-                      <button type="submit" class="btn btn-primary">Edit</button>
-                    </form>
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Edit Address Form -->
+                            <form action="/edit-address" method="post">
+                                <input type="hidden" name="addressIndex" value="<%= index %>">
+                                <button type="submit" class="btn btn-primary">Edit</button>
+                            </form>
+                            <h5 class="card-title">Address <%= index + 1 %></h5>
+                            <p class="card-text">Name: <%= user.name %></p>
+                            <p class="card-text">
+                                <%= userAddress.houseName %>, <%= userAddress.street %>, <%= userAddress.city %>,
+                                <%= userAddress.pincode %>, <%= userAddress.state %>, <%= userAddress.mobile %>
+                            </p>
+                          
+                            <!-- Checkout Radio Button -->
+                            <input type="radio" class="addressSelecter" id="addressSelecter<%= index %>" name="selectedAddress" value="<%= index %>"
+                                    data-mobile="<%= userAddress.mobile %>"
+                                    data-houseName="<%= userAddress.houseName %>"
+                                    data-street="<%= userAddress.street %>"
+                                    data-city="<%= userAddress.city %>"
+                                    data-pincode="<%= userAddress.pincode %>"
+                                    data-state="<%= userAddress.state %>">
+                        </div>
                     </div>
-                  </div>
                 </div>
-                <%})%>
-                
+            <% }) %>
+            
                   <div class="col-sm-4 py-2">
                     <div class="card">
                       
@@ -75,7 +78,8 @@
                   <hr class="my-4" />
       
                   <h5 class="card-title mb-3">Payment Method</h5>
-      
+
+                  <form action="/checkout" method="post" onsubmit="return validateForm()">
                   <div class="row mb-3">
                     <div class="col-lg-4 mb-3">
                       <!-- Default checked radio -->
@@ -145,9 +149,16 @@
                         </div>                       
                       </div>
                       <div class="bg-danger text-white" id="error-message-container"></div>
-      
+    
+                      
+                        <input type="hidden" id="selectedMobile" name="selectedMobile">
+                        <input type="hidden" id="selectedHouseName" name="selectedHouseName">
+                        <input type="hidden" id="selectedStreet" name="selectedStreet">
+                        <input type="hidden" id="selectedCity" name="selectedCity">
+                        <input type="hidden" id="selectedPincode" name="selectedPincode">
+                        <input type="hidden" id="selectedState" name="selectedState">
                   <div class="float-end">
-                    <button class="btn btn-light border">Cancel</button>
+                    <a class="btn btn-light border" href="/cart">Cancel</a>
                     <button class="btn btn-success shadow-0 border" type="submit">Continue</button>
                   </div>
                 </div>
@@ -199,20 +210,38 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
   function validateForm() {
-      // Get the selected address
-      var selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+    // Get the selected address
+    var selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
 
-      // Check if an address is selected
-      if (!selectedAddress) {
-          // Display an error message for address
-          document.getElementById('error-message-container').innerHTML = '<p class="text-white">Please select an address</p>';
-          return false; // Prevent form submission
-      }
+    // Check if an address is selected
+    if (!selectedAddress) {
+        // Display an error message for address
+        document.getElementById('error-message-container').innerHTML = '<p class="text-white">Please select an address</p>';
+        return false; // Prevent form submission
+    }
 
-      // Clear any existing error messages
-      document.getElementById('error-message-container').innerHTML = '';
-      return true; // Allow form submission
-  }
+    // Clear any existing error messages
+    document.getElementById('error-message-container').innerHTML = '';
+    
+    // Correct the variable name to `selectedAddress` instead of `selectedRadioButton`
+    var mobile = selectedAddress.getAttribute('data-mobile');
+    var houseName = selectedAddress.getAttribute('data-houseName');
+    var street = selectedAddress.getAttribute('data-street');
+    var city = selectedAddress.getAttribute('data-city');
+    var pincode = selectedAddress.getAttribute('data-pincode');
+    var state = selectedAddress.getAttribute('data-state');
+
+    // Set values of hidden input fields in the "Continue" form
+    document.getElementById('selectedMobile').value = mobile;
+    document.getElementById('selectedHouseName').value = houseName;
+    document.getElementById('selectedStreet').value = street;
+    document.getElementById('selectedCity').value = city;
+    document.getElementById('selectedPincode').value = pincode;
+    document.getElementById('selectedState').value = state;
+
+    return true; // Allow form submission
+}
+
 </script>
 
 

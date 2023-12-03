@@ -93,9 +93,25 @@
                                     </div>
                                     
                                 </div>
+                                
                             </div>
                             
                         </div>
+                        <a class="btn btn-primary" href="/add-address">Add Address</a>
+                        <% user.address.forEach((User,index)=>{%>
+
+                        
+                        <div class="card">
+                            <p>Address <%=index+1%></p>
+                            <div class="card-body">
+                                <p><%=User.houseName%>,<%=User.street%>, <%=User.city%>, <%=User.pincode%>,<%=User.state%>, <%=User.mobile%></p>
+                                <form action="/edit-address" method="post">
+                                    <input type="hidden" name="addressIndex" value="<%= index %>">
+                                    <button type="submit">Edit</button>
+                                </form>
+                            </div>
+                        </div>
+                        <%})%>
                     </div>
                     <div class="col-md-8 ">
                         <div class="card mb-3">

@@ -148,7 +148,9 @@
           <a href="/user-management"><i class="fa fa-table fa-fw"></i> user-management</a>
         </li>
 
-
+        <li>
+          <a href="/order-management"><i class="fa fa-table fa-fw"></i> order-management</a>
+      </li>
 
         <li>
           <a href="#"><i class="fa fa-files-o fa-fw"></i> Product-Management<span class="fa arrow"></span></a>
@@ -319,7 +321,7 @@
                                         <th>publisher</th>
                                         <th>size</th>
                                         <th>totalQuantity</th>
-                                        <th class="table-description">description</th>
+                                      
                                         <th>releasedDate</th>
                                         <th>price</th>
                                         <th>Actions</th>
@@ -333,7 +335,7 @@
                                             <td><%= product.publisher %></td>
                                             <td><%= product.size %> GB</td>
                                             <td><%= product.totalQuantity %></td>
-                                            <td class="table-description"><p><%= product.description %></p></td>
+                                            
                                             <td><%= product.releasedDate %></td>
                                             <td><%= product.price %></td>
                                             <td><%= product.isListed ? 'Listed' : 'Unlisted' %></td>

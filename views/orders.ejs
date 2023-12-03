@@ -153,15 +153,20 @@
                 
                 <!-- Inside your table row for each order -->
                 <td>
-                    <% if (order.OrderStatus !== 'Cancelled') { %>
+                    <% if (order.OrderStatus === 'Shipped' || order.OrderStatus === 'Order Placed') { %>
                         <form action="/orders/<%= order._id %>" method="post" class="cancel-order-form">
                             <button type="submit" class="cancel-order-button">Cancel Order</button>
                         </form>
-                    <% } else { %>
-                        
+                    <% }else if (order.OrderStatus === 'Delivered') { %>
+                        <span class="text-success">Order Delivered</span>
+                    <% } else if (order.OrderStatus === 'Returned') { %>
+                        <span class="text-warning">Order Returned</span>
+                    <% } else if (order.OrderStatus === 'Cancelled') { %>
                         <span class="text-danger">Order Cancelled</span>
                     <% } %>
                 </td>
+                
+                
 
                 </tr>
                 <%})%>

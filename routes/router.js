@@ -21,6 +21,7 @@ const cartController = require('../controller/cartController')
 const checkOutController = require('../controller/checkOutController')
 const addAddressController = require('../controller/addAddressController')
 const ordersController = require('../controller/ordersController')
+const orderManagementController = require('../controller/orderManagementController')
 
 
 
@@ -52,7 +53,6 @@ router.get('/home/:id',homeController.showHome)
 router.post('/home/logout',homeController.logOut)
 
 router.get('/user-management',userManagementController.showData)
-router.post('/user-insertion',userManagementController.handleData)
 
 router.get('/adminPanel/block/:id', userManagementController.blockUser);
 router.get('/adminPanel/unblock/:id', userManagementController.unblockUser);
@@ -60,6 +60,10 @@ router.get('/adminPanel/unblock/:id', userManagementController.unblockUser);
 router.get('/user-profile/:id', userProfileController.showUserData)
 
 router.get('/user-edit-profile',userEditProfileController.showData)
+router.get('/add-address',userProfileController.addAddress )
+router.post('/add-address',userProfileController.handleAddAddress)
+router.post('/edit-address',userProfileController.editAddress)
+router.post('/updateAddress',userProfileController.UpdateAddress)
 router.post('/user-edit-profile',userEditProfileController.handleUserData)
 
 router.get('/category-management',categoryManagementController.showData)
@@ -101,5 +105,9 @@ router.post('/checkOut/addAddress',addAddressController.handleData)
 
 router.get('/orders',ordersController.showData)
 router.post('/orders/:orderId',ordersController.cancelOrder)
+
+router.get('/order-management',orderManagementController.showData)
+router.post('/order-management-update/:orderId',orderManagementController.updateOrderStatus)
+
 
 module.exports=router
