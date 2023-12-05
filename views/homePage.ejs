@@ -40,7 +40,10 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                       <% categories.forEach(category => { %>
-                        <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                        <% if(category.isListed === true){%>
+                          <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                        <%}%>
+                        
                       <% }); %>
                     </div>
                   </li>
@@ -68,10 +71,10 @@
         </div>
     </div>
 </nav>
-        
+<div class="container my-5 ">
         <!-- Carousel Added -->
-        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
+        <div id="carouselExampleAutoplaying" class="carousel slide " data-bs-ride="carousel" style="width: 100%;">
+            <div class="carousel-inner ">
               <div class="carousel-item active">
                 <img src="/homeimgs/gamebanner1.jpg" class="d-block w-100" alt="...">
               </div>
@@ -94,14 +97,60 @@
               <span class="visually-hidden">Next</span>
             </button>
           </div>
+        </div>
     </header>
     <!-- End Header -->
 
     <!-- Start Main -->
+    <div class="services pb-5">
+      <div class="container">
+        <div class="pt-5">
+          <h2 class="vc_custom_heading ico_header">View Card</h2>
+          <hr>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="investor-box">
+                <h2>Exchange Control Regulations</h2>
+                <div class="flip-view">
+                  <a href="#">Read More <i class="fas fa-chevron-circle-right"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="investor-box">
+                <h2>Brand Products made in Bangladesh EPZs</h2>
+                <div class="flip-view">
+                  <a href="#">Read More <i class="fas fa-chevron-circle-right"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="investor-box">
+                <h2>Classification of Investors</h2>
+                <div class="flip-view">
+                  <a href="#">Read More <i class="fas fa-chevron-circle-right"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="investor-box">
+                <h2>How To Apply</h2>
+                <div class="flip-view">
+                  <a href="#">Read More <i class="fas fa-chevron-circle-right"></i></a>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end services-->
+    
     <main>
         <!-- Categories -->
        
-<div class="container my-5 ">
+        <div class="container my-5 ">
     <div class="d-flex justify-content-center align-items-center">
         <h2 class="fw-semibold mb-5">Categories</h2>
     </div>

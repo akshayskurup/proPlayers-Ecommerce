@@ -30,14 +30,18 @@
             <span class="navbar-toggler-icon"></span>
         </button>   
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i></i> Categories
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">    
-                        <a class="dropdown-item" href="/products/"></a>
-                    </div>
-                  </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i></i> Categories
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <% categories.forEach(category => { %>
+                    <% if(category.isListed === true){%>
+                      <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                    <%}%>
+                  <% }); %>
+                </div>
+              </li>
                 <li class="nav-item">
                     <a class="nav-link mx-2 text-uppercase" href="#"><i class="fa-solid fa-heart me-1"></i>
                         Whishlist</a>
@@ -86,7 +90,7 @@
                                 <input type="hidden" name="addressIndex" value="<%= index %>">
                                 <button type="submit" class="btn btn-primary">Edit</button>
                             </form>
-                            <h5 class="card-title">Address <%= index + 1 %></h5>
+                            <h5 class="card-title py-2">Address <%= index + 1 %></h5>
                             <p class="card-text">Name: <%= user.name %></p>
                             <p class="card-text">
                                 <%= userAddress.houseName %>, <%= userAddress.street %>, <%= userAddress.city %>,

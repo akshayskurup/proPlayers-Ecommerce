@@ -18,17 +18,18 @@ cartController.showCart = async (req, res) => {
         const userId = req.session.userId;
         const userCart = await cart.findOne({ userId }).populate('items.productId');
         const categories = await category.find()
+        
         if (userCart) {
-            const items = userCart.items;
+            const items = userCart.items || [];
             userCart.items.forEach(product => {
                 console.log("Quantity : ", product.productId.totalQuantity);
             });
 
             const totalPrice = calculateTotalPrice(items);
-            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 , categories});
+            res.render("cart", { items, userId, totalPrice, isEmptyCart: items.length === 0 , categories});
 
         } else {
-            res.render("cart", { items, userId, totalPrice, isEmptyCart: userCart.items.length === 0 ,categories});
+            res.render("cart", { items:[], userId, totalPrice:0, isEmptyCart: true ,categories});
 
         }
     } catch (err) {

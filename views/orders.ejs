@@ -61,14 +61,17 @@
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i></i> Categories
+                    <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i></i> Categories
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
+                      <% categories.forEach(category => { %>
+                        <% if(category.isListed === true){%>
+                            <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                          <%}%>
+                      <% }); %>
                     </div>
-                </li>
+                  </li>
 
                 <li class="nav-item">
                     <a class="nav-link mx-2 text-uppercase" href="#"><i class="fa-solid fa-heart me-1"></i>
@@ -84,8 +87,8 @@
                         <i class="fas fa-user"></i> Account
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/user-profile/">My Profile</a>
-                        <a class="dropdown-item" href="#">Orders</a>
+                        <a class="dropdown-item" href="/user-profile/<%=userId%>">My Profile</a>
+                        <a class="dropdown-item" href="/orders">Orders</a>
                         <div class="dropdown-divider"></div>
                         <form action="/home/logout" method="post">
                             <button type="submit" class="dropdown-item"><a class="dropdown-item">Logout</a> </button>

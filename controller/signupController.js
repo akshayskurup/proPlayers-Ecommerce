@@ -93,60 +93,66 @@ signupController.showOTP = (req, res) => {
 
 signupController.verifyOTP = async (req, res) => {
   const { enteredOTP } = req.body;
-  // Retrieve stored signup data from session
   const signupData = req.session.signupData;
   const email = req.query.email;
   const name = req.query.name;
-  console.log("generated ",req.session.signupData)
+
   const otpExpirationTime = 50 * 1000;
   if (Date.now() - signupData.timestamp > otpExpirationTime) {
-    // OTP has expired
-    res.render('signupOTP', { message: 'OTP has expired. Please request a new one.', email, name });
-    return;
+      // OTP has expired
+      res.render('signupOTP', { message: 'OTP has expired. Please request a new one.', email, name });
+      return;
   }
-  // Check if entered OTP matches the generated OTP
+
   if (enteredOTP === signupData.generatedOTP) {
-    // OTP is correct, save the user to the database
-    const saltround = 10;
-    const hashedPassword = await bcrypt.hash(signupData.password, saltround);
-    const newUser = new User({
-      name: signupData.name,
-      email: signupData.email,
-      password: hashedPassword,
-    });
+      // OTP is correct, save the user to the database
+      const saltround = 10;
+      const hashedPassword = await bcrypt.hash(signupData.password, saltround);
+      const newUser = new User({
+          name: signupData.name,
+          email: signupData.email,
+          password: hashedPassword,
+      });
 
-    try {
-      // Save the user to the database
-      const savedUser = await newUser.save();
+      try {
+          // Save the user to the database
+          const savedUser = await newUser.save();
 
-      // Set session variables
-      req.session.UserLogin = true;
-      req.session.userId = savedUser._id;
+          // Set session variables
+          req.session.UserLogin = true;
+          req.session.userId = savedUser._id;
 
-      // Clear the signupData from session
-      delete req.session.signupData;
+          // Clear the signupData from session
+          delete req.session.signupData;
 
-      // Redirect to home or a success page
-      res.redirect(`/home/${savedUser._id}`);
-    } catch (err) {
-      console.error('Error during database save:', err);
-      res.render('signup', { message: 'Error during signup. Please try again.' });
-    }
+          // Redirect to home or a success page
+          res.redirect(`/home/${savedUser._id}`);
+      } catch (err) {
+          console.error('Error during database save:', err);
+          res.render('signup', { message: 'Error during signup. Please try again.' });
+      }
   } else {
-    // Incorrect OTP
-    res.render('signupOTP', { message: 'Incorrect OTP. Please try again.',email,name });
+      // Incorrect OTP
+      res.render('signupOTP', { message: 'Incorrect OTP. Please try again.', email, name });
   }
 };
 
-signupController.resendOtp = async (req,res)=>{
+signupController.resendOtp = async (req, res) => {
+  // Check if signupData is set in the session
+  if (!req.session.signupData) {
+    return res.json({ success: false, message: 'signupData not found in session' });
+  }
+
   const signupData = req.session.signupData;
 
   // Check if the time since the last OTP request is more than 15 seconds
   const resendCooldown = 15 * 1000; // 15 seconds in milliseconds
   if (Date.now() - signupData.timestamp < resendCooldown) {
-    // Resend cooldown not met
     return res.json({ success: false, message: 'Resend cooldown not met' });
   }
+
+  // Clear the previously sent OTP from the session
+  delete req.session.signupData.generatedOTP;
 
   // Generate a new OTP
   const newOTP = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
@@ -163,7 +169,8 @@ signupController.resendOtp = async (req,res)=>{
     console.error('Error during resend:', err);
     res.json({ success: false, message: 'Error during resend' });
   }
+};
 
-}
+
 
 module.exports = signupController;

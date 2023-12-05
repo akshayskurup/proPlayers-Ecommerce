@@ -44,7 +44,9 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                           <% categories.forEach(category => { %>
-                            <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                            <% if(category.isListed === true){%>
+                              <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                            <%}%>
                           <% }); %>
                         </div>
                       </li>

@@ -39,6 +39,7 @@ router.get('/reset-password', passwordResetController.forgotPasswordForm);
 router.post('/reset-password/request', passwordResetController.requestPasswordReset);
 router.get('/reset-password/verify-otp', passwordResetController.showOTPForm);
 router.post('/reset-password/verify-otp', passwordResetController.verifyOTPForPasswordReset);
+router.post('/reset-password/resendOtp', passwordResetController.resendOtp)
 router.get('/reset-password/new-password', passwordResetController.showPasswordResetForm);
 router.post('/reset-password/new-password', passwordResetController.resetPassword);
 
@@ -90,7 +91,6 @@ router.get('/product-management/toggle-list/:id', productManagementController.to
 router.get('/category-management/toggle-list/:id', categoryManagementController.toggleListCategory);
 
 router.get('/cart',cartController.showCart)
-router.get('/empty-cart',cartController.emptyCart)
 router.post('/cart-item-remove/:id',cartController.removeItem)
 router.put('/cart-update-quantity/:productId',cartController.updateQuantity)
 

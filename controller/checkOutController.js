@@ -4,6 +4,7 @@ let cart = require("../model/cartSchema")
 let cartController = require("../controller/cartController")
 let Order = require('../model/orderSchema')
 let Product = require('../model/productSchema')
+let category = require('../model/categorySchema')
 
 
 
@@ -16,11 +17,12 @@ checkOutController.showData = async (req, res) => {
 
         const user = await User.findById(userId);
         const userCart = await cart.findOne({ userId }).populate('items.productId');
+        const categories = await category.find()
         const items = userCart.items;
         console.log("caart items",items)
         const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
         const userAddresses = user.address;
-        res.render("checkOutPage", { user, userAddresses, totalPrice,items });
+        res.render("checkOutPage", { user, userAddresses, totalPrice,items,categories });
 
     } catch (err) {
         console.error('Error fetching user data:', err);

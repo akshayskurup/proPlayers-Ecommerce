@@ -44,7 +44,9 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                           <% categories.forEach(category => { %>
-                            <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                            <% if(category.isListed === true){%>
+                                <a class="dropdown-item" href="/products/<%=category.categoryName%>"><%= category.categoryName %></a>
+                              <%}%>
                           <% }); %>
                         </div>
                       </li>
@@ -63,7 +65,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="/user-profile/<%=userId%>">My Profile</a>
-                            <a class="dropdown-item" href="#">Settings</a>
+                            <a class="dropdown-item" href="/orders">Orders</a>
                             <div class="dropdown-divider"></div>
                             <form action="/home/logout" method="post">
                                 <button type="submit" class="dropdown-item">
@@ -91,6 +93,23 @@
                                 src="/homeimgs/<%= product.image[0] %>" />
                         </a>
                     </div>
+                    <div class="d-flex justify-content-center mb-3">
+                        <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
+                          <img width="60" height="60" class="rounded-2" src="#" />
+                        </a>
+                        <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
+                            <img width="60" height="60" class="rounded-2" src="#" />
+                          </a>
+                          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
+                            <img width="60" height="60" class="rounded-2" src="#" />
+                          </a>
+                          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
+                            <img width="60" height="60" class="rounded-2" src="#" />
+                          </a>
+                          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
+                            <img width="60" height="60" class="rounded-2" src="#" />
+                          </a>
+                      </div>
                     
                     <!-- thumbs-wrap.// -->
                     <!-- gallery-wrap .end// -->
@@ -112,7 +131,7 @@
                                 </span>
                             </div>
                             <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span>
-                            <% if( product.totalQuantity === 0){%>
+                            <% if( product.totalQuantity <= 0){%>
                                 <span class="text-danger ms-2">Out Of Stock</span>
                             <%}else{%>
                                 <span class="text-success ms-2">In stock</span>
@@ -143,19 +162,19 @@
                         <hr />
 
                         
-                        <button href="#" class="btn btn-warning shadow-0" <%= product.totalQuantity === 0 ? 'disabled' : '' %>> Buy now </button>
+                        <button href="#" class="btn btn-warning shadow-0" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>> Buy now </button>
                         <% if(isItemInCart){%>
-                            <a href="/cart" type="submit" class="btn btn-primary shadow-0" <%= product.totalQuantity === 0 ? 'disabled' : '' %>>
+                            <a href="/cart" type="submit" class="btn btn-primary shadow-0" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>>
                                 <i class="me-1 fa fa-shopping-basket"></i> View Cart
                             </a>
                             
                             <% } else { %>
                                 <form action="/product-page/add-to-cart/<%=product._id%>" class="btn " method="post">
                                     <!-- <a href="#" class="btn btn-primary shadow-0" > <i class="me-1 fa fa-shopping-basket"></i> Add to cart </a> -->
-                                    <button type="submit" class="btn btn-primary shadow-0" <%= product.totalQuantity === 0 ? 'disabled' : '' %>><i class="me-1 fa fa-shopping-basket"></i>Add to cart</button>
+                                    <button type="submit" class="btn btn-primary shadow-0" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>><i class="me-1 fa fa-shopping-basket"></i>Add to cart</button>
                                 </form>       
                             <% } %>
-                        <button href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3" <%= product.totalQuantity === 0 ? 'disabled' : '' %>> <i
+                        <button href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>> <i
                                 class="me-1 fa fa-heart fa-lg"></i> Whishlist </button>
                         
                     </div>
