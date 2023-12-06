@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const routes = require('./routes/router');
@@ -29,6 +30,7 @@ connectDB();
 
 // Serve static files
 app.use(express.static('public'));
+app.use('/productimgs', express.static(path.join(__dirname, 'public', 'productimgs')));
 
 // Use routes
 app.use('/', routes);

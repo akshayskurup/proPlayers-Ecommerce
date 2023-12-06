@@ -20,7 +20,9 @@ let productSchema = mongoose.Schema({
     description:String,
     releasedDate:Date,
     price:Number,
-    image:Array,
+    image: [{
+        type: String,
+    }],
     isListed:{
         type:Boolean,
         default:true

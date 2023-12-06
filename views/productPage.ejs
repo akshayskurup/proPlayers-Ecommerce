@@ -83,38 +83,30 @@
     <!-- content -->
     
     <section class="py-5">
-        <div class="container" style="margin-top: -40px;">
+        <div class="container" style="margin-top: -90px;">
             <div class="row gx-5">
-                <aside class="col-lg-6">
-                    <div class="border rounded-4 mb-3 d-flex justify-content-center">
+                <aside class="col-lg-6" style="width: 480px; ">
+                    <div class="border rounded-4 mb-3 d-flex justify-content-center" >
                         <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image"
                             >
                             <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit"
-                                src="/homeimgs/<%= product.image[0] %>" />
+                                src="<%= product.image[0]%>" />
                         </a>
                     </div>
                     <div class="d-flex justify-content-center mb-3">
                         <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
-                          <img width="60" height="60" class="rounded-2" src="#" />
+                          <img width="80" height="90" class="rounded-2" src="<%= product.image[1]%>" />
                         </a>
                         <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
                             <img width="60" height="60" class="rounded-2" src="#" />
                           </a>
-                          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
-                            <img width="60" height="60" class="rounded-2" src="#" />
-                          </a>
-                          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
-                            <img width="60" height="60" class="rounded-2" src="#" />
-                          </a>
-                          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="#" class="item-thumb">
-                            <img width="60" height="60" class="rounded-2" src="#" />
-                          </a>
+                          
                       </div>
                     
                     <!-- thumbs-wrap.// -->
                     <!-- gallery-wrap .end// -->
                 </aside>
-                <main class="col-lg-6">
+                <main class="col-lg-6" style="margin-left: 100px;">
                     <div class="ps-lg-3">
                         <h4 class="title text-dark">
                             <%=product.productName%>

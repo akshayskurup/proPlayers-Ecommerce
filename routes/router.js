@@ -73,7 +73,9 @@ router.get('/category-management/add',addCategoryController.showaddForm)
 router.post('/category-management/add',addCategoryController.handledata)
 
 router.get('/product-management',productManagement.showData)
-router.post('/product-management',productManagement.handleData)
+router.post('/product-management', productManagement.upload.single('image'),productManagement.handleData)
+router.get('/product-management/edit/:id',productManagement.showEditForm)
+router.post('/product-management/edit/:id',productManagement.upload.fields([{ name: 'image'}, { name: 'imageSecondary'}]),productManagement.handleEditData)
 
 router.get('/adminPanel/edit/:id',editCategoryController.showEditData)
 router.post('/adminPanel/edit/:id',editCategoryController.handleEditData)
@@ -82,9 +84,6 @@ router.get('/product-page/:id',productPageController.showData)
 router.post('/product-page/add-to-cart/:id',productPageController.addToCart)
 
 router.get('/products/:category',categoryProductsController.showData)
-
-router.get('/product-management/edit/:id',editProductController.showForm)
-router.post('/product-management/edit/:id',editProductController.handleData)
 
 router.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
 

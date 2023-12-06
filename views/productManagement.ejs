@@ -27,7 +27,10 @@
 
   <!-- Custom Fonts -->
   <link href="css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
-</head>
+
+  <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
+  <script src="https://unpkg.com/cropperjs"></script>
+</head>   
 <style>
   .table-description {
     max-width: 200px;
@@ -174,7 +177,7 @@
 
 
 
-  <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management" onsubmit="return validateForm()">
+  <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management" onsubmit="return validateForm()" enctype="multipart/form-data">
     <fieldset>
 
       <!-- Form Name -->
@@ -278,13 +281,27 @@
       </div>
 
           <!-- File Button -->
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="filebutton">main_image</label>
-            <div class="col-md-4">
-              <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
+          <!-- Add this to your HTML form -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="filebutton">main_image</label>
+  <div class="col-md-4">
+      <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
+      <img id="imagePreview" src="#" alt="Preview" style="width: 200px; height: 200px;">
+      <button id="cropButton" type="button">Crop Image</button>
+      <!-- Add hidden input to store cropped image data -->
+      <input type="hidden" id="croppedImageData" name="croppedImage1" >
+  </div>
+</div>
+
+          <!-- File Button -->
+
+              <div class="form-group ">
+            <label class="col-md-4 control-label" for="filebutton">secondary_image</label>
+            <div class="col-md-4 ">
+              <input id="secondary_image_uploader" name="imageSecondary" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
+              <p>(optional)</p>
             </div>
           </div>
-          <!-- File Button -->
           
 
           <!-- Button -->
@@ -472,6 +489,35 @@ function convertSize() {
 
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    const image = document.getElementById('imagePreview');
+    const input = document.getElementById('image_uploader');
+    const croppedInput = document.getElementById('croppedImageData');
+    const cropButton = document.getElementById('cropButton');
+
+    const cropper = new Cropper(image, {
+        aspectRatio: 0, // Set the aspect ratio for cropping
+        viewMode: 2, // Set the view mode for cropping
+    });
+
+    input.addEventListener('change', function (e) {
+        const files = e.target.files;
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            image.src = e.target.result;
+            cropper.replace(e.target.result);
+        };
+
+        reader.readAsDataURL(files[0]);
+    });
+
+    cropButton.addEventListener('click', function () {
+    const croppedDataUrl = cropper.getCroppedCanvas().toDataURL();
+    console.log('Cropped Data URL:', croppedDataUrl);
+    croppedInput.value = croppedDataUrl;
+});
+});
 
 
   </script>
