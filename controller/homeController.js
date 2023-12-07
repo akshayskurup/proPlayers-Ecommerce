@@ -2,6 +2,7 @@ let homeController = {};
 const productSchema = require('../model/productSchema');
 let User = require('../model/userSchema');
 let category = require('../model/categorySchema');
+const { query } = require('express');
 
 homeController.showHome = async (req, res) => {
     const userId = req.session.userId;
@@ -27,6 +28,33 @@ homeController.showHome = async (req, res) => {
         res.render('homePage', { userId, product, categories });
     } catch (error) {
         console.error('Error fetching data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+homeController.searchProducts = async (req, res) => {
+    const userId = req.session.userId;
+        const categories = await category.find();
+    try {
+        const searchQuery = req.query.query;
+
+        if (!searchQuery) {
+            // Handle the case when the search query is empty
+            return res.redirect('/');
+        }
+
+        // Perform a case-insensitive search for products based on the product name
+        const product = await productSchema.find({
+            isListed: true,
+            productName: { $regex: new RegExp(searchQuery, 'i') }
+        }).populate('productCategory');
+
+        const categories = await category.find();
+
+        // Render the search results page
+        res.render('homePage', {userId, query: searchQuery, product, categories });
+    } catch (error) {
+        console.error('Error searching products:', error);
         res.status(500).send('Internal Server Error');
     }
 };

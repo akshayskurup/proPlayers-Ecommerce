@@ -15,11 +15,11 @@ editCategoryController.handleEditData = async (req, res) => {
     const categoryID = await category.findById(categoryId);
     console.log('Category ID:', categoryId);
     try {
-        const existingCategory = await category.findOne({ categoryName });
+        const existingCategory = await category.findOne({ categoryName:categoryName.toUpperCase() });
         if (existingCategory) {
             return res.render("editCategory", { message: "Category already exists",categoryName:categoryID});
           }
-        const updatedCategory = await category.findByIdAndUpdate(categoryId,{ parentCategoryName: req.body.parentCategoryName}, { new: true });
+        const updatedCategory = await category.findByIdAndUpdate(categoryId,{ categoryName:categoryName.toUpperCase()}, { new: true });
 
         if (!updatedCategory) {
             return res.status(404).send('Category not found');

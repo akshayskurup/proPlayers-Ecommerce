@@ -14,7 +14,6 @@ const editCategoryController = require('../controller/editCategoryController')
 const productPageController = require('../controller/productPageController')
 const categoryProductsController = require('../controller/categoryProductsController')
 const passwordResetController = require('../controller/passwordResetController')
-const editProductController = require('../controller/editProductController')
 const productManagementController = require("../controller/productManagementController")
 const addCategoryController = require('../controller/addCategoryController')
 const cartController = require('../controller/cartController')
@@ -51,6 +50,7 @@ router.get('/adminPanel',adminPanelController.showadminPanel)
 router.post('/adminPanel/logout',adminPanelController.logOut)
 
 router.get('/home/:id',homeController.showHome)
+router.get('/search',homeController.searchProducts)
 router.post('/home/logout',homeController.logOut)
 
 router.get('/user-management',userManagementController.showData)
@@ -59,12 +59,13 @@ router.get('/adminPanel/block/:id', userManagementController.blockUser);
 router.get('/adminPanel/unblock/:id', userManagementController.unblockUser);
 
 router.get('/user-profile/:id', userProfileController.showUserData)
-
-router.get('/user-edit-profile',userEditProfileController.showData)
-router.get('/add-address',userProfileController.addAddress )
+router.get('/add-address',userProfileController.addAddress)
 router.post('/add-address',userProfileController.handleAddAddress)
 router.post('/edit-address',userProfileController.editAddress)
 router.post('/updateAddress',userProfileController.UpdateAddress)
+router.post('/delete-address',userProfileController.deleteAddress)
+
+router.get('/user-edit-profile',userEditProfileController.showData)
 router.post('/user-edit-profile',userEditProfileController.handleUserData)
 
 router.get('/category-management',categoryManagementController.showData)
@@ -73,9 +74,9 @@ router.get('/category-management/add',addCategoryController.showaddForm)
 router.post('/category-management/add',addCategoryController.handledata)
 
 router.get('/product-management',productManagement.showData)
-router.post('/product-management', productManagement.upload.single('image'),productManagement.handleData)
+router.post('/product-management',productManagement.upload.fields([{name:'gameImage',maxCount: 1},{name:'gameImage2',maxCount: 1}]),productManagement.handleData)
 router.get('/product-management/edit/:id',productManagement.showEditForm)
-router.post('/product-management/edit/:id',productManagement.upload.fields([{ name: 'image'}, { name: 'imageSecondary'}]),productManagement.handleEditData)
+router.post('/product-management/edit/:id',productManagement.upload.fields([{name:'gameImage',maxCount: 1},{name:'gameImage2',maxCount: 1}]),productManagement.handleEditData)
 
 router.get('/adminPanel/edit/:id',editCategoryController.showEditData)
 router.post('/adminPanel/edit/:id',editCategoryController.handleEditData)

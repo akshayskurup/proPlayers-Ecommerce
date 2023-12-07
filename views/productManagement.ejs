@@ -28,6 +28,14 @@
   <!-- Custom Fonts -->
   <link href="css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+  <!--moment JS-->
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+      integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
   <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
   <script src="https://unpkg.com/cropperjs"></script>
 </head>   
@@ -282,16 +290,48 @@
 
           <!-- File Button -->
           <!-- Add this to your HTML form -->
-<div class="form-group">
+<!-- <div class="form-group">
   <label class="col-md-4 control-label" for="filebutton">main_image</label>
   <div class="col-md-4">
       <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
       <img id="imagePreview" src="#" alt="Preview" style="width: 200px; height: 200px;">
       <button id="cropButton" type="button">Crop Image</button>
-      <!-- Add hidden input to store cropped image data -->
+       Add hidden input to store cropped image data 
       <input type="hidden" id="croppedImageData" name="croppedImage1" >
   </div>
-</div>
+</div> -->
+
+
+<div class="form-group">
+                    <label>Image</label>
+                    <input
+                      class="form-control"
+                      type="file"
+                      name="gameImage"
+                      id="imageInput"
+                      required
+                    />
+                    <img id="imagePreview" style="max-width: 100%" />
+                    <div id="errorImage" style="color: red;"></div>
+
+                  </div>
+
+                  <div class="form-group">
+                    <label>Auxillary Image</label>
+                    <input
+                      class="form-control"
+                      type="file"
+                      name="gameImage2"
+                      id="imageInput2"
+                      
+                    />
+                    <img id="imagePreview2" style="max-width: 100%" />
+                    <div id="errorImage" style="color: red;"></div>
+
+                  </div>
+
+
+
 
           <!-- File Button -->
 
@@ -348,12 +388,12 @@
                                     <% products.forEach(product => { %>
                                         <tr>
                                             <td><%= product.productName %></td>
-                                            <td><%= product.productCategory.categoryName %></td>
+                                            <td><%= product.productCategory ? product.productCategory.categoryName : 'Uncategorized' %></td>
                                             <td><%= product.publisher %></td>
                                             <td><%= product.size %> GB</td>
                                             <td><%= product.totalQuantity %></td>
-                                            
-                                            <td><%= product.releasedDate %></td>
+                                            <input type="hidden" value="<%= product.releasedDate %>" class="hiddenDate">
+                                            <td class="releasedDateCell"></td>
                                             <td><%= product.price %></td>
                                             <td><%= product.isListed ? 'Listed' : 'Unlisted' %></td>
 
@@ -371,6 +411,15 @@
                                             <% }); %>
                                     
                                 </tbody>
+                                <div class="pagination-container">
+                                  <ul class="pagination">
+                                      <% for (let i = 1; i <= totalPages; i++) { %>
+                                          <li class="<%= currentPage === i ? 'active' : '' %>">
+                                              <a href="/product-management?page=<%= i %>"><%= i %></a>
+                                          </li>
+                                      <% } %>
+                                  </ul>
+                              </div>
                             </table>
                         </div>
                     </div>
@@ -379,6 +428,7 @@
         </div>
     </div>
 </div>
+
 
 
   <!-- jQuery -->
@@ -397,6 +447,9 @@
   <!-- Custom Theme JavaScript -->
   <script src="/js/adminJs/startmin.js"></script>
 
+  <!--Moment JS-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
   <!-- Page-Level Demo Scripts - Tables - Use for reference -->
   <script>
     $(document).ready(function () {
@@ -404,8 +457,6 @@
         responsive: true
       });
     });
-
-
   // Function to validate the form
   function validateForm() {
     var productName = document.getElementById('product_name').value.trim();
@@ -486,40 +537,51 @@ function convertSize() {
     }
 
 }
+ document.addEventListener("DOMContentLoaded", function () {
+    var image = document.getElementById("croppedImage");
+    var input = document.getElementById("imageInput");
+    var croppedDataInput = document.getElementById("croppedImageData");
 
+    var cropper = new Cropper(image, {
+      aspectRatio: 16 / 9, // Set your desired aspect ratio
+      viewMode: 1, // Set to 1 to restrict the crop box to the size of the canvas
+      crop: function (event) {
+        // Update the hidden input with cropped data
+        croppedDataInput.value = JSON.stringify(cropper.getData());
+        console.log("croppedImageData:", croppedDataInput.value);
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    const image = document.getElementById('imagePreview');
-    const input = document.getElementById('image_uploader');
-    const croppedInput = document.getElementById('croppedImageData');
-    const cropButton = document.getElementById('cropButton');
-
-    const cropper = new Cropper(image, {
-        aspectRatio: 0, // Set the aspect ratio for cropping
-        viewMode: 2, // Set the view mode for cropping
+      },
     });
 
-    input.addEventListener('change', function (e) {
-        const files = e.target.files;
-        const reader = new FileReader();
+    input.addEventListener("change", function (e) {
+      var files = e.target.files;
+      var reader = new FileReader();
 
-        reader.onload = function (e) {
-            image.src = e.target.result;
-            cropper.replace(e.target.result);
-        };
+      reader.onload = function () {
+        // Set the image source and update the Cropper
+        image.src = reader.result;
+        cropper.replace(reader.result);
+      };
 
-        reader.readAsDataURL(files[0]);
+      reader.readAsDataURL(files[0]);
     });
+  });
 
-    cropButton.addEventListener('click', function () {
-    const croppedDataUrl = cropper.getCroppedCanvas().toDataURL();
-    console.log('Cropped Data URL:', croppedDataUrl);
-    croppedInput.value = croppedDataUrl;
+
+  
+  const serverDateElements = document.querySelectorAll('.hiddenDate');
+
+// Loop through each element and update the corresponding .releasedDateCell
+serverDateElements.forEach(serverDateElement => {
+    const serverDate = serverDateElement.value;
+    const formattedDate = moment(serverDate).format('DD-MM-YYYY');
+    
+    // Find the corresponding .releasedDateCell in the same row
+    const releasedDateCell = serverDateElement.closest('tr').querySelector('.releasedDateCell');
+    
+    // Update the content of the td element with the formatted date
+    releasedDateCell.innerText = formattedDate || 'unconvertable';
 });
-});
-
-
   </script>
 </body>
 

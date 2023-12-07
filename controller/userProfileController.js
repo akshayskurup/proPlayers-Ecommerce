@@ -113,4 +113,30 @@ userProfileController.UpdateAddress = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 }
+
+userProfileController.deleteAddress = async (req, res) => {
+    const userId = req.session.userId;
+    const addressIdToDelete = req.body.addressIndex;
+    console.log("id of the address", addressIdToDelete)
+  
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { _id: userId },
+            { $pull: { address: { _id: addressIdToDelete } } },
+            { new: true }
+          );
+  
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'Address not found' });
+      }
+  
+      // Optionally, you can redirect or send a response based on your needs
+      res.redirect(`/user-profile/${userId}`); // Redirect to the user profile page, adjust the route accordingly
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+  
 module.exports = userProfileController;

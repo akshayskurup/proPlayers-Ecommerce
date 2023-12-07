@@ -2,32 +2,39 @@ const productManagementController = {};
 const productSchema = require('../model/productSchema');
 const category = require('../model/categorySchema');
 const mongoose = require('mongoose');
-const multer = require('multer')
-const { ObjectId } = require("mongoose").Types;
+const multer = require('multer');
+const moment = require('moment');
+const path = require('path');
+const fs = require('fs');
 
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'D:/First Project/public/productimgs/'); // Set your upload directory
+        cb(null, 'D:/First Project/public/productimgs/');
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname); // Ensure unique filenames
+        cb(null, Date.now() + '-' + file.originalname);
     },
-  });
+});
 
-  productManagementController.upload = multer({ 
+ productManagementController.upload = multer({
     storage: storage,
-    limits: {fieldSize: 10 * 1024 * 1024} // Adjust the size limit as needed (10 MB in this example)
-     });
-
+    limits: { fieldSize: 10 * 1024 * 1024 }
+});
+const ITEMS_PER_PAGE = 10;
 productManagementController.showData = async (req, res) => {
     try {
-        // Use .populate() to include category details for each product
-        let products = await productSchema.find().populate('productCategory');
-        let categories = await category.find();
+        const page = parseInt(req.query.page) || 1;
+        const skip = (page - 1) * ITEMS_PER_PAGE;
+
+        const products = await productSchema.find().populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
+        const categories = await category.find();
+        const totalProducts = await productSchema.countDocuments();
+
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
         if (req.session.AdminLogin) {
-            res.render('productManagement', { categories, products, message: "" });
+            res.render('productManagement', { categories, products, currentPage: page, totalPages, message: "" });
         } else {
             res.redirect('/admin');
         }
@@ -38,65 +45,54 @@ productManagementController.showData = async (req, res) => {
 };
 
 productManagementController.handleData = async (req, res) => {
-  const { productName, productCategory, publisher, size, totalQuantity, description, releasedDate, price, convertedSize, croppedImage1 } = req.body;
-  let products = await productSchema.find();
-  let categories = await category.find();
-  console.log('converted size ', convertedSize)
-  console.log('Original productCategory:', productCategory);
-  let categoryId;
-  try {
-    categoryId = new mongoose.Types.ObjectId(productCategory);
-  } catch (error) {
-    console.error("Error converting productCategory to ObjectId:", error);
-    return res.render("productManagement", { categories, products, message: "Error converting productCategory to ObjectId" });
-  }
+    const { productName, productCategory, publisher, size, totalQuantity, description, releasedDate, price, convertedSize } = req.body;
+    console.log('Request Body:', req.body);
 
-  // Check if the converted categoryId is a valid ObjectId
-  if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-    console.error("Invalid ObjectId after conversion:", categoryId);
-    return res.render("productManagement", { categories, products, message: "Invalid productCategory ObjectId" });
-  }
+    let categories = await category.find();
+    let categoryId;
 
-  console.log('req.body:', req.body);
-console.log('req.file:', req.file);
-console.log('req.fileSecondary:', req.fileSecondary);
+    try {
+        categoryId = new mongoose.Types.ObjectId(productCategory);
+    } catch (error) {
+        console.error("Error converting productCategory to ObjectId:", error);
+        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Error converting productCategory to ObjectId" });
+    }
 
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+        console.error("Invalid ObjectId after conversion:", categoryId);
+        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Invalid productCategory ObjectId" });
+    }
 
   const newProduct = new productSchema({
-      productName,
-      productCategory: categoryId,
-      publisher,
-      size: req.body.convertedSize,
-      totalQuantity,
-      description,
-      releasedDate,
-      price,
-      image:[croppedImage1]
+    productName,
+    productCategory: categoryId,
+    publisher,
+    size: req.body.convertedSize,
+    totalQuantity,
+    description,
+    releasedDate,
+    price,
+    image: [ '/' + path.relative('D:/First Project/public', req.files['gameImage'][0].path).replace(/\\/g, '/'),
+    req.files['gameImage2'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage2'][0].path).replace(/\\/g, '/') : null,
+ ],
   });
 
-  const existingProduct = await productSchema.findOne({ productName });
-
-  if (existingProduct) {
-      return res.render("productManagement", { categories, products, message: "Product already exists" });
-  }
-
-console.log('newProduct before save:', newProduct);
   try {
-      const savedProduct = await newProduct.save();
+    const savedProduct = await newProduct.save();
 
-      // Update the category document to include the new product
-      await category.findOneAndUpdate(
-          { _id: categoryId },
-          { $push: { products: savedProduct._id } },
-          { new: true }
-      );
+    // Update the category document to include the new product
+    await category.findOneAndUpdate(
+      { _id: categoryId },
+      { $push: { products: savedProduct._id } },
+      { new: true }
+    );
 
-      res.redirect('/product-management');
+    res.redirect('/product-management');
   } catch (err) {
-      console.error("Error during product creation:", err);
-      res.status(500).send('Internal Server Error');
+    console.error("Error during product creation:", err);
+    res.status(500).send('Internal Server Error');
   }
-};
+}
 
 
 productManagementController.toggleListProduct = async (req, res) => {
@@ -140,16 +136,12 @@ productManagementController.handleEditData = async (req, res) => {
 
       const existingProduct = await productSchema.findOne({
           productName,
-          _id: { $ne: productId }, // Exclude the current product from the check
+          _id: { $ne: productId }, 
       });
       
       if (existingProduct) {
           return res.render("editProduct", { categories, product, message: "Product already exists", productId, formattedReleasedDate: "" });
       }
-      console.log("converted size= ",req.body.convertedSize)
-      
-      const mainImage = req.files['image'] ? "/productimgs/" + req.files['image'][0].filename : '';
-const secondaryImage = req.files['imageSecondary'] ? "/productimgs/" + req.files['imageSecondary'][0].filename : '';
 
 
       const updatedProduct = await productSchema.findByIdAndUpdate(productId, {
@@ -161,7 +153,9 @@ const secondaryImage = req.files['imageSecondary'] ? "/productimgs/" + req.files
           description,
           releasedDate,
           price,
-          image:[mainImage,secondaryImage]
+          image: [ '/' + path.relative('D:/First Project/public', req.files['gameImage'][0].path).replace(/\\/g, '/'),
+    req.files['gameImage2'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage2'][0].path).replace(/\\/g, '/') : null,
+ ],
       },
       { new: true });
 
