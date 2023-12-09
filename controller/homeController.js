@@ -46,7 +46,9 @@ homeController.searchProducts = async (req, res) => {
         // Perform a case-insensitive search for products based on the product name
         const product = await productSchema.find({
             isListed: true,
-            productName: { $regex: new RegExp(searchQuery, 'i') }
+            productName: searchQuery === ' ' 
+                ? { $regex: new RegExp('.*', 'i') }  
+                : { $regex: new RegExp(`^${searchQuery}`, 'i') }
         }).populate('productCategory');
 
         const categories = await category.find();

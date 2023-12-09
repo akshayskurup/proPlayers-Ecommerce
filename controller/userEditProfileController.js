@@ -29,15 +29,18 @@ userEditProfileController.handleUserData = async (req, res) => {
             {
                 $set: {
                     name,
-                    phone:mobile,
+                    phone: mobile,
                 },
-                $addToSet: {
+                $push: {
                     address: {
-                        houseName,
-                        street,
-                        city,
-                        pincode,
-                        state,
+                        $each: [{
+                            houseName,
+                            street,
+                            city,
+                            pincode,
+                            state,
+                        }],
+                        $position: 0,
                     },
                 },
             },
@@ -48,7 +51,7 @@ userEditProfileController.handleUserData = async (req, res) => {
             return res.status(404).send('User not found');
         }
 
-        res.redirect(`/user-profile/${userId}`);
+        res.redirect("/user-profile");
     } catch (err) {
         console.error("Error during updating user data:", err);
         res.status(500).send('Internal Server Error');

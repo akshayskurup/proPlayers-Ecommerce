@@ -168,7 +168,8 @@
             let userpincode = document.getElementById("pincode");
             let userstate = document.getElementById("state");
             
-            
+            const pattern = /^[a-zA-Z0-9\s\-_]+$/;
+            const statePattern = /^[a-zA-Z\s]+$/;
             const errorMessageContainer = document.getElementById("error-message-container");
 
 
@@ -191,13 +192,40 @@
             } if (trimmedUserhousename === "") {
                 errorMessageContainer.innerText = "Please fill housename input";
                 return false;
-            }  if (trimmedUsercity === "") {
+            } if (!pattern.test(trimmedUserhousename)) {
+                errorMessageContainer.innerText = "Please fill housename correctly";
+                return false;
+            } if(trimmedUserhousename.length<=7){
+                errorMessageContainer.innerText = "Housename should have more than 7 letters";
+                return false;
+            } if(trimmedUserhousename.length>=30){
+                errorMessageContainer.innerText = "Housename should be less than 30 letters";
+                return false;//
+            }if (!pattern.test(trimmedUserstreet)) {
+                errorMessageContainer.innerText = "Please fill Street correctly";
+                return false;
+            } if(trimmedUserstreet.length<=3){
+                errorMessageContainer.innerText = "Street should have more than 3 letters";
+                return false;
+            } if(trimmedUserstreet.length>=15){
+                errorMessageContainer.innerText = "Street should be less than 30 letters";
+                return false;//
+            } if (!pattern.test(trimmedUsercity)) {
+                errorMessageContainer.innerText = "Please fill City correctly";
+                return false;
+            } if(trimmedUsercity.length<=3){
+                errorMessageContainer.innerText = "City should have more than 3 letters";
+                return false;
+            } if(trimmedUsercity.length>=15){
+                errorMessageContainer.innerText = "City should be less than 30 letters";
+                return false;
+            } if (trimmedUsercity === "") {
                 errorMessageContainer.innerText = "Please fill city input";
                 return false;
-            }   if (trimmedUserstreet === "") {
+            }  if (trimmedUserstreet === "") {
                 errorMessageContainer.innerText = "Please fill street input";
                 return false;
-            }   if (trimmedUserpincode === "") {
+            }  if (trimmedUserpincode === "") {
                 errorMessageContainer.innerText = "Please fill pincode input";
                 return false;
             }  if(isNaN(trimmedUserpincode)){
@@ -205,17 +233,23 @@
                 return false;
             }  if (trimmedUserstate === "") {
                 errorMessageContainer.innerText = "Please fill state input";
+                return false;//
+            }   if (!statePattern.test(trimmedUserstate)) {
+                errorMessageContainer.innerText = "Please fill State correctly";
                 return false;
-            }  if (trimmedUsername.length <= 2) {
-                errorMessageContainer.innerText = "Please add more length to your name and password";
+            } if(trimmedUserstate.length<=3){
+                errorMessageContainer.innerText = "State should have more than 3 letters";
                 return false;
-            }  if (trimmedUsernumber.length >= 11) {
+            } if(trimmedUserstate.length>=15){
+                errorMessageContainer.innerText = "State should be less than 30 letters";
+                return false;
+            }if (trimmedUsernumber.length >= 11) {
                 errorMessageContainer.innerText = "Phone number should be 10 digits";
                 return false;
             }  if (trimmedUsernumber.length < 10) {
                 errorMessageContainer.innerText = "Phone number should be 10 digits";
                 return false;
-            } if (!/^\d{10}$/.test(trimmedUsernumber)) {
+            }if (!/^\d{10}$/.test(trimmedUsernumber)) {
                 errorMessageContainer.innerText = "Please enter a valid 10-digit phone number without symbols";
                 return false;
             }
@@ -223,6 +257,7 @@
                 return true;
             
         }
+
 
     
 </script>

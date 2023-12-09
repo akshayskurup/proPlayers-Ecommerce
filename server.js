@@ -8,6 +8,9 @@ const connectDB = require('./model/database');
 const nocache = require("nocache");
 const crypto = require('crypto');
 
+// Load environment variables from .env
+require('dotenv').config();
+
 // Generate a random, secure session secret
 const sessionSecret = crypto.randomBytes(32).toString('hex');
 
@@ -41,4 +44,5 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 // Start the server
-app.listen(3000, () => console.log("Server Started"));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log("Server Started"));

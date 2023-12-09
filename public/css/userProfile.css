@@ -5,11 +5,13 @@
 }
 body {
     margin: 0;
-    padding-top: 140px;
     color: #2e323c;
     background: #f5f6fa;
     position: relative;
     height: 100%;
+}
+#user-profile{
+    padding-top: 140px;
 }
 .account-settings .user-profile {
     margin: 0 0 1rem 0;

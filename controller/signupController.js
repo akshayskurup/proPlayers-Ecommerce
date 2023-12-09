@@ -41,7 +41,7 @@ signupController.showSignupForm = (req, res) => {
   
   if (req.session.UserLogin) {
     console.log('home error',UserLogin._id)
-    res.redirect(`/home/${req.session.userId}`);
+    res.redirect("/home");
   } else {
     res.render('signup', { message: '' });
   }
@@ -126,7 +126,7 @@ signupController.verifyOTP = async (req, res) => {
           delete req.session.signupData;
 
           // Redirect to home or a success page
-          res.redirect(`/home/${savedUser._id}`);
+          res.redirect('/home');
       } catch (err) {
           console.error('Error during database save:', err);
           res.render('signup', { message: 'Error during signup. Please try again.' });

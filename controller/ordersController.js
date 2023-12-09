@@ -2,6 +2,7 @@ const ordersController = {}
 let orders = require('../model/orderSchema')
 let Product = require('../model/productSchema')
 let category = require('../model/categorySchema')
+let User = require('../model/userSchema')
 
 ordersController.showData = async (req,res)=>{
     try {
@@ -44,5 +45,20 @@ ordersController.cancelOrder = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+ordersController.orderDetails = async (req,res)=>{
+    try {
+        const userId = req.session.userId;
+        const categories = await category.find()
+        const orderId = req.params.orderId
+        const orderDetails = await orders.findOne({ _id: orderId }).populate('items.product');
+        const customer = await User.findById(userId)
+        res.render('orderDetails', { orderDetails,userId,categories,customer });
+
+    } catch (error) {
+        
+    }
+    
+}
 
 module.exports = ordersController

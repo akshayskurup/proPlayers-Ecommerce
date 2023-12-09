@@ -22,8 +22,13 @@ checkOutController.showData = async (req, res) => {
         console.log("caart items",items)
         const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
         const userAddresses = user.address;
-        res.render("checkOutPage", { user, userAddresses, totalPrice,items,categories });
+        if(req.session.UserLogin){
+            res.render("checkOutPage", { user, userAddresses, totalPrice,items,categories,errorMessage:""});
 
+        }
+        else{
+            res.redirect('/')
+        }
     } catch (err) {
         console.error('Error fetching user data:', err);
         res.status(500).send('Internal Server Error');
@@ -82,13 +87,25 @@ checkOutController.handleData = async (req, res) => {
       const userCart = await cart.findOne({ userId }).populate('items.productId');
       const items = userCart.items;
 
-      const user = await User.findById(userId);
-      const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
-      for (const item of items) {
+      
+    const user = await User.findById(userId);
+    const userAddresses = user.address;
+    const inStockItems = items.filter(item => item.productId.totalQuantity > 0);
+    const totalPrice = cartController.calculateTotalPrice(inStockItems);
+    const categories = await category.find()
+    const hasItemWithQuantity = items.some(item => item.productId.totalQuantity > 0);
+
+    if (!hasItemWithQuantity) {
+      return res.render('checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: 'Selected item must be in available' });
+    }
+
+      
+      
+    for (const item of inStockItems) {
         const productId = item.productId._id;
-        console.log("Product idddd",productId)
         const quantityToReduce = item.quantity;
-        console.log("Product qunatityyyy",quantityToReduce)
+  
+        // Update product quantity in the database
         await Product.updateOne({ _id: productId }, { $inc: { totalQuantity: -quantityToReduce } });
       }
       const newOrder = new Order({
@@ -135,7 +152,13 @@ checkOutController.orderConfirmed = async (req, res) => {
 
         console.log("latest order",latestOrder)
         // Render the 'orderConfirmed' view with the latest order details
-        res.render('orderConfirmed', { latestOrder,userName:user.name , user });
+        if(req.session.UserLogin){
+            res.render('orderConfirmed', { latestOrder,userName:user.name , user });
+        }
+        else{
+            res.redirect('/')
+        }
+        
     } catch (err) {
         console.error('Error fetching latest order:', err);
         res.status(500).send('Internal Server Error');

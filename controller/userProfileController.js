@@ -1,6 +1,7 @@
 let userProfileController = {};
 let User = require("../model/userSchema");
 let category = require('../model/categorySchema')
+let bcrypt = require('bcrypt')
 
 userProfileController.showUserData = async (req, res) => {
     try {
@@ -9,13 +10,6 @@ userProfileController.showUserData = async (req, res) => {
         const categories = await category.find()
 
         if (user) {
-            // Check if the user is blocked
-            if (user.isBlocked) {
-                req.session.UserLogin = false; // Log out the user
-                return res.redirect('/'); // Redirect to login page
-            }
-
-            console.log('User data:', user);
 
             if (req.session.UserLogin) {
                 res.render('userProfile', { user , categories });
@@ -35,8 +29,9 @@ userProfileController.showUserData = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
-userProfileController.addAddress = (req,res)=>{
-    res.render('userAddAddress')
+userProfileController.addAddress = async(req,res)=>{
+    const categories = await category.find()
+    res.render('userAddAddress',{categories})
 }
 
 userProfileController.handleAddAddress = async (req,res)=>{
@@ -64,7 +59,7 @@ userProfileController.handleAddAddress = async (req,res)=>{
             return res.status(404).send('User not found');
         }
 
-        res.redirect(`/user-profile/${userId}`);
+        res.redirect("/user-profile");
     } catch (err) {
         console.error('Error during adding address:', err);
         res.status(500).send('Internal Server Error');
@@ -107,7 +102,7 @@ userProfileController.UpdateAddress = async (req, res) => {
         );
 
         
-        res.redirect(`/user-profile/${userId}`);
+        res.redirect("/user-profile");
     } catch (err) {
         console.error('Error updating address:', err);
         res.status(500).send('Internal Server Error');
@@ -131,12 +126,37 @@ userProfileController.deleteAddress = async (req, res) => {
       }
   
       // Optionally, you can redirect or send a response based on your needs
-      res.redirect(`/user-profile/${userId}`); // Redirect to the user profile page, adjust the route accordingly
+      res.redirect("/user-profile"); // Redirect to the user profile page, adjust the route accordingly
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
-  
+  userProfileController.showChangePassword = (req,res)=>{
+    res.render("changePassword",{message:""})
+  }
+  userProfileController.handleChangePassword = async(req,res)=>{
+    try {
+        const {currentPassword,newPassword,confirmPassword}=req.body
+    const userId = req.session.userId
+    const user = await User.findById(userId)
+    let password = await bcrypt.compare(currentPassword,user.password)
+    if(password){
+        if(newPassword===confirmPassword){
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            await User.updateOne({ _id: userId }, { $set: { password: hashedPassword } });
+            res.redirect('/user-profile'); 
+        }
+        else{
+            res.render("changePassword",{message:"Entered password is not matching"})
+        }
+    }else{
+        res.render("changePassword",{message:"Current password is wrong"})
+    }
+    } catch (error) {
+        
+    }
+    
+  }
   
 module.exports = userProfileController;

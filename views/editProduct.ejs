@@ -99,19 +99,19 @@
             </div>
           </div>
     
-          <!-- Select Basic -->
+
           <div class="form-group">
             <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
             <div class="col-md-4">
-              <select id="product_categorie" name="productCategory" class="form-control"> 
-                <% categories.forEach(category=> { %>
-                  <option value="<%= category._id %>"  <%= product.productCategory === category.categoryName ? 'selected' : '' %>>
-                      <%= category.categoryName %>
-                  </option>
-                  <% }); %>
-              </select>
+                <select id="product_categorie" name="productCategory" class="form-control">
+                  <% categories.forEach(category => { %>
+                    <option  value="<%= category._id %>" <%= product.productCategory.toString() === category._id.toString() ? 'selected' : '' %>>
+                        <%= category.categoryName %>
+                    </option>
+                <% }); %>
+                </select>
             </div>
-          </div>
+        </div>
     
           
     
@@ -181,41 +181,44 @@
           <input type="hidden" id="existingImageData" name="existingImage" value="<%= product.image[0] %>">
 
               
-              
           <div class="form-group">
-            <label>Image</label>
+            <label class="col-md-4 control-label">Image</label>
             <input
-              class="form-control"
-              type="file"
-              name="gameImage"
-              id="imageInput"
-              
+            class="input-file"
+                type="file"
+                name="gameImage"
+                id="imageInput"
             />
             <img id="imagePreview" style="max-width: 100%" />
             <div id="errorImage" style="color: red;"></div>
-          
+        
             <% if (product.image && product.image[0]) { %>
-              <p>Current Image:</p>
-              <img src="<%= product.image[0] %>" style="max-width: 100%; height: 150px;" />
+                <p>Current Image:</p>
+                <img src="<%= product.image[0] %>" style="max-width: 100%; height: 150px;"  />
+                <!-- Add a hidden input to store the existing image path -->
+                <input type="hidden" name="existingImage1" value="<%= product.image[0] %>" />
             <% } %>
-          </div>
-          
-          <div class="form-group">
-            <label>Auxiliary Image</label>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-md-4 control-label">Auxiliary Image</label>
             <input
-              class="form-control"
-              type="file"
-              name="gameImage2"
-              id="imageInput2"
+            class="input-file"
+                type="file"
+                name="gameImage2"
+                id="imageInput2"
             />
             <img id="imagePreview2" style="max-width: 100%" />
             <div id="errorImage" style="color: red;"></div>
-          
+        
             <% if (product.image && product.image[1]) { %>
-              <p>Current Auxiliary Image:</p>
-              <img src="<%= product.image[1] %>" style="max-width: 100%; height: 150px;" />
+                <p>Current Auxiliary Image:</p>
+                <img src="<%= product.image[1] %>" style="max-width: 100%; height: 150px;" />
+                <!-- Add a hidden input to store the existing auxiliary image path -->
+                <input type="hidden" name="existingImage2" value="<%= product.image[1] %>" />
             <% } %>
-          </div>
+        </div>
+        
           
               <!-- File Button -->
 
@@ -276,11 +279,11 @@ if (isNaN(price) || price < 0) {
     if (!allowedExtensions.test(fileName.toLowerCase())) {
         displayErrorMessage("Invalid file type. Please upload a valid image file.");
         return false;
-    }
-} else {
-    displayErrorMessage('Please select an image file');
-    return false;
-}
+    }}
+// } else {
+//     displayErrorMessage('Please select an image file');
+//     return false;
+// }
     return true;
   }
 

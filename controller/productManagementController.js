@@ -143,6 +143,12 @@ productManagementController.handleEditData = async (req, res) => {
           return res.render("editProduct", { categories, product, message: "Product already exists", productId, formattedReleasedDate: "" });
       }
 
+      const imageArray = [
+        req.files['gameImage'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage'][0].path).replace(/\\/g, '/') : req.body.existingImage1,
+        req.files['gameImage2'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage2'][0].path).replace(/\\/g, '/') : req.body.existingImage2,
+    ];
+
+
 
       const updatedProduct = await productSchema.findByIdAndUpdate(productId, {
           productName,
@@ -153,10 +159,8 @@ productManagementController.handleEditData = async (req, res) => {
           description,
           releasedDate,
           price,
-          image: [ '/' + path.relative('D:/First Project/public', req.files['gameImage'][0].path).replace(/\\/g, '/'),
-    req.files['gameImage2'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage2'][0].path).replace(/\\/g, '/') : null,
- ],
-      },
+          image: imageArray
+    },
       { new: true });
 
       if (!updatedProduct) {

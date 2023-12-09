@@ -1,5 +1,7 @@
 const express = require("express")
 const router = express.Router()
+const checkBlocked = require('../middleware/isBlocked');
+const userAuth = require('../middleware/userAuth')
 const loginController = require('../controller/loginController')
 const signupController = require('../controller/signupController')
 const adminController = require('../controller/adminController')
@@ -25,7 +27,7 @@ const orderManagementController = require('../controller/orderManagementControll
 
 
 router.get('/', loginController.showLoginForm);
-router.post('/', loginController.handleLogin);
+router.post('/',userAuth, loginController.handleLogin);
 
 router.get('/signup',signupController.showSignupForm)
 router.post('/signup',signupController.handleSignup)
@@ -49,8 +51,8 @@ router.post('/admin',adminController.handleAdminLogin)
 router.get('/adminPanel',adminPanelController.showadminPanel)
 router.post('/adminPanel/logout',adminPanelController.logOut)
 
-router.get('/home/:id',homeController.showHome)
-router.get('/search',homeController.searchProducts)
+router.get('/home',checkBlocked,homeController.showHome)
+router.get('/search',checkBlocked,homeController.searchProducts)
 router.post('/home/logout',homeController.logOut)
 
 router.get('/user-management',userManagementController.showData)
@@ -58,12 +60,14 @@ router.get('/user-management',userManagementController.showData)
 router.get('/adminPanel/block/:id', userManagementController.blockUser);
 router.get('/adminPanel/unblock/:id', userManagementController.unblockUser);
 
-router.get('/user-profile/:id', userProfileController.showUserData)
+router.get('/user-profile', userProfileController.showUserData)
 router.get('/add-address',userProfileController.addAddress)
 router.post('/add-address',userProfileController.handleAddAddress)
 router.post('/edit-address',userProfileController.editAddress)
 router.post('/updateAddress',userProfileController.UpdateAddress)
 router.post('/delete-address',userProfileController.deleteAddress)
+router.get('/change-password',userProfileController.showChangePassword)
+router.post('/change-password',userProfileController.handleChangePassword)
 
 router.get('/user-edit-profile',userEditProfileController.showData)
 router.post('/user-edit-profile',userEditProfileController.handleUserData)
@@ -81,30 +85,31 @@ router.post('/product-management/edit/:id',productManagement.upload.fields([{nam
 router.get('/adminPanel/edit/:id',editCategoryController.showEditData)
 router.post('/adminPanel/edit/:id',editCategoryController.handleEditData)
 
-router.get('/product-page/:id',productPageController.showData)
+router.get('/product-page/:id',checkBlocked,productPageController.showData)
 router.post('/product-page/add-to-cart/:id',productPageController.addToCart)
 
-router.get('/products/:category',categoryProductsController.showData)
+router.get('/products/:category',checkBlocked,categoryProductsController.showData)
 
 router.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
 
 router.get('/category-management/toggle-list/:id', categoryManagementController.toggleListCategory);
 
-router.get('/cart',cartController.showCart)
+router.get('/cart',checkBlocked,cartController.showCart)
 router.post('/cart-item-remove/:id',cartController.removeItem)
 router.put('/cart-update-quantity/:productId',cartController.updateQuantity)
 
-router.get('/checkout',checkOutController.showData)
+router.get('/checkout',checkBlocked,checkOutController.showData)
 router.post('/checkout',checkOutController.handleData)
 router.post('/edit-address',checkOutController.editAddress)
 router.post('/updateAddress',checkOutController.UpdateAddress)
-router.get('/order-confirmed',checkOutController.orderConfirmed )
+router.get('/order-confirmed',checkBlocked,checkOutController.orderConfirmed )
 
-router.get('/checkOut/addAddress',addAddressController.showForm)
+router.get('/checkOut/addAddress',checkBlocked,addAddressController.showForm)
 router.post('/checkOut/addAddress',addAddressController.handleData)
 
 router.get('/orders',ordersController.showData)
 router.post('/orders/:orderId',ordersController.cancelOrder)
+router.get('/order-details/:orderId',ordersController.orderDetails)
 
 router.get('/order-management',orderManagementController.showData)
 router.post('/order-management-update/:orderId',orderManagementController.updateOrderStatus)

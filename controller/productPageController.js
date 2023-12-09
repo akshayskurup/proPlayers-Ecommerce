@@ -16,23 +16,16 @@ productPageController.showData = async (req, res) => {
     }
     console.log("product Id ",productId)
     console.log("is item in the cart",isItemInCart)
-    if (!req.session.UserLogin || !userId) {
-        return res.redirect('/');
-    }
-
-    const user = await User.findById(userId);
-
-    if (user && user.isBlocked) {
-        req.session.UserLogin = false;
-        return res.redirect('/');
-    }
 
     try {
-        // Use .populate() to include category details for the product
         const product = await productSchema.findById(productId).populate('productCategory');
         const categories = await category.find();
-
-        res.render('productPage', { product, userId, categories,isItemInCart });
+        if(req.session.UserLogin){
+            res.render('productPage', { product, userId, categories,isItemInCart });
+        }
+        else{
+            res.redirect('/')
+        }
     } catch (error) {
         console.error('Error fetching product data:', error);
         res.status(500).send('Internal Server Error');
@@ -57,12 +50,9 @@ productPageController.addToCart = async (req, res) => {
             userCart = new cart({ userId });
             await userCart.save();
         }
-
-        // Check if the product with the given productId is already in the items array
         const isProductInCart = userCart.items.some(item => item && item.productId && item.productId.equals(productId));
 
         if (!isProductInCart) {
-            // Add the product to the cart's items array
             userCart.items.push({ productId,quantity });
             await userCart.save();
         }

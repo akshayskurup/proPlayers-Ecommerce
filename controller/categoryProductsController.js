@@ -22,6 +22,9 @@ categoryProductsController.showData = async (req, res) => {
             if (category) {
                 const products = await productSchema.find({ productCategory: category._id, isListed: true });
                 console.log('Filtered Products:', products);
+                if(req.session.UserLogin){
+                    
+                }
                 res.render('categoryProducts', { products, productCategory, userId,categories});
             } else {
                 // If the category is not listed, you might want to handle this case (e.g., display a message)

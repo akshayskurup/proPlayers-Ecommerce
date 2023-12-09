@@ -3,7 +3,6 @@ const cartController = {}
 const category = require('../model/categorySchema')
 const calculateTotalPrice = (items) => {
     const totalPrice = items.reduce((total, item) => {
-        // Check if the item is in stock (totalQuantity > 0)
         if (item.productId.totalQuantity > 0) {
             return total + item.productId.price * item.quantity;
         }
@@ -18,18 +17,29 @@ cartController.showCart = async (req, res) => {
         const userId = req.session.userId;
         const userCart = await cart.findOne({ userId }).populate('items.productId');
         const categories = await category.find()
-        
+        console.log("user cart",userCart)
         if (userCart) {
             const items = userCart.items || [];
             userCart.items.forEach(product => {
-                console.log("Quantity : ", product.productId.totalQuantity);
+                console.log("Quantity : ", product.productId)
             });
 
             const totalPrice = calculateTotalPrice(items);
-            res.render("cart", { items, userId, totalPrice, isEmptyCart: items.length === 0 , categories});
+            if(req.session.UserLogin){
+                res.render("cart", { items, userId, totalPrice, isEmptyCart: items.length === 0 , categories});
+            }
+            else{
+                res.redirect('/')
+            }
 
         } else {
-            res.render("cart", { items:[], userId, totalPrice:0, isEmptyCart: true ,categories});
+            if(req.session.UserLogin){
+                res.render("cart", { items:[], userId, totalPrice:0, isEmptyCart: true ,categories});
+            }
+            else{
+                res.redirect('/')
+            }
+            
 
         }
     } catch (err) {
@@ -59,8 +69,6 @@ cartController.removeItem = async (req,res)=>{
         res.status(500).send("Internal server error")
     }
 }
-
-// Add this route to handle quantity updates
 
  
 cartController.updateQuantity = async (req, res) => {

@@ -140,7 +140,9 @@
           </li>
           <li class="divider"></li>
           <li>
-            <a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+            <form action="/adminPanel/logout" method="post">
+              <button type="submit"><i class="fa fa-sign-out fa-fw"></i> Logout</button>
+          </form>
           </li>
         </ul>
       </li>
@@ -303,9 +305,9 @@
 
 
 <div class="form-group">
-                    <label>Image</label>
+                    <label class="col-md-4 control-label">Image</label>
                     <input
-                      class="form-control"
+                    class="input-file"
                       type="file"
                       name="gameImage"
                       id="imageInput"
@@ -317,9 +319,9 @@
                   </div>
 
                   <div class="form-group">
-                    <label>Auxillary Image</label>
+                    <label class="col-md-4 control-label">Auxillary Image(optional)</label>
                     <input
-                      class="form-control"
+                    class="input-file"
                       type="file"
                       name="gameImage2"
                       id="imageInput2"
@@ -335,13 +337,6 @@
 
           <!-- File Button -->
 
-              <div class="form-group ">
-            <label class="col-md-4 control-label" for="filebutton">secondary_image</label>
-            <div class="col-md-4 ">
-              <input id="secondary_image_uploader" name="imageSecondary" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
-              <p>(optional)</p>
-            </div>
-          </div>
           
 
           <!-- Button -->
@@ -499,7 +494,7 @@
       return false;
     }
         var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
-        if (!allowedExtensions.exec(imageUploader.value)) {
+        if (!allowedExtensions.exec(imageInput.value)) {
           displayErrorMessage("Invalid file type. Please upload a valid image file.");
             return false;
         }
