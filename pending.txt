@@ -1,0 +1,21 @@
+Pendings
+pagination for products user side
+profile picture implementation not done
+multiple images upload not done
+total price on final order sucessful page
+sorting/filter not done
+
+Next week
+User side :
+Integrate online payment method(Razorpay
+ or Paypal)
+Change order status(cancel,return etc.)
+Coupon Management
+Search, Category filtering
+Wishlist(optional)
+Wallet(for canceled orders)
+
+Admin side : 
+Coupon Management
+
+

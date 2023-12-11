@@ -1,6 +1,10 @@
 <%-include('header.ejs')%>
 
+
+
         <div class="container" id="user-profile">
+            <div class="error-message-container bg-success text-center" id="message-container"><%=message%></div>
+            <div class="error-message-container bg-danger text-center" id="error-message-container"><%=error%></div>
             <div class="main-body">
             
                 <!-- /Breadcrumb -->
@@ -9,7 +13,7 @@
 
                     <div class="col-md-4 col-md-3 col-lg-4 ">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body-user-profile">
                                 <div class="d-flex flex-column align-items-center text-center">
                                     <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
                                         class="rounded-circle" width="150" />
@@ -23,22 +27,22 @@
                             </div>
                             
                         </div>
-                        <a class="btn btn-primary" href="/add-address">Add Address</a>
+                        <a class="btn" id="add-address" href="/add-address">Add Address</a>
                         <% user.address.forEach((User,index)=>{%>
 
                         
-                        <div class="card mt-3">
-                            <p class="text-center bg-secondary text-light">Address <%=index+1%></p>
-                            <div class="card-body ">
+                        <div class="card mt-3 address-card">
+                            <p class="text-center text-light address-title">Address <%=index+1%></p>
+                            <div class="card-body-user-profile p-2 ">
                                 <p><%=User.houseName%>,<%=User.street%>, <%=User.city%>, <%=User.pincode%>,<%=User.state%>, <%=User.mobile%></p>
                                 <div class="d-flex justify-content-between">
-                                <form action="/edit-address" method="post">
+                                <form action="/user-edit-address" method="post">
                                     <input type="hidden" name="addressIndex" value="<%= index %>">
-                                    <button type="submit">Edit</button>
+                                    <button type="submit" id="edit-btn">Edit</button>
                                 </form>
                                 <form action="/delete-address" method="post">
                                     <input type="hidden" name="addressIndex" value="<%= User._id %>">
-                                    <button type="submit">Delete</button>
+                                    <button type="submit" id="delete-btn">Delete</button>
                                 </form>
                             </div>
                             </div>
@@ -47,7 +51,7 @@
                     </div>
                     <div class="col-md-8 ">
                         <div class="card mb-3">
-                            <div class="card-body">
+                            <div class="card-body-user-profile">
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <h6 class="mb-0">Name</h6>
@@ -131,8 +135,8 @@
                                 
                                 <div class="row">
                                     <div class="col-sm-12 d-flex justify-content-between">
-                                        <a class="btn btn-info" href="/user-edit-profile">Edit</a>
-                                        <a class="btn btn-info" href="/change-password">Change Password</a>
+                                        <a class="btn" id="edit-all" href="/user-edit-profile">Edit</a>
+                                        <a class="btn" href="/change-password" id="change-password">Change Password</a>
                                     </div>
                                 </div>
                             </div>
@@ -143,5 +147,7 @@
                 </div>
             </div>
         </div>
+         
+    
     
 <%-include("footer.ejs")%>

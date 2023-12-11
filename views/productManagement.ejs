@@ -198,7 +198,9 @@
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
           <div class="alert alert-info text-center" id="error-message-container" style="color: black;" role="alert"><%=message%></div>
-  
+          
+          <div class=" bg-success text-center" id="message-container" style= "background: rgba(0, 128, 0, 0.719); width: 630px; height: 20px; color: black;" ><%=updateMess%></div>
+
         </div>
       <!-- Text input-->
       <div class="form-group">
@@ -577,6 +579,10 @@ serverDateElements.forEach(serverDateElement => {
     // Update the content of the td element with the formatted date
     releasedDateCell.innerText = formattedDate || 'unconvertable';
 });
+
+setTimeout(() => {
+              document.getElementById('message-container').style.display = 'none';
+          }, 3000);
   </script>
 </body>
 

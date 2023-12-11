@@ -4,12 +4,13 @@ const productSchema = require('../model/productSchema');
 let categoryManagementController = {};
 
 categoryManagementController.showData = async (req, res) => {
+    const update = req.query.update || ""
     try {
         // Use .populate() to include product details for each category
         const categories = await category.find().populate('products');
         
         if (req.session.AdminLogin) {
-            res.render('categoryManagement', { categories, message: "" });
+            res.render('categoryManagement', { categories, message: "",update });
         } else {
             res.redirect('/admin');
         }

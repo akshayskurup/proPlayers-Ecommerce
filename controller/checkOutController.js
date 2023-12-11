@@ -40,22 +40,25 @@ checkOutController.editAddress = async (req, res) => {
     const userId = req.session.userId;
     const { addressIndex } = req.body;
     console.log("addressIndex",addressIndex)
+    
 
     try {
         const user = await User.findById(userId);
+        const categories = await category.find()
         const userAddressToEdit = user.address[addressIndex];
-        res.render('editAddress', { user, userAddressToEdit, addressIndex });
+        res.render('editAddress', { user, userAddressToEdit, addressIndex,categories });
     } catch (err) {
         console.error('Error fetching user data:', err);
         res.status(500).send('Internal Server Error');
     }
 };
-checkOutController.UpdateAddress = async (req, res) => {
+checkOutController.UpdateAddresss = async (req, res) => {
     const userId = req.session.userId;
     const { addressIndex,mobile, houseName, street, city, pincode, state } = req.body;
     console.log("addressIndex",addressIndex)
 
     try {
+        console.log("workingg........")
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             {

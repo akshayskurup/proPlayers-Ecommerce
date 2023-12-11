@@ -24,7 +24,7 @@ editCategoryController.handleEditData = async (req, res) => {
         if (!updatedCategory) {
             return res.status(404).send('Category not found');
         }
-        res.redirect('/category-management');
+        res.redirect('/category-management?update=Successfully%20Updated');
     } catch (error) {
         console.error('Error updating category:', error);
         res.status(500).send('Internal Server Error');

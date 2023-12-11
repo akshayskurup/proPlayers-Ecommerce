@@ -7,10 +7,19 @@
     color: #3b71ca !important;
   }
   .icon-hover-danger:hover {
-    border-color: #dc4c64 !important;
+    border-color: #fb7b24 !important;
     background-color: white !important;
   }
   
   .icon-hover-danger:hover i {
     color: #dc4c64 !important;
+  }
+
+  #make-purchase-btn{
+    color: white;
+    border: 2px solid #fb7b24;
+  }
+  #make-purchase-btn:hover{
+    background: #fb7b24;
+    border: 2px solid #fb7b24;
   }

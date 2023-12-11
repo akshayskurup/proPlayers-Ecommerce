@@ -20,12 +20,48 @@
     <!--Cart CSS-->
     <link rel="stylesheet" href="/css/cart.css">
 
+    <!--CheckOut CSS-->
+    <link rel="stylesheet" href="/css/checkOutPage.css">
+
     <!--Profile CSS-->
      <link rel="stylesheet" href="/css/userProfile.css" />
 
      <!--orders CSS-->
      <link rel="stylesheet" href="/css/orders.css" />
-    
+
+     <!--Product Deails CSS-->
+     <link rel="stylesheet" href="/css/productDetails.css">
+
+     <!--All Product CSS-->
+     <link rel="stylesheet" href="/css/allProducts.css">
+
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Lato:wght@400;700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+
+
+<style>
+    /* Custom CSS to change text color to white in the navigation bar */
+    .navbar-nav .nav-link,
+    .navbar-brand {
+        color: white !important;
+    }
+
+    /* Optionally, you can change the active link color */
+    .navbar-nav .nav-item.active .nav-link,
+        .navbar-nav .nav-item.show .nav-link {
+            color: #ffcc00 !important; /* Choose your preferred color */
+        }
+        .navbar-nav .nav-link:hover {
+            color: #fb7b24 !important; /* Choose your preferred hover color */
+        }
+
+        
+        .nav-item.active a {
+    color: #fb7b24; /* Change this to your desired color */
+}
+</style>
+
 </head>
 
 <body>
@@ -36,8 +72,8 @@
   <!-- NavBar Added -->
 
         
-  <nav class="navbar navbar-expand-lg bg-white fixed-top  navbar-light p-3 shadow-sm">
-    <div class="container">
+  <nav class="navbar navbar-expand-lg fixed-top navbar-light p-3 shadow-sm " style="background: #0b091f;">
+    <div class="container" >
         <a class="navbar-brand" href="/home"><i class="fa-solid fa-shop me-2"></i> <strong>Pro Players</strong></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -45,7 +81,7 @@
 
         
 
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto" >
                 <li class="nav-item dropdown">
                     <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i></i> Categories
@@ -61,7 +97,7 @@
                   </li>
                   
                 <li class="nav-item">
-                    <a class="nav-link mx-2 text-uppercase" href="#"><i class="fa-solid fa-heart me-1"></i> Whishlist</a>
+                    <a class="nav-link mx-2 text-uppercase" href="/allProducts"><i class="fa-solid fa-heart me-1"></i> Whishlist</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link mx-2 text-uppercase" href="/cart"><i class="fa-solid fa-cart-shopping me-1"></i> Cart</a>
@@ -73,6 +109,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/user-profile">My Profile</a>
                         <a class="dropdown-item" href="/orders">Orders</a>
+                        <a class="dropdown-item" href="/wallet">Wallet</a>
                         <div class="dropdown-divider"></div>
                         <form action="/home/logout" method="post">
                             <button type="submit" class="dropdown-item"><a class="dropdown-item">Logout</a> </button>   
@@ -84,3 +121,16 @@
     </div>
 </nav>
     </header>
+
+    <script>
+        // Get the current URL path
+        var path = window.location.pathname;
+    
+        // Select the corresponding navigation link based on the path
+        var activeLink = document.querySelector('a[href="' + path + '"]');
+    
+        // Add the "active" class to the selected link
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    </script>

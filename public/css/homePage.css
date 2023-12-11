@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Lato:wght@400;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Lato:wght@400;700&family=Rajdhani:wght@600;700&display=swap');
 *{
-  font-family: 'Kdam Thmor Pro', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
 }
-.panda-bg-info {
-    background-color: #FEEAE9;
-}
+
+
 
 .container{
     max-width: 1220px;
+    
 }
 .btn-buy-now {
     display: flex;
@@ -94,3 +94,66 @@ a {
 .card:hover .overlay {
     opacity: 1;
 }
+
+.all-categories {
+    position: relative;
+    background-image: url('/homeimgs/wallpaper.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center, top right, center center;
+    background-repeat: repeat-y, no-repeat, repeat;
+    background-attachment: fixed, scroll, fixed;
+}
+
+.all-categories::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.592); 
+}
+
+.product-card {
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: 0 8px 16px rgb(0, 0, 0);
+}
+.product-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}
+.card-body{
+    background: #0d0e1b;
+    color: white;
+}
+.search-button{
+    border: 2px solid #fb7b24;
+    color: white;
+}
+.search-button:hover{
+    background: #fb7b24;
+    color: white;
+}
+.Search{
+    margin-left: 450px;
+}
+
+#view-btn {
+    border:  2px solid#fb7b24;
+    color: white;
+}
+#edit-address-save-btn{
+    border:  2px solid#fb7b24;
+    color: black;
+}
+#view-btn:hover,#edit-address-save-btn:hover{
+    background:#fb7b24;
+    color: white;
+}
+

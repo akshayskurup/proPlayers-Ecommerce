@@ -22,7 +22,7 @@ addCategoryController.handledata = async(req,res)=>{
     
             const savedCategory = await newCategory.save();
             
-            res.redirect('/category-management');
+            res.redirect('/category-management?update=Successfully%20Inserted');
         } catch (err) {
             console.error("Error during adding category:", err);
             res.status(500).send('Internal Server Error');

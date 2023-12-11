@@ -1,7 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Lato:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Lato:wght@400;700&family=Rajdhani:wght@600&display=swap');
 
 *{
-  font-family: 'Kdam Thmor Pro', sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
 }
 body {
     margin: 0;
@@ -9,6 +10,7 @@ body {
     background: #f5f6fa;
     position: relative;
     height: 100%;
+    
 }
 #user-profile{
     padding-top: 140px;
@@ -65,4 +67,27 @@ body {
     border-radius: 5px;
     border: 0;
     margin-bottom: 1rem;
+}
+#add-address{
+    background: #fb7b24;
+    border:  2px solid#fb7b24;
+    color: rgb(255, 255, 255);
+}
+#add-address:hover{
+    background: white;
+    border:  2px solid#fb7b24;
+    color: black;
+}
+.address-title{
+    background: #0b091f
+}
+.address-card{
+    border: 2px solid #0b091f
+}
+#edit-btn,#delete-btn,#edit-all,#change-password{
+    border: 2px solid #fb7b24;
+}
+
+#edit-all:hover, #change-password:hover{
+    background: #fb7b24;
 }

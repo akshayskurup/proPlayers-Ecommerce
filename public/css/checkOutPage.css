@@ -1,0 +1,31 @@
+#Edit-btn,#add-btn,#continueButton, #cancel-btn{
+    border:  2px solid#fb7b24;
+    color: white;
+    font-weight: bold;
+}
+
+#continueButton, #cancel-btn{
+    border:  2px solid#fb7b24;
+    color: rgb(0, 0, 0);
+}
+#Edit-btn:hover, #add-btn:hover, #continueButton:hover, #cancel-btn:hover {
+    background: #fb7b24;
+    color: white;
+}
+
+input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fb7b24;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    margin-right: 5px;
+}
+input[type="radio"]:checked {
+    background-color: #fb7b24; /* Change this to the desired color */
+    border-color: #fb7b24;
+}

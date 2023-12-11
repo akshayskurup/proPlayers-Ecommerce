@@ -23,6 +23,8 @@ const checkOutController = require('../controller/checkOutController')
 const addAddressController = require('../controller/addAddressController')
 const ordersController = require('../controller/ordersController')
 const orderManagementController = require('../controller/orderManagementController')
+const allProductsController = require('../controller/allProductsController')
+const walletManagementController = require('../controller/walletManagementController')
 
 
 
@@ -55,6 +57,11 @@ router.get('/home',checkBlocked,homeController.showHome)
 router.get('/search',checkBlocked,homeController.searchProducts)
 router.post('/home/logout',homeController.logOut)
 
+router.get('/allProducts',allProductsController.showProducts)
+router.get('/searchProducts',allProductsController.searchProducts)
+router.get('/products/high-to-low',allProductsController.sortHighToLow)
+router.get('/products/low-to-high',allProductsController.sortLowToHigh)
+
 router.get('/user-management',userManagementController.showData)
 
 router.get('/adminPanel/block/:id', userManagementController.blockUser);
@@ -63,8 +70,8 @@ router.get('/adminPanel/unblock/:id', userManagementController.unblockUser);
 router.get('/user-profile', userProfileController.showUserData)
 router.get('/add-address',userProfileController.addAddress)
 router.post('/add-address',userProfileController.handleAddAddress)
-router.post('/edit-address',userProfileController.editAddress)
-router.post('/updateAddress',userProfileController.UpdateAddress)
+router.post('/user-edit-address',userProfileController.editAddress)
+router.post('/edit-update',userProfileController.UpdateAddress)
 router.post('/delete-address',userProfileController.deleteAddress)
 router.get('/change-password',userProfileController.showChangePassword)
 router.post('/change-password',userProfileController.handleChangePassword)
@@ -101,7 +108,7 @@ router.put('/cart-update-quantity/:productId',cartController.updateQuantity)
 router.get('/checkout',checkBlocked,checkOutController.showData)
 router.post('/checkout',checkOutController.handleData)
 router.post('/edit-address',checkOutController.editAddress)
-router.post('/updateAddress',checkOutController.UpdateAddress)
+router.post('/updateAddress',checkOutController.UpdateAddresss)
 router.get('/order-confirmed',checkBlocked,checkOutController.orderConfirmed )
 
 router.get('/checkOut/addAddress',checkBlocked,addAddressController.showForm)
@@ -113,6 +120,8 @@ router.get('/order-details/:orderId',ordersController.orderDetails)
 
 router.get('/order-management',orderManagementController.showData)
 router.post('/order-management-update/:orderId',orderManagementController.updateOrderStatus)
+
+router.get('/wallet',walletManagementController.showData)
 
 
 module.exports=router

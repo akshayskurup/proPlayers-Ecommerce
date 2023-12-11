@@ -1,16 +1,18 @@
 let userEditProfileController = {}
 const { findById } = require("../model/categorySchema");
 let User = require("../model/userSchema");
+let category = require('../model/categorySchema')
 
 userEditProfileController.showData = async (req,res)=>{
     try{
+        const categories = await category.find()
         const userId = req.session.userId
         const user = await User.findById(userId)
         if (user) {
             console.log('User data:', user);
-            res.render('userEditProfile', { user });
+            res.render('userEditProfile', { user,categories});
         } else{
-            res.render('userEditProfile', { user,error: 'User not found' });
+            res.render('userEditProfile', { user,error: 'User not found',categories });
         }
     } catch (error) {
         console.error('Error fetching user data:', error);
@@ -30,21 +32,13 @@ userEditProfileController.handleUserData = async (req, res) => {
                 $set: {
                     name,
                     phone: mobile,
+                    'address.0.houseName': houseName,
+                    'address.0.street': street,
+                    'address.0.city': city,
+                    'address.0.pincode': pincode,
+                    'address.0.state': state,
                 },
-                $push: {
-                    address: {
-                        $each: [{
-                            houseName,
-                            street,
-                            city,
-                            pincode,
-                            state,
-                        }],
-                        $position: 0,
-                    },
-                },
-            },
-            { new: true }
+            }
         );
 
         if (!updatedUser) {

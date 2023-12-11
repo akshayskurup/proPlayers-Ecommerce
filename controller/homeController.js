@@ -19,7 +19,7 @@ homeController.showHome = async (req, res) => {
 
     try {
     
-        const product = await productSchema.find({ isListed: true }).populate('productCategory');
+        const product = await productSchema.find({ isListed: true }).populate('productCategory').sort({_id:-1}).limit(8);
         const categories = await category.find();
         console.log('user id', userId);
         console.log('home', req.session.UserLogin);

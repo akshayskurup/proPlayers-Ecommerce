@@ -26,6 +26,7 @@ productManagementController.showData = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const skip = (page - 1) * ITEMS_PER_PAGE;
+        const updateMess=req.query.update||""
 
         const products = await productSchema.find().populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
         const categories = await category.find();
@@ -34,7 +35,7 @@ productManagementController.showData = async (req, res) => {
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
         if (req.session.AdminLogin) {
-            res.render('productManagement', { categories, products, currentPage: page, totalPages, message: "" });
+            res.render('productManagement', { categories, products, currentPage: page, totalPages, message: "",updateMess });
         } else {
             res.redirect('/admin');
         }
@@ -55,12 +56,12 @@ productManagementController.handleData = async (req, res) => {
         categoryId = new mongoose.Types.ObjectId(productCategory);
     } catch (error) {
         console.error("Error converting productCategory to ObjectId:", error);
-        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Error converting productCategory to ObjectId" });
+        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Error converting productCategory to ObjectId",updateMess });
     }
 
     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
         console.error("Invalid ObjectId after conversion:", categoryId);
-        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Invalid productCategory ObjectId" });
+        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Invalid productCategory ObjectId", updateMess });
     }
 
   const newProduct = new productSchema({
@@ -87,7 +88,7 @@ productManagementController.handleData = async (req, res) => {
       { new: true }
     );
 
-    res.redirect('/product-management');
+    res.redirect('/product-management?update=Successfully%20Inserted%20Product');
   } catch (err) {
     console.error("Error during product creation:", err);
     res.status(500).send('Internal Server Error');
@@ -167,7 +168,7 @@ productManagementController.handleEditData = async (req, res) => {
           return res.status(404).send('Product not found');
       }
 
-      res.redirect('/product-management');
+      res.redirect('/product-management?update=Successfully%20Edited%20Product');
   } catch (err) {
       console.error("Error during updating product:", err);
       res.status(500).send('Internal Server Error');
