@@ -2,6 +2,23 @@ let userProfileController = {};
 let User = require("../model/userSchema");
 let category = require('../model/categorySchema')
 let bcrypt = require('bcrypt')
+const multer = require('multer');
+const path = require('path');
+
+
+// Multer configuration
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, 'D:/First Project/public/uploads/'); // Set the destination folder for uploaded files
+//     },
+//     filename: function (req, file, cb) {
+//         const ext = path.extname(file.originalname);
+//         cb(null, Date.now() + ext); // Rename the file to avoid conflicts
+//     }
+// });
+const storage = multer.memoryStorage();
+userProfileController.upload = multer({ storage: storage, limits: { fileSize: 1024 * 1024 * 50 } });
+
 
 userProfileController.showUserData = async (req, res) => {
     try {
@@ -166,5 +183,57 @@ userProfileController.deleteAddress = async (req, res) => {
     }
     
   }
+
+userProfileController.uploadPhoto = async (req,res)=>{
+    try {
+        const imageSrc = req.body.imageSrc; // Base64-encoded cropped image data
+        const croppedData = req.body.croppedData;
+
+        console.log("req.body",req.body)
+
+        // Perform any additional logic (e.g., save image data to the database)
+
+        // Check if croppedData is defined before further processing
+        if (croppedData) {
+            // Remove whitespace and the data URL prefix
+            const cleanedCroppedData = croppedData.replace(/^data:image\/\w+;base64,/, '');
+
+            // Create a Buffer from the cleaned Base64 data
+            const buffer = Buffer.from(cleanedCroppedData, 'base64');
+
+            // Save the image file
+            const filePath = path.join(__dirname, '..', 'public', 'uploads', 'cropped_image.jpg');
+            require('fs').writeFileSync(filePath, buffer);
+
+            console.log("Cropped image saved successfully.");
+            res.json({ success: true, message: 'Cropped image data saved successfully.' });
+        } else {
+            console.error('croppedData is undefined.');
+            res.status(400).json({ success: false, message: 'Invalid cropped data.' });
+        }
+    } catch (error) {
+        console.error('Error handling file upload:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+}
   
 module.exports = userProfileController;
+// const imageSrc = req.body.imageSrc; // Base64-encoded cropped image data
+//     const croppedData = req.body.croppedData;
+//     const uploadedImage = req.file;
+
+//     // Perform any additional logic (e.g., save image data to the database)
+//     console.log(" up ---imagesss",uploadedImage)
+//      console.log("imagesss",req.body)
+//     // Save the image file
+//     console.log("croppedData",croppedData)
+//     console.log("ImgData",imageSrc)
+
+//     const cleanedCroppedData = croppedData.replace(/\s/g, '');  // Remove whitespace
+
+// const base64WithoutPrefix = cleanedCroppedData.replace(/^data:image\/\w+;base64,/, '');
+//     const buffer = Buffer.from(base64WithoutPrefix, 'base64');
+//     const filePath = path.join(__dirname,'..','public', 'uploads', 'cropped_image.jpg'); // Adjust the file path as needed
+//     require('fs').writeFileSync(filePath, buffer, 'base64');
+
+//     res.json({ success: true, message: 'Cropped image data saved successfully.' });

@@ -80,7 +80,7 @@
                       <!-- Default radio -->
                       <div class="form-check h-100 border rounded-3">
                         <div class="p-3">
-                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled />
+                          <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault2" disabled />
                           <label class="form-check-label" for="flexRadioDefault2">
                             UPI <br />
                             <small class="text-muted"></small>
@@ -92,16 +92,43 @@
                       <!-- Default radio -->
                       <div class="form-check h-100 border rounded-3">
                         <div class="p-3">
-                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" disabled />
+                          <% if(userWallet){%>
+                          
+                          <% if( userWallet.balance >= totalPrice){%>
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault3" value="Wallet" <%= userWallet.balance >= totalPrice ? '' : 'disabled' %> />
                           <label class="form-check-label" for="flexRadioDefault3">
-                            Net Banking <br />
+                            Wallet <br />
+                            <small class="text">Balance:<%=userWallet.balance?userWallet.banlance:0%></small><br>
                             <small class="text-muted"></small>
                           </label>
+                          <%}else{%>
+                          <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault3" <%= userWallet.balance >= totalPrice ? '' : 'disabled' %> />
+                          <label class="form-check-label" for="flexRadioDefault3">
+                            Wallet <br />
+                            <small class="text">Balance:<%=userWallet.balance%></small><br>
+                            <small class="text-danger">Insufficient balance</small>
+                          </label>
+                          <%}%>
+                          <%}else{%>
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault3" disabled />
+                          <label class="form-check-label" for="flexRadioDefault3">
+                            Wallet <br />
+                            <small class="text">Balance: 0</small><br>
+                            <small class="text-danger">Insufficient balance</small>
+                          </label>
+                          <%}%>
                         </div>
                       </div>
 
                       
 
+                    </div>
+
+                    <div>
+                      Have coupon
+                      <input type="text" name="couponCode" id="couponCode">
+                      <button type="button" onclick="checkCoupon()">Submit</button>
+                      <div id="couponMessage"></div>
                     </div>
 
                     <div class="col-lg-8 mb-3">
@@ -110,21 +137,21 @@
                           <div class="p-3">
                             <div class="d-flex justify-content-between">
                                 <p class="mb-2">Total price:</p>
-                                <p class="mb-2">₹<%= totalPrice %></p>
+                                <p class="mb-2" id="totalPrice">₹<%= totalPrice %></p>
                               </div>
                               <div class="d-flex justify-content-between">
                                 <p class="mb-2">Discount:</p>
-                                <p class="mb-2 text-danger">- ₹160.00</p>
+                                  <p class="mb-2 text-danger" id="discountValue">- ₹0</p>
                               </div>
                               <div class="d-flex justify-content-between">
-                                <p class="mb-2">Shipping cost:</p>
-                                <p class="mb-2">+ ₹60.00</p>
+                                <p class="mb-2">After Discount:</p>
+                                <p class="mb-2" id="discountedTotal">₹0</p>
                               </div>
                               <hr />
                               <div class="d-flex justify-content-between">
                                 <p class="mb-2">Total price:</p>
                                 <p id="checkout-total" class="mb-2 fw-bold">₹<%= totalPrice %></p>
-                            </div>
+                                <input type="hidden" id="checkout-total-input" name="checkoutTotalInput" >                            </div>
                           </div>
                             
                           </div>
@@ -179,6 +206,31 @@
                 <%}%>
                 <% }); %>
                 
+
+                <hr />
+                <h6 class="text-dark my-4">Coupons Available</h6>
+                <% availableCoupons.forEach(coupon=>{%>
+                  <div class="d-flex align-items-center mb-4">
+                    <div class="me-3 position-relative">
+                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary">
+                        1
+                      </span>
+                    </div>
+                    <div class="">
+                      <p class="bg-danger"><%= coupon.discountType %></p>
+                      <p  class="nav-link">
+                       Code: <%= coupon.code %><br />
+                      </p>
+
+                      <div id="discountPercentage" class="price text-muted">
+                        discount: <%= coupon.discountValue %>%
+                      </div>                    
+                    </div>
+                  </div>
+                  <% }); %>
+
+
+
               </div>
             </div>
           </div>
@@ -228,6 +280,78 @@
     document.getElementById('selectedState').value = state;
 
     return true; // Allow form submission
+}
+
+  // Declare checkoutTotalInput in the global scope
+const checkoutTotalInput = document.getElementById('checkout-total-input');
+
+function checkCoupon() {
+  const couponCode = document.getElementById('couponCode').value;
+  const couponMessage = document.getElementById('couponMessage');
+  const discountPercentageElement = document.getElementById('discountPercentage');
+  const totalPriceElement = document.getElementById('totalPrice');
+  const discountValueElement = document.getElementById('discountValue');
+  const totalAmount = parseFloat(totalPriceElement.textContent.replace('₹', '').trim());
+  const discountPercentage = parseFloat(discountPercentageElement.getAttribute('data-discount-value'));
+  const checkoutTotalElement = document.getElementById('checkout-total');
+
+  console.log("asfasdfazsdf", totalAmount);
+
+  fetch('/validateCoupon', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      couponCode,
+      totalAmount,
+      checkoutTotalInput: checkoutTotalInput.value,
+    }),
+  })
+    .then(response => {
+      if (response.status === 404) {
+        // Coupon not found
+        return { isValid: false, message: 'Coupon not found' };
+      }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Handle the response from the server
+      console.log(data);
+
+      if (data.isValid) {
+        // Coupon is valid
+        couponMessage.textContent = 'Coupon is valid! '
+        couponMessage.style.color = 'green'; // Set color to green
+        checkoutTotalElement.textContent = '₹' + data.discountedTotal; // Update total amount
+
+        document.getElementById('discountedTotal').textContent = '₹' + data.discountedTotal;
+        discountValueElement.textContent = '- ₹' + data.discountValue;
+        checkoutTotalInput.value = data.discountedTotal;
+        console.log("discounted Total ", checkoutTotalInput.value);
+
+        // Perform additional actions if needed
+
+        // Now, after handling the response, make the second fetch request
+       
+      } else {
+        // Coupon is not valid
+        couponMessage.textContent = 'Coupon is not valid. '
+        couponMessage.style.color = 'red'; // Set color to red
+        // Perform addition
+      }
+    })
+    .then(secondResponse => {
+      // Handle the response from the second server request
+      console.log(secondResponse);
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
+      // Handle errors if needed
+    });
 }
 
 </script>

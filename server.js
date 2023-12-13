@@ -26,7 +26,7 @@ app.use(session({
 
 // Body parser middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true}));
 
 // Connect to the database
 connectDB();

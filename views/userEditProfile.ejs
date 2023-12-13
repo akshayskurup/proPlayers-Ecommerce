@@ -11,7 +11,7 @@
                         <div class="card">
                             <div class="card-body-edit-profile">
                                 <div class="d-flex flex-column align-items-center text-center">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                                    <img src="<%=user.image%>" alt="Admin"
                                         class="rounded-circle" width="150" />
                                     <div class="mt-3">
                                         <h4><%=user.name%></h4>
@@ -22,10 +22,12 @@
                             </div>
                             
                         </div>
+                        
                     </div>
+                    
                     <div class="col-md-8 mt-5">
                     	<div class="card">
-                            <form action="/user-edit-profile" method="post" onsubmit="return validate()">
+                            <form action="/user-edit-profile" method="post" enctype="multipart/form-data" onsubmit="return validate()">
                             <div class="card-body-edit-profile">
                                 <div class="row mb-3">
                                     <div class="bg-danger text-white" id="error-message-container"></div>
@@ -102,7 +104,20 @@
                                             <input type="text" class="form-control" name="state" id="state" value="<%= user.address && user.address.length > 0 ? user.address[0].state : '' %>">
                                         </div>
                                     </div>
+
                                     
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <h6 class="mb-0">Profile Picture</h6>
+                                        </div>
+                                        <div class="col-sm-9 text-secondary">
+                                            <input type="file" class="form-control" name="profilePicture" id="profilePictureInput" accept="image/*">
+                                            <img id="profilePicturePreview" src="<%= user.profilePicture %>" alt="Profile Picture" class="rounded-circle mt-3" width="150">
+                                        </div>
+                                    </div>
+                                    <button class="btn" id="saveCroppedImage">Save Cropped Image</button>
+
+
                                 
                                 <div class="row">
                                     <div class="col-sm-12">
@@ -123,6 +138,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
 
 <script>
     function validate(){
@@ -230,6 +246,53 @@
 
     
 </script>
+
+
+
+<script>
+    $(document).ready(function () {
+        const image = document.getElementById('profilePicturePreview');
+        const input = document.getElementById('profilePictureInput');
+        const cropper = new Cropper(image, {
+            aspectRatio: 1,
+            viewMode: 2,
+        });
+
+        input.addEventListener('change', function (e) {
+            const files = e.target.files;
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                cropper.replace(reader.result);
+            };
+
+            reader.readAsDataURL(files[0]);
+        });
+
+        document.getElementById('saveCroppedImage').addEventListener('click', function () {
+            // Get the cropped canvas and convert it to a Blob
+            const croppedCanvas = cropper.getCroppedCanvas();
+            console.log(croppedCanvas);
+            croppedCanvas.toBlob(function (croppedBlob) {
+                // Create a FormData object and append the croppedBlob
+                const formData = new FormData();
+                formData.append('profilePicture', croppedBlob, 'cropped_image.jpg');
+
+                // Send the cropped image data to the server using Fetch API or Ajax
+                fetch('/user-edit-profile', {
+                    method: 'POST',
+                    body: formData,
+                }).then(response => {
+                    // Handle the response as needed
+                    console.log(response);
+                }).catch(error => {
+                    console.error(error);
+                });
+            }, 'image/jpeg');
+        });
+    });
+</script>
+
 </body>
 
 </html>

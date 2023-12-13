@@ -81,10 +81,12 @@
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
     crossorigin="anonymous"></script>
     <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-<!--Cart JS-->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+    <!--Cart JS-->
 <script src="/js/userJs/cart.js"></script>
 <script>
           setTimeout(() => {
@@ -92,6 +94,75 @@
               
               document.getElementById('message-container').style.display = 'none';
           }, 3000);
+</script>
+
+
+
+<script>
+  function viewImage(event, index) {
+      let input = event.target;
+      let reader = new FileReader();
+
+      reader.onload = function () {
+          let dataURL = reader.result;
+          let image = document.getElementById('imgView' + index);
+          image.src = dataURL;
+
+          // Initialize Cropper.js on the image
+          let cropper = new Cropper(image, {
+              aspectRatio: 1, // Initial aspect ratio
+              viewMode: 1,
+              guides: true,
+              background: false,
+              autoCropArea: 1,
+              zoomable: true
+          });
+
+          // Show the image cropper container
+          let cropperContainer = document.querySelector('#croppedImg' + index).parentNode;
+          cropperContainer.style.display = 'block';
+
+          // Update the cropped image when the "Save" button is clicked
+          let saveButton = document.querySelector('#saveButton' + index);
+          saveButton.addEventListener('click', function () {
+              saveCroppedImage(cropper, index);
+              cropperContainer.style.display = 'none';
+          });
+      };
+      reader.readAsDataURL(input.files[0]);
+  }
+
+  function saveCroppedImage(cropper, index) {
+      let croppedCanvas = cropper.getCroppedCanvas({
+          width: 487,
+          height: 203
+      });
+      let croppedImage = document.getElementById("croppedImg" + index);
+      croppedImage.src = croppedCanvas.toDataURL('image/jpeg', 1.0);
+
+      // Generate a unique name for the cropped image file based on the current timestamp
+      let timestamp = new Date().getTime();
+      let fileName = `cropped-img-${timestamp}-${index}.png`;
+
+      // Create a Blob from the cropped canvas and save it as a File
+      croppedCanvas.toBlob(blob => {
+          let imgFile = new File([blob], fileName, { type: 'image/png' });
+
+          // Update the input file with the new File
+          let input = document.getElementById('input' + index);
+          let fileList = new DataTransfer();
+          fileList.items.add(imgFile);
+          input.files = fileList.files;
+
+          // If you want to upload the file, you can use FormData and send it to the server
+          // const formData = new FormData();
+          // formData.append('croppedImage', imgFile);
+          // Perform an AJAX request to upload the file to the server
+          // ...
+
+          // If you just want to display the image or perform other actions, you can add your logic here
+      }, 'image/png');
+  }
 </script>
 
 

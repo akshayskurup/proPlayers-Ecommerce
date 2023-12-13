@@ -22,7 +22,11 @@ let userSchema = new mongoose.Schema({
         pincode: String,
         state: String
     }
-    ]
+    ],
+    image: {
+        type: String,
+        default: "user.png",
+    }
     
 })
 

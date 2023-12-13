@@ -1,5 +1,6 @@
 const orderManagementController = {}
 const orders = require('../model/orderSchema')
+const wallet = require('../model/walletSchema')
 const ITEMS_PER_PAGE = 3;
 
 orderManagementController.showData = async (req,res)=>{
@@ -28,7 +29,27 @@ orderManagementController.updateOrderStatus = async (req, res) => {
     console.log("new status ", newStatus)
 
     try {
+        let order = await orders.findById(orderId)
+        let userWallet = await wallet.findOne({userId:order.customer})
+        if(!userWallet){
+            userWallet = new wallet({
+                userId:order.customer,
+                balance:0,
+                transactionHistory:[]
+            })
+            await userWallet.save();
+        }
+        console.log("after first if")
+        if(newStatus === "Cancelled" || newStatus ==="Returned"){
+            const orderAmount = order.totalAmount
+            userWallet.balance += orderAmount;
+            userWallet.transactionHistory.push({
+                transaction: 'Money Added',
+                amount: orderAmount,
+            });
+        }
         const updatedOrder = await orders.findByIdAndUpdate(orderId, { OrderStatus: newStatus }, { new: true });
+        await userWallet.save();
         res.redirect('/order-management');
     } catch (error) {
         console.error('Error updating order status:', error);

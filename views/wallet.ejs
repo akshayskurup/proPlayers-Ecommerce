@@ -11,56 +11,64 @@
                         <div class="invoice p-5">
 
                             <center><p style="font-size: 30px;">WALLET BALANCE</p></center>
-                            <center><p style="font-size: 20px;">0Rs</p></center>
+                            <center><p style="font-size: 20px;">₹<%=userWallet?userWallet.balance:0%></p></center>
 
                             <div class="payment border-top mt-3 mb-3 border-bottom table-responsive">
 
                                 <table class="table table-borderless">
                                     
-                                    <tbody>
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <div class="py-2">
+                                            <th class="text-center">
+        
+                                                <div class="inner-circle"></div>
+                            </div>
+                            </th>
+                            <th>Transaction Id</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            </tr>
+                            </thead>
+                        <% if(userWallet){%>
 
-                                                    <span class="d-block text-muted">Transaction Id</span>
-                                                <span></span>
-                                                    
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="py-2">
-
-                                                    <span class="d-block text-muted">Type</span>
-                                                <span></span>
-                                                    
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="py-2">
-
-                                                    <span class="d-block text-muted">Amount</span>
-                                                <span></span>
-                                                    
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <div class="py-2">
-
-                                                    <span class="d-block text-muted">date</span>
-                                                <span></span>
-                                                
-                                                </div>
-                                                
-                                            </td>
-                                            
-                                        </tr>
-                                        
-                                        
-                                    </tbody>
-
+                        
+                            <% if (userWallet.transactionHistory.length > 0) { %>
+                        
+                            <% userWallet.transactionHistory.forEach(data=>{%>
+        
+        
+                                <tbody class="table-body">
+                                    <tr class="cell-1">
+                                        <td class="text-center">
+        
+                                            <div class="inner-circle"></div>
+                        </div>
+                        </td>
+                        
+                        <td>
+                            <%=data._id%>
+                        </td>
+                        <td>
+                           <%=data.transaction%>
+                        </td>
+                        <td>
+                            ₹<%=data.amount%>
+                        </td>
+                        
+                      
+                        
+                        
+        
+                        </tr>
+                        <%})%>
+                        <%}else{%>
+                            <p class="text-center bg-danger">No orders found.</p>
+                            <%}%>
+                            <%}else{%>
+                                <p class="text-center bg-danger">No orders found.</p>
+                                <%}%>
+                            </tbody>
+                            </table>
                                 </table>
 
 

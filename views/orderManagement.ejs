@@ -229,11 +229,14 @@
                                             <td>
                                                 <form action="/order-management-update/<%= order._id %>" method="post" class="update-status-form">
                                                 <select name="order_status" onchange="this.form.submit()">
+                                                <% if(order.OrderStatus ==='Order Placed'|| order.OrderStatus==='Shipped'){%>
                                                 <option value="Order Placed" <%= order.OrderStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
                                                 <option value="Shipped" <%= order.OrderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
                                                 <option value="Delivered" <%= order.OrderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
                                                 <option value="Returned" <%= order.OrderStatus === 'Returned' ? 'selected' : '' %>>Returned</option>
                                                 <option value="Cancelled" <%= order.OrderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                <%}%>
+                                                
                                               </select>
                                             </form>
                                             </td>

@@ -65,7 +65,9 @@
                             <button type="submit" class="cancel-order-button">Cancel Order</button>
                         </form>
                     <% }else if (order.OrderStatus === 'Delivered') { %>
-                        <span class="text-success">Order Delivered</span>
+                        <form action="/orders-return/<%= order._id %>" method="post" class="cancel-order-form">
+                            <button type="submit" class="cancel-order-button">Return Order</button>
+                        </form>
                     <% } else if (order.OrderStatus === 'Returned') { %>
                         <span class="text-warning">Order Returned</span>
                     <% } else if (order.OrderStatus === 'Cancelled') { %>

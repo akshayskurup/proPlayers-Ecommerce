@@ -25,6 +25,7 @@ const ordersController = require('../controller/ordersController')
 const orderManagementController = require('../controller/orderManagementController')
 const allProductsController = require('../controller/allProductsController')
 const walletManagementController = require('../controller/walletManagementController')
+const couponManagementController = require('../controller/couponManagementController')
 
 
 
@@ -77,7 +78,7 @@ router.get('/change-password',userProfileController.showChangePassword)
 router.post('/change-password',userProfileController.handleChangePassword)
 
 router.get('/user-edit-profile',userEditProfileController.showData)
-router.post('/user-edit-profile',userEditProfileController.handleUserData)
+router.post('/user-edit-profile', userEditProfileController.upload.single("profilePicture"),userEditProfileController.handleUserData)
 
 router.get('/category-management',categoryManagementController.showData)
 
@@ -106,7 +107,10 @@ router.post('/cart-item-remove/:id',cartController.removeItem)
 router.put('/cart-update-quantity/:productId',cartController.updateQuantity)
 
 router.get('/checkout',checkBlocked,checkOutController.showData)
+router.post('/validateCoupon',checkOutController.validateCoupon)
 router.post('/checkout',checkOutController.handleData)
+
+// router.post('/updatingTotal',checkOutController.updateTotal)
 router.post('/edit-address',checkOutController.editAddress)
 router.post('/updateAddress',checkOutController.UpdateAddresss)
 router.get('/order-confirmed',checkBlocked,checkOutController.orderConfirmed )
@@ -116,12 +120,20 @@ router.post('/checkOut/addAddress',addAddressController.handleData)
 
 router.get('/orders',ordersController.showData)
 router.post('/orders/:orderId',ordersController.cancelOrder)
+router.post('/orders-return/:orderId',ordersController.returnOrder)
 router.get('/order-details/:orderId',ordersController.orderDetails)
 
 router.get('/order-management',orderManagementController.showData)
 router.post('/order-management-update/:orderId',orderManagementController.updateOrderStatus)
 
 router.get('/wallet',walletManagementController.showData)
+
+router.get('/coupon-management',couponManagementController.showData)
+router.get('/add-coupon',couponManagementController.addCoupon)
+router.post('/add-coupon',couponManagementController.handleCoupon)
+router.get('/coupon-management/toggle/:id',couponManagementController.toggleListCategory)
+router.get('/coupon-management/edit/:id',couponManagementController.showEditData)
+router.post('/edit-coupon/:id',couponManagementController.handleEditData)
 
 
 module.exports=router
