@@ -38,7 +38,7 @@ ordersController.cancelOrder = async (req, res) => {
             await userWallet.save();
 
         }
-        if (order.paymentMethod === 'Wallet') {
+        if (order.paymentMethod === 'Wallet'|| order.paymentMethod ==='onlinePayment') {
             const orderAmount = order.totalAmount
             userWallet.balance += orderAmount;
             userWallet.transactionHistory.push({

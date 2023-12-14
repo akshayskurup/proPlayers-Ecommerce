@@ -61,7 +61,7 @@
       
                   <h5 class="card-title mb-3">Payment Method</h5>
 
-                  <form action="/checkout" method="post" onsubmit="return validateForm()">
+                  <form action="/checkout" method="post" id="checkOut" onsubmit="return validateForm()">
                   <div class="row mb-3">
                     <div class="col-lg-4 mb-3">
                       <!-- Default checked radio -->
@@ -80,9 +80,9 @@
                       <!-- Default radio -->
                       <div class="form-check h-100 border rounded-3">
                         <div class="p-3">
-                          <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault2" disabled />
+                          <input class="form-check-input" type="radio" name="paymentMethod" value="onlinePayment" id="flexRadioDefault2"  />
                           <label class="form-check-label" for="flexRadioDefault2">
-                            UPI <br />
+                            Online Payment <br />
                             <small class="text-muted"></small>
                           </label>
                         </div>
@@ -98,7 +98,7 @@
                             <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault3" value="Wallet" <%= userWallet.balance >= totalPrice ? '' : 'disabled' %> />
                           <label class="form-check-label" for="flexRadioDefault3">
                             Wallet <br />
-                            <small class="text">Balance:<%=userWallet.balance?userWallet.banlance:0%></small><br>
+                            <small class="text">Balance:₹<%=userWallet.balance?userWallet.balance:0%></small><br>
                             <small class="text-muted"></small>
                           </label>
                           <%}else{%>
@@ -168,7 +168,7 @@
                         <input type="hidden" id="selectedState" name="selectedState">
                   <div class="float-end">
                     <a class="btn" id="cancel-btn" href="/cart">Cancel</a>
-                    <button id="continueButton" class="btn  shadow-0" type="submit">Continue</button>
+                    <button id="continueButton" onclick="handleButtonClick()" class="btn  shadow-0" onclick="btnClick()" type="button">Continue</button>
 
                   </div>
                 </div>
@@ -239,8 +239,7 @@
       
       
      
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
     crossorigin="anonymous"></script>
     <!-- Bootstrap JS and dependencies -->
@@ -285,7 +284,7 @@
   // Declare checkoutTotalInput in the global scope
 const checkoutTotalInput = document.getElementById('checkout-total-input');
 
-function checkCoupon() {
+async function checkCoupon() {
   const couponCode = document.getElementById('couponCode').value;
   const couponMessage = document.getElementById('couponMessage');
   const discountPercentageElement = document.getElementById('discountPercentage');
@@ -353,6 +352,171 @@ function checkCoupon() {
       // Handle errors if needed
     });
 }
+
+
+function handleButtonClick() {
+      const paymentOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+      if (!validateForm()) {
+         return; // Stop further execution if the form is not valid
+      }
+      if (paymentOption === 'onlinePayment'&&validateForm()) {
+         btnClick();
+      } else {
+         // If the payment option is not 'onlinePayment', submit the form
+         const form = document.getElementById('checkOut');
+         if (form) {
+            form.submit();
+         }
+      }
+   }
+
+  
+
+async function btnClick() {
+  var paymentOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+if(paymentOption=="onlinePayment"&&validateForm()){
+
+
+      try {
+        
+        const totalAmountText = document.getElementById('checkout-total').textContent;
+        const totalAmount = totalAmountText.replace('₹', '');
+        
+
+
+        const response = await fetch('/createOrder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            paymentOption: paymentOption, 
+            totalAmount: totalAmount,
+            currency: 'INR',
+          }),
+        });
+        const data = await response.json();
+        console.log('DATA : ', data.order);
+        console.log('DATA : ', data.amount);
+        console.log('DATA : ', data.currency);
+        console.log('signature:', data.signature);
+
+        if (data.paymentOption=='onlinePayment') {
+          console.log("working")
+          const order = data.order;
+          const orderId = order.id;
+          // If it's for online payment, proceed with Razorpay
+          const options = {
+            key: 'rzp_test_JGyt4WpGgZdibt',
+            amount: data.amount,
+            currency: data.currency,
+            name: 'Pro Players',
+            description: 'Test Transaction',
+            order_id: orderId,
+            handler:  function (response) {
+              console.log("Handler response data",response);
+              verifyPayment(response, data)
+            },
+            "modal": {
+              "ondismiss": function () {
+                console.log('Payment window closed');
+                paymentFailed(data);
+              }
+            },
+            prefill: {
+              name: 'John Doe',
+              email: 'john@example.com',
+              contact: '9000090000',
+            },
+            theme: {
+              color: '#fb7b24',
+            },
+          };
+          
+          const rzp = new Razorpay(options);
+          rzp.open();
+        }
+      } catch (error) {
+        console.error('Error initiating payment:', error);
+        console.error('Full error object:', error);
+        alert('Error during payment. Please try again.');
+      }
+    }
+  }
+
+
+
+    const btn = document.getElementById('continueButton');
+    btn.addEventListener('click', function (event) {
+      event.preventDefault();
+      btnClick();
+    });
+
+
+
+
+
+    async function verifyPayment(payment, order) {
+      try {
+        var selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+        
+        var mobile = selectedAddress.getAttribute('data-mobile');
+        var houseName = selectedAddress.getAttribute('data-houseName');
+        var street = selectedAddress.getAttribute('data-street');
+        var city = selectedAddress.getAttribute('data-city');
+        var pincode = selectedAddress.getAttribute('data-pincode');
+        var state = selectedAddress.getAttribute('data-state');
+
+        // Set values of hidden input fields in the "Continue" form
+        document.getElementById('selectedMobile').value = mobile;
+        document.getElementById('selectedHouseName').value = houseName;
+        document.getElementById('selectedStreet').value = street;
+        document.getElementById('selectedCity').value = city;
+        document.getElementById('selectedPincode').value = pincode;
+        document.getElementById('selectedState').value = state;
+
+
+
+
+        const paymentOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+        const response = await fetch('/verifyPayment',{
+          method:"POST",
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({
+            payment,
+            order,
+            paymentOption,
+            selectedMobile: mobile,
+                selectedHouseName: houseName,
+                selectedStreet: street,
+                selectedCity: city,
+                selectedPincode: pincode,
+                selectedState: state,
+          })
+        })
+        const responseData = await response.json();
+        console.log(responseData)
+      if (responseData.status) {
+          console.log("response is trrue")
+          window.location.href = '/order-confirmed';
+          
+      }else{
+        alert('Payment Failed. Try again later.');
+      }
+      } catch (error) {
+        console.error('Error verifying payment:', error);
+        alert('Error verifying payment. Please try again.');
+      }
+    
+    }
+    
+    
+
+
+
 
 </script>
 

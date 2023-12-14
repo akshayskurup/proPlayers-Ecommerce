@@ -7,6 +7,13 @@ let Product = require('../model/productSchema')
 let category = require('../model/categorySchema')
 let wallet = require('../model/walletSchema')
 let Coupons = require('../model/couponSchema')
+const Razorpay = require('razorpay');
+const crypto = require("crypto");
+
+const instance = new Razorpay({
+    key_id: 'rzp_test_JGyt4WpGgZdibt',
+    key_secret: 'KsMsg1hvtW6qUxgdY3BWwPvf',
+  });
 
 
 checkOutController.showData = async (req, res) => {
@@ -176,7 +183,7 @@ checkOutController.handleData = async (req, res) => {
       const { selectedMobile, selectedHouseName, selectedStreet, selectedCity, selectedPincode, selectedState, paymentMethod } = req.body;
       const userCart = await cart.findOne({ userId }).populate('items.productId');
       const items = userCart.items;
-      const userWallet = await wallet.findOne({userId})
+      let userWallet = await wallet.findOne({userId})
       console.log("req.session",req.session.updatedTotalPrice)
     const user = await User.findById(userId);
     const userAddresses = user.address;
@@ -208,6 +215,7 @@ checkOutController.handleData = async (req, res) => {
             });
     }
     
+      
       
     for (const item of inStockItems) {
         const productId = item.productId._id;
@@ -253,6 +261,32 @@ function generateOrderId() {
 }
 
 
+checkOutController.createOrder = async(req,res)=>{
+    const userId = req.session.userId;
+    let { paymentOption, totalAmount, currency,razorpay_order_id, razorpay_signature } = req.body;
+    try {
+        console.log("paymentOption",paymentOption)
+        console.log("totalAmount",totalAmount)
+        console.log("currency",currency)
+        const amount = totalAmount*100
+        if(paymentOption==="onlinePayment"){
+            const options = {
+                amount: totalAmount * 100, // Amount in paise
+                currency: currency || 'INR',
+                receipt: 'receipt_order_1',
+                notes: {},
+              };
+            const order = await instance.orders.create(options);
+            console.log("ORDER : ", order);
+            return res.json({order,paymentOption,amount,currency}); // Return JSON response for other payment options
+        }
+    } catch (error) {
+        console.error('Error creating order:', error);
+    res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
 
 
 // checkOutController.updateTotal = async(req,res)=>{
@@ -269,6 +303,78 @@ function generateOrderId() {
 //         res.status(500).json({ isValid: false, message: 'Internal Server Error' });
 //     }
 // }
+
+
+checkOutController.verifyPayment = async(req,res)=>{
+    try {
+    const userId = req.session.userId;
+      const {payment,order,paymentOption, selectedMobile, selectedHouseName, selectedStreet, selectedCity, selectedPincode, selectedState, paymentMethod } = req.body;
+      console.log("req body",req.body)
+      const userCart = await cart.findOne({ userId }).populate('items.productId');
+      const items = userCart.items;
+      let userWallet = await wallet.findOne({userId})
+      console.log("req.session",req.session.updatedTotalPrice)
+    const user = await User.findById(userId);
+    const userAddresses = user.address;
+    const inStockItems = items.filter(item => item.productId.totalQuantity > 0);
+    const updatedTotalPrice = req.session.updatedTotalPrice;
+    console.log("handle updatePrice",updatedTotalPrice)
+    const categories = await category.find()
+    const hasItemWithQuantity = items.some(item => item.productId.totalQuantity > 0);
+    const hmac = crypto
+      .createHmac("sha256", "KsMsg1hvtW6qUxgdY3BWwPvf")
+      .update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id)
+      .digest("hex");
+      if(hmac===payment.razorpay_signature){
+        console.log("Verified ...!")
+        const userId = req.session.userId;
+        let totalAmount=order.amount
+        console.log("total amount : ",totalAmount)
+        if (!hasItemWithQuantity) {
+            return res.render('checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: 'Selected item must be in available' });
+          }
+        for (const item of inStockItems) {
+            const productId = item.productId._id;
+            const quantityToReduce = item.quantity;
+      
+            // Update product quantity in the database
+            await Product.updateOne({ _id: productId }, { $inc: { totalQuantity: -quantityToReduce } });
+        }
+        const newOrder = new Order({
+            customer: userId,
+            address: {
+              mobile: selectedMobile,
+              houseName: selectedHouseName,
+              street: selectedStreet,
+              city: selectedCity,
+              pincode: selectedPincode,
+              state: selectedState,
+        },
+            items: items
+            .filter(item => item.productId.totalQuantity > 0)
+            .map(item => ({
+              product: item.productId._id,
+              quantity: item.quantity
+            })),
+            totalAmount: updatedTotalPrice,
+            OrderStatus: 'Order Placed',
+            paymentMethod: paymentOption,
+            orderId: generateOrderId(),
+          });
+      
+          await newOrder.save();
+        return res.json({ status: true})
+      }
+      console.log("verigying working 5")
+
+
+    } catch (error) {
+        console.log(error);
+    res.status(500).json({ error: "Internal server on verifying" });
+    }
+}
+
+
 
 
 

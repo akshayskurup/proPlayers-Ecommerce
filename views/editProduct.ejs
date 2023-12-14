@@ -105,7 +105,7 @@
             <div class="col-md-4">
                 <select id="product_categorie" name="productCategory" class="form-control">
                   <% categories.forEach(category => { %>
-                    <option  value="<%= category._id %>" <%= product.productCategory.toString() === category._id.toString() ? 'selected' : '' %>>
+                    <option  value="<%= category._id %>" <%= product.productCategory === category._id ? 'selected' : '' %>>
                         <%= category.categoryName %>
                     </option>
                 <% }); %>
@@ -178,7 +178,7 @@
     
             </div>
           </div>
-          <input type="hidden" id="existingImageData" name="existingImage" value="<%= product.image[0] %>">
+          <input type="hidden" id="existingImageData" name="existingImage" value="">
 
               
           <div class="form-group">
@@ -186,38 +186,16 @@
             <input
             class="input-file"
                 type="file"
-                name="gameImage"
+                name="gameImages"
                 id="imageInput"
+                multiple 
             />
             <img id="imagePreview" style="max-width: 100%" />
             <div id="errorImage" style="color: red;"></div>
         
-            <% if (product.image && product.image[0]) { %>
-                <p>Current Image:</p>
-                <img src="<%= product.image[0] %>" style="max-width: 100%; height: 150px;"  />
-                <!-- Add a hidden input to store the existing image path -->
-                <input type="hidden" name="existingImage1" value="<%= product.image[0] %>" />
-            <% } %>
+           
         </div>
         
-        <div class="form-group">
-            <label class="col-md-4 control-label">Auxiliary Image</label>
-            <input
-            class="input-file"
-                type="file"
-                name="gameImage2"
-                id="imageInput2"
-            />
-            <img id="imagePreview2" style="max-width: 100%" />
-            <div id="errorImage" style="color: red;"></div>
-        
-            <% if (product.image && product.image[1]) { %>
-                <p>Current Auxiliary Image:</p>
-                <img src="<%= product.image[1] %>" style="max-width: 100%; height: 150px;" />
-                <!-- Add a hidden input to store the existing auxiliary image path -->
-                <input type="hidden" name="existingImage2" value="<%= product.image[1] %>" />
-            <% } %>
-        </div>
         
           
               <!-- File Button -->
