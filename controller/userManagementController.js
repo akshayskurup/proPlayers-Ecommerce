@@ -29,7 +29,6 @@ userManagementController.showData = async(req,res)=>{
             if (!user) {
                 return res.status(404).send('User not found');
             }
-            // Toggle the isBlocked field
             user.isBlocked = !user.isBlocked || false;
             await user.save();
     
@@ -45,7 +44,6 @@ userManagementController.showData = async(req,res)=>{
             const userId = req.params.userId;
             const user = await User.findById(userId);
     
-            // Set isBlocked to false
             user.isBlocked = false;
             await user.save();
     

@@ -7,7 +7,7 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'D:/First Project/public/cropped-images/'); // Specify the directory where the cropped images will be stored
+        cb(null, 'D:/First Project/public/cropped-images/'); 
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -38,25 +38,26 @@ userEditProfileController.handleUserData = async (req, res) => {
     const userId = req.session.userId;
 
     try {
-        // Access the cropped image file from req.file
         const croppedImageData = req.file;
 
-        // Check if there's a cropped image file
-        if (!croppedImageData) {
-            return res.status(400).send('Cropped image data not provided');
+        const destinationPath = 'D:/First Project/public/cropped-images/';
+
+        let finalImagePath;
+
+        if (croppedImageData) {
+            const fileFormat = croppedImageData.mimetype.split('/')[1];
+            const filename = `${userId}-${Date.now()}.${fileFormat}`;
+            const imagePath = path.join(destinationPath, filename);
+
+            fs.renameSync(croppedImageData.path, imagePath);
+
+            finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
+        } else {
+            // If no new image is provided, use the existing image path
+            const existingUser = await User.findById(userId);
+            finalImagePath = existingUser.image;
         }
 
-        // Specify the directory where the cropped images will be stored
-        const destinationPath = 'D:/First Project/public/cropped-images/';
-        const fileFormat = croppedImageData.mimetype.split('/')[1];
-        const filename = `${userId}-${Date.now()}.${fileFormat}`;
-        const imagePath = path.join(destinationPath, filename);
-
-        // Move the cropped image file to the destination directory
-        fs.renameSync(croppedImageData.path, imagePath);
-
-        // Update the database with the cropped image path
-        const finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             {

@@ -80,14 +80,13 @@ passwordResetController.verifyOTPForPasswordReset = (req, res) => {
     const { enteredOTP } = req.body;
     const resetData = req.session.resetPasswordData;
 
-    const otpExpirationTime = 10*5000; // 5 minutes in milliseconds
+    const otpExpirationTime = 10*5000; // 5 sec in milliseconds
 
     if (Date.now() - resetData.timestamp > otpExpirationTime) {
         // OTP has expired
         return res.render('resetOtp', { message: 'OTP has expired. Please request a new one.', email: resetData.email });
     }
 
-    // Check if entered OTP matches the generated OTP
     if (enteredOTP === resetData.generatedOTP) {
         res.redirect('/reset-password/new-password');
     } else {
@@ -95,30 +94,25 @@ passwordResetController.verifyOTPForPasswordReset = (req, res) => {
     }
 };
 passwordResetController.resendOtp = async (req, res) => {
-    // Check if resetPasswordData is set in the session
     if (!req.session.resetPasswordData) {
       return res.json({ success: false, message: 'resetPasswordData not found in session' });
     }
   
     const resetPasswordData = req.session.resetPasswordData;
   
-    // Check if the time since the last OTP request is more than 15 seconds
     const resendCooldown = 15 * 1000; // 15 seconds in milliseconds
     if (Date.now() - resetPasswordData.timestamp < resendCooldown) {
       return res.json({ success: false, message: 'Resend cooldown not met' });
     }
   
-    // Clear the previously sent OTP from the session
     delete req.session.resetPasswordData.generatedOTP;
   
     // Generate a new OTP
     const newOTP = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
   
-    // Update the stored resetPasswordData with the new OTP and timestamp
     req.session.resetPasswordData.generatedOTP = newOTP;
-    req.session.resetPasswordData.timestamp = Date.now(); // Fix the typo here
+    req.session.resetPasswordData.timestamp = Date.now(); 
   
-    // Send the new OTP to the user's email
     try {
       await sendOTP(resetPasswordData.email, newOTP);
       res.json({ success: true, message: 'OTP resent successfully' });

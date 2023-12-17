@@ -125,53 +125,145 @@ checkOutController.UpdateAddresss = async (req, res) => {
 }
 
 
-checkOutController.validateCoupon = async(req,res)=>{
-    const {couponCode, totalAmount,discountedTotal} = req.body
-        try {
-            console.log('Session in validateCoupon:', req.session);
-            console.log("checkoutTotalInput",discountedTotal)
-            const userId = req.session.userId
-            const userCart = await cart.findOne({ userId }).populate('items.productId');
-            const items = userCart.items;
+// checkOutController.validateCoupon = async(req,res)=>{
+//     const {couponCode, totalAmount,discountedTotal} = req.body
+//         try {
+//             console.log('Session in validateCoupon:', req.session);
+//             console.log("checkoutTotalInput",discountedTotal)
+//             const userId = req.session.userId
+//             const userCart = await cart.findOne({ userId }).populate('items.productId');
+//             const items = userCart.items;
 
-            const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
-            const coupon = await Coupons.findOne({ code: couponCode });
-            console.log("total Price before",totalPrice)
-            if (!coupon) {
-                // Coupon not found
-                res.status(404).json({ isValid: false, message: 'Coupon not found' });
-                return;
-            }
-            const discountPercentage = coupon.discountValue
+//             const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
+//             const coupon = await Coupons.findOne({ code: couponCode });
+//             console.log("total Price before",totalPrice)
+//             if(couponCode ==""){
+//                 const discountValue = 0
+//                 const discountedTotal = 0
+//                 res.status(200).json({
+//                     isEmpty: true,
+//                     message: 'Coupon is valid. Discount applied successfully',
+//                     discountedTotal,discountValue
+//                 });
+//             }
+//             if (!coupon) {
+//                 // Coupon not found
+//                 res.status(404).json({ isValid: false, message: 'Coupon not found' });
+//                 return;
+//             }
+           
+//             const discountPercentage = coupon.discountValue
+//             // If coupon is valid, apply the discount
+//             if (!isNaN(discountPercentage) && !isNaN(totalAmount)) {
+//                 const discountValue = (discountPercentage / 100) * totalAmount;
+//                 const discountedTotal = totalAmount - discountValue;
+    
+//                 res.status(200).json({
+//                     isValid: true,
+//                     message: 'Coupon is valid. Discount applied successfully',
+//                     discountedTotal,discountValue
+//                 });
+//                 const parsedCheckoutTotalInput = parseFloat(discountedTotal).toFixed(2);
+//                 console.log("after parsed",parsedCheckoutTotalInput)
+//             if (!isNaN(parsedCheckoutTotalInput)) {
+//                 req.session.updatedTotalPrice = parsedCheckoutTotalInput;
+//                 req.session.save(); 
+//                 console.log("total Price after", req.session.updatedTotalPrice);
+//             } else {
+//                 console.error('Invalid checkoutTotalInput value');
+//             }  //checkOut total after discount saved to the totalprice
+//                 console.log("total Price after",totalPrice)
+//             } else {
+//                 // Invalid discount or total amount
+//                 res.status(400).json({ isValid: false, message: 'Invalid discount percentage or total amount' });
+//             }
+//         }
+//          catch (error) {
+//             console.error('Error handling Coupon data:', error);
+//             res.status(500).json({ isValid: false, message: 'Internal Server Error' });
+//         }
+// }
+
+checkOutController.validateCoupon = async (req, res) => {
+    const { couponCode, totalAmount , checkoutTotalInput , discountedTotal , discountedValue, checkoutTotal} = req.body;
+    try {
+        console.log('Session in validateCoupon:', req.session);
+        console.log("checkoutTotalInput", checkoutTotalInput);
+        console.log("discountedTotal", discountedTotal);
+        console.log("checkoutTotal", checkoutTotal);
+
+        const userId = req.session.userId;
+        const userCart = await cart.findOne({ userId }).populate('items.productId');
+        const items = userCart.items;
+
+        const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
+        const coupon = await Coupons.findOne({ code: couponCode });
+        console.log("total Price before", totalPrice);
+
+        if (couponCode === "" || (coupon && coupon.code !== couponCode)) {
+            const discountedValue = 0;
+            const discountedTotal = 0;
+            
+            res.status(200).json({
+                isEmpty: true,
+                message: 'Coupon is valid. Discount applied successfully',
+                discountedTotal, discountedValue
+            });
+        } else if (!coupon) {
+            // Coupon not found
+            res.status(404).json({ isValid: false, message: 'Coupon not found' });
+        } else {
+            const discountPercentage = coupon.discountValue;
+
             // If coupon is valid, apply the discount
             if (!isNaN(discountPercentage) && !isNaN(totalAmount)) {
                 const discountValue = (discountPercentage / 100) * totalAmount;
-                const discountedTotal = totalAmount - discountValue;
-    
+                const checkoutTotal = totalAmount - discountValue;
+                req.session.updatedTotalPrice = checkoutTotal;
+                    req.session.save();
                 res.status(200).json({
                     isValid: true,
                     message: 'Coupon is valid. Discount applied successfully',
-                    discountedTotal,discountValue
+                    checkoutTotal, discountValue
                 });
+
                 const parsedCheckoutTotalInput = parseFloat(discountedTotal).toFixed(2);
-                console.log("after parsed",parsedCheckoutTotalInput)
-            if (!isNaN(parsedCheckoutTotalInput)) {
-                req.session.updatedTotalPrice = parsedCheckoutTotalInput;
-                req.session.save(); 
-                console.log("total Price after", req.session.updatedTotalPrice);
-            } else {
-                console.error('Invalid checkoutTotalInput value');
-            }  //checkOut total after discount saved to the totalprice
-                console.log("total Price after",totalPrice)
+                console.log("after parsed", parsedCheckoutTotalInput);
+
+                if (!isNaN(parsedCheckoutTotalInput)) {
+                    req.session.updatedTotalPrice = parsedCheckoutTotalInput;
+                    req.session.save();
+                    console.log("total Price after", req.session.updatedTotalPrice);
+                } else {
+                    console.error('Invalid checkoutTotalInput value');
+                }
+
+                console.log("total Price after", totalPrice);
             } else {
                 // Invalid discount or total amount
-                res.status(400).json({ isValid: false, message: 'Invalid discount percentage or total amount' });
+                const discountValue = 0;
+                const discountedTotal = 0;
+                res.status(200).json({
+                    isValid: false,
+                    message: 'Coupon is valid. Discount applied successfully',
+                    discountedTotal, discountValue
+                });
             }
         }
-         catch (error) {
-            console.error('Error handling Coupon data:', error);
-            res.status(500).json({ isValid: false, message: 'Internal Server Error' });
-        }
+    } catch (error) {
+        console.error('Error handling Coupon data:', error);
+        res.status(500).json({ isValid: false, message: 'Internal Server Error' });
+    }
+};
+
+
+
+checkOutController.cancelOrder = async(req,res)=>{
+    const {totalAmount}=req.body
+    req.session.updatedTotalPrice = totalAmount
+    res.status(200).json({
+        success:true
+    });
 }
 
 
@@ -248,6 +340,9 @@ checkOutController.handleData = async (req, res) => {
   
       await newOrder.save();
       await userWallet.save()
+      await cart.findOneAndUpdate({ userId: userId },
+        {$set:{items:[]}}
+        )
       res.redirect("/order-confirmed");
     } catch (err) {
       console.error('Error handling checkout data:', err);
@@ -278,7 +373,7 @@ checkOutController.createOrder = async(req,res)=>{
               };
             const order = await instance.orders.create(options);
             console.log("ORDER : ", order);
-            return res.json({order,paymentOption,amount,currency}); // Return JSON response for other payment options
+            return res.json({order,paymentOption,amount,currency}); 
         }
     } catch (error) {
         console.error('Error creating order:', error);
@@ -363,6 +458,9 @@ checkOutController.verifyPayment = async(req,res)=>{
           });
       
           await newOrder.save();
+          await cart.findOneAndUpdate({ userId: userId },
+            {$set:{items:[]}}
+            )
         return res.json({ status: true})
       }
       console.log("verigying working 5")
@@ -384,11 +482,12 @@ checkOutController.orderConfirmed = async (req, res) => {
         const userId = req.session.userId;
         const latestOrder = await Order.findOne({ customer: userId }).sort({ orderDate: -1 }).populate('items.product');
         const user = await User.findById(userId);
+        const categories = await category.find()
 
         console.log("latest order",latestOrder)
         // Render the 'orderConfirmed' view with the latest order details
         if(req.session.UserLogin){
-            res.render('orderConfirmed', { latestOrder,userName:user.name , user });
+            res.render('orderConfirmed', { categories,latestOrder,userName:user.name , user });
         }
         else{
             res.redirect('/')

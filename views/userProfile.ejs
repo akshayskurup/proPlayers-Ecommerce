@@ -29,7 +29,7 @@
                 <div class="card">
                     <div class="card-body-user-profile">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                            <img style="width: 200px; height: 200px;" src="<%=user.image%>" alt="Admin"
                                 class="rounded-circle" width="150" />
                             <div class="mt-3">
                                 <h4><%=user.name%></h4>
@@ -45,7 +45,7 @@
                 <% user.address.forEach((User,index)=>{%>
 
                 
-                <div class="card mt-3 address-card">
+                <div class="card mt-3 address-card" data-index="<%= index %>">
                     <p class="text-center text-light address-title">Address <%=index+1%></p>
                     <div class="card-body-user-profile p-2 ">
                         <p><%=User.houseName%>,<%=User.street%>, <%=User.city%>, <%=User.pincode%>,<%=User.state%>, <%=User.mobile%></p>
@@ -54,10 +54,10 @@
                             <input type="hidden" name="addressIndex" value="<%= index %>">
                             <button type="submit" id="edit-btn">Edit</button>
                         </form>
-                        <form action="/delete-address" method="post">
+                        
                             <input type="hidden" name="addressIndex" value="<%= User._id %>">
-                            <button type="submit" id="delete-btn">Delete</button>
-                        </form>
+                            <button name="deleteBtn" type="button" class="delete-btn" data-address-index="<%= index %>" id="delete-btn">Delete</button>
+                        
                     </div>
                     </div>
                 </div>
@@ -165,6 +165,53 @@
             </div>
         </div>
          
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              var deleteButtons = document.querySelectorAll('.delete-btn');
+          
+              deleteButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                  var addressIndex = button.getAttribute('data-address-index');
+          
+                  fetch('/delete-address', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ addressIndex: addressIndex }),
+                  })
+                    .then(response => response.json())
+                    .then(data => {
+                      if (data.success) {
+                        // Show SweetAlert success message
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'Address Deleted',
+                          text: 'Your address has been successfully deleted.',
+                        }).then(function () {
+                          // Remove the deleted address element from the DOM
+                          var deletedAddress = document.querySelector('.address-card[data-index="' + addressIndex + '"]');
+                          if (deletedAddress) {
+                            deletedAddress.remove();
+                          }
+                        });
+                      } else {
+                        // Show SweetAlert error message
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'Failed to delete address. Please try again.',
+                        });
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                    });
+                });
+              });
+            });
+          </script>
     
     
 <%-include("footer.ejs")%>

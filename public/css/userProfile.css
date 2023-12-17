@@ -84,10 +84,10 @@ body {
 .address-card{
     border: 2px solid #0b091f
 }
-#edit-btn,#delete-btn,#edit-all,#change-password{
+#edit-btn,#delete-btn,#edit-all,#change-password,#submit-btn{
     border: 2px solid #fb7b24;
 }
 
-#edit-all:hover, #change-password:hover{
+#edit-all:hover, #change-password:hover , #submit-btn:hover{
     background: #fb7b24;
 }

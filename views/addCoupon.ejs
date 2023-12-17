@@ -22,6 +22,9 @@
      <!-- Custom Fonts -->
      <link href="/css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+     <!--Sweet Alert-->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
      <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
      <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
      <!--[if lt IE 9]>
@@ -44,12 +47,12 @@
 
 </head>
 <body>
-    <form action="/add-coupon" method="post" onsubmit="return validate()">
+    <form action="/add-coupon" method="post" onsubmit="return validate()" id="add-coupon">
         <div class="container">
             <div class="custom-form">
                 <h2 class="mb-4">Coupon-Management</h2>
                 
-                <div class="bg-danger" id="error-message-container">message</div>
+                <div class="bg-danger" id="error-message-container"></div>
                     <div class="form-group">
                         <label for="name">Discount Type:</label>
                         <select id="discountType" name="discountType">
@@ -82,27 +85,68 @@
     </form>
     <script>
          function validate() {
-      let categoryname= document.getElementById("categoryName");
+      let discountValue= document.getElementById("discountValue");
+      let minimumCartAmount = document.getElementById("minimumCartAmount")
+      const expiryInput = document.getElementById("expiry");
+
      
       const errorMessageContainer = document.getElementById("error-message-container");
 
-      let trimmedCategoryname = categoryname.value.trim();
-      let expression = /^[A-Za-z\-]+$/
+      let trimmedDiscountValue = discountValue.value.trim();
+      let expression = /^[0-9]+$/;
+      let expiryDate = new Date(expiryInput.value);
+      let currentDate = new Date();
 
-      errorMessageContainer.innerText = ""; // Clear previous error messages
+      errorMessageContainer.innerText = "";
 
-      if (trimmedCategoryname === "") {
+      if (trimmedDiscountValue === "") {
         errorMessageContainer.innerText = "Please fill the field";
         return false;
       }
-      if(!expression.test(trimmedCategoryname)){
-        errorMessageContainer.innerText = "Symbols are not allowded";
+      if(!expression.test(trimmedDiscountValue)){
+        errorMessageContainer.innerText = "Type positive numbers only";
         return false
       }
+      if (parseInt(trimmedDiscountValue, 10) >= 100) {
+         errorMessageContainer.textContent = "Enter a value less than 100%";
+         return false;
+      }
+      if (parseInt(trimmedDiscountValue, 10) <= 0) {
+         errorMessageContainer.textContent = "Enter a value greater than 0%";
+         return false;
+      }
+      if(minimumCartAmount.value<=0){
+        errorMessageContainer.textContent = "Enter a value greater than 0";
+         return false;
+      }
+      if (expiryDate <= currentDate) {
+    errorMessageContainer.textContent = "Please enter a future date";
+    return false;
+  }
+
         return true
       
     }
-        </script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('add-coupon');
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                          icon: 'success',
+                          title: 'Coupon Inserted',
+                          text: 'New coupon has been successfully inserted.',
+                        }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If the user clicks 'Yes', submit the form
+                        form.submit();
+                    }
+                });
+            });
+        }
+    });
 
     </script>
 </body>

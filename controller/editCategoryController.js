@@ -5,7 +5,13 @@ const category = require('../model/categorySchema')
 editCategoryController.showEditData = async (req,res)=>{
     const categoryId = req.params.id
     const categoryName = await category.findById(categoryId);
-    res.render('editCategory', { categoryName,message:""});
+    try {
+        res.render('editCategory', { categoryName,message:""});
+    } catch (error) {
+        console.error('Error showing category:', error);
+        res.status(500).send('Internal Server Error');
+    }
+    
 }
 
 editCategoryController.handleEditData = async (req, res) => {

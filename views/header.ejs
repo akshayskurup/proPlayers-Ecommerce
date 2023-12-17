@@ -42,6 +42,10 @@
      <!--RazorPay-->
      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+     <!--Sweet Alert-->
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 
      <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,16 +53,14 @@
 
 
 <style>
-    /* Custom CSS to change text color to white in the navigation bar */
     .navbar-nav .nav-link,
     .navbar-brand {
         color: white !important;
     }
 
-    /* Optionally, you can change the active link color */
     .navbar-nav .nav-item.active .nav-link,
         .navbar-nav .nav-item.show .nav-link {
-            color: #ffcc00 !important; /* Choose your preferred color */
+            color: #ffcc00 !important; 
         }
         .navbar-nav .nav-link:hover {
             color: #fb7b24 !important; /* Choose your preferred hover color */
@@ -82,7 +84,7 @@
         
   <nav class="navbar navbar-expand-lg fixed-top navbar-light p-3 shadow-sm " style="background: #0b091f;">
     <div class="container" >
-        <a class="navbar-brand" href="/home"><i class="fa-solid fa-shop me-2"></i> <strong>Pro Players</strong></a>
+        <a class="navbar-brand" href="/home"><i class="fa-solid fa-gamepad fa-bounce me-2"></i><strong>Pro Players</strong></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -105,7 +107,7 @@
                   </li>
                   
                 <li class="nav-item">
-                    <a class="nav-link mx-2 text-uppercase" href="/allProducts"><i class="fa-solid fa-heart me-1"></i> Whishlist</a>
+                    <a class="nav-link mx-2 text-uppercase" href="/allProducts"><i class="fa-solid fa-box me-1"></i></i>Products</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link mx-2 text-uppercase" href="/cart"><i class="fa-solid fa-cart-shopping me-1"></i> Cart</a>

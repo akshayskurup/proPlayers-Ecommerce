@@ -25,7 +25,7 @@ productManagementController.showData = async (req, res) => {
         const skip = (page - 1) * ITEMS_PER_PAGE;
         const updateMess=req.query.update||""
 
-        const products = await productSchema.find().populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
+        const products = await productSchema.find().sort({_id:-1}).populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
         const categories = await category.find();
         const totalProducts = await productSchema.countDocuments();
 
@@ -41,6 +41,39 @@ productManagementController.showData = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+productManagementController.searchProducts = async (req, res) => {
+  const userId = req.session.userId;
+  try {
+      const searchQuery = req.query.query;
+      const page = parseInt(req.query.page) || 1;
+      const skip = (page - 1) * ITEMS_PER_PAGE;
+      const updateMess=req.query.update||""
+
+      const products = await productSchema.find().populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
+      const categories = await category.find();
+      const totalProducts = await productSchema.countDocuments();
+
+      const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+
+      if (!searchQuery || searchQuery.trim()=="") {
+          return res.redirect('/product-management');
+      }
+      const product = await productSchema.find({
+          isListed: true,
+          productName: searchQuery === ' ' ? { $regex: new RegExp('.*', 'i') }  : { $regex: new RegExp(`^${searchQuery}`, 'i') }
+      }).populate('productCategory');
+      res.render('productManagement', { categories, products:product, currentPage: page, totalPages, message: "",updateMess });
+
+  } catch (error) {
+      console.error('Error searching products:', error);
+      res.status(500).send('Internal Server Error');
+  }
+}; 
+
+
+
 
 productManagementController.handleData = async (req, res) => {
     const { productName, productCategory, publisher, size, totalQuantity, description, releasedDate, price, convertedSize } = req.body;
@@ -154,9 +187,8 @@ productManagementController.handleEditData = async (req, res) => {
   } = req.body;
 
   let categories = await category.find();
-  let product = await productSchema.find();
+  let product = await productSchema.findById(productId);
 
-  // Convert the entered product name to the consistent format (first letter of each word capitalized)
   const capitalizedProductName = productName
     .toLowerCase()
     .replace(/(?:^|\s)\S/g, function (char) {
@@ -164,7 +196,6 @@ productManagementController.handleEditData = async (req, res) => {
     });
 
   try {
-    // Check if the product name has changed
     const existingProduct = await productSchema.findOne({
       $or: [
         { productName: capitalizedProductName },
@@ -173,7 +204,7 @@ productManagementController.handleEditData = async (req, res) => {
     });
 
     if (existingProduct && existingProduct._id != productId) {
-      // If the product with the same name exists and it's not the current product being edited
+
       return res.render("editProduct", {
         categories,
         product,
@@ -183,41 +214,43 @@ productManagementController.handleEditData = async (req, res) => {
       });
     }
 
-    // Continue with the rest of your logic for updating the product
+    let newImagePaths = [];
     const files = req.files;
+
     if (files && files.length > 0) {
-      // Process and save new files
+
       newImagePaths = files.map((file) => '/productimgs/' + file.filename);
+    } else {
+      newImagePaths = product.image || [];
     }
 
-    // Combine existing and new image paths
-    const existingImagePaths = Array.isArray(product.imagePaths) ? product.imagePaths : [];
-    const updatedImagePaths = [...existingImagePaths, ...newImagePaths];
+    const updatedProduct = await productSchema.findByIdAndUpdate(
+      productId,
+      {
+        productName: capitalizedProductName,
+        productCategory,
+        publisher,
+        size: req.body.convertedSize,
+        totalQuantity,
+        description,
+        releasedDate,
+        price,
+        image: newImagePaths,
+      },
+      { new: true }
+    );
 
+    if (!updatedProduct) {
+      return res.status(404).send('Product not found');
+    }
 
-      const updatedProduct = await productSchema.findByIdAndUpdate(productId, {
-          productName:capitalizedProductName,
-          productCategory,
-          publisher,
-          size: req.body.convertedSize,
-          totalQuantity,
-          description,
-          releasedDate,
-          price,
-          image: updatedImagePaths
-    },
-      { new: true });
-
-      if (!updatedProduct) {
-          return res.status(404).send('Product not found');
-      }
-
-      res.redirect('/product-management?update=Successfully%20Edited%20Product');
+    res.redirect('/product-management?update=Successfully%20Edited%20Product');
   } catch (err) {
-      console.error("Error during updating product:", err);
-      res.status(500).send('Internal Server Error');
+    console.error("Error during updating product:", err);
+    res.status(500).send('Internal Server Error');
   }
-}
+};
+
 
 
 
