@@ -23,6 +23,13 @@
  <!-- Custom Fonts -->
  <link href="/css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+   <!--Sweet Alert CSS -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+   <!--Sweet Alert JS -->
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
  <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
  
 </head>
@@ -76,7 +83,7 @@
   });
 </script>
 <body>
-    <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management/edit/<%=productId%>" onsubmit="return validateForm()" enctype="multipart/form-data">
+    <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management/edit/<%=productId%>" onsubmit="return validateForm()" enctype="multipart/form-data" id="edit-products">
         <fieldset>
     
           <!-- Form Name -->
@@ -305,6 +312,27 @@ if (isNaN(price) || price < 0) {
     }
 
 }
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('edit-products');
+
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Product Updated',
+                text: 'The product has been successfully updated.',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If the user clicks 'OK', submit the form
+                    form.submit();
+                }
+            });
+        });
+    }
+});
+
 
       </script>
 </body>
