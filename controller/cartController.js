@@ -53,22 +53,45 @@ cartController.emptyCart = (req,res)=>{
     res.render("emptyCart",{userId})
 }
 
-cartController.removeItem = async (req,res)=>{
-    const userId = req.session.userId
-    const productIdToRemove = req.params.id
-    console.log("product id to remove: ",productIdToRemove)
-    console.log("user id to remove product: ",userId)
+// cartController.removeItem = async (req,res)=>{
+//     const userId = req.session.userId
+//     const productIdToRemove = req.params.id
+//     console.log("product id to remove: ",productIdToRemove)
+//     console.log("user id to remove product: ",userId)
+//     try {
+//         const updatedCart = await cart.findOneAndUpdate(
+//             { userId: userId },
+//             { $pull: { items: { productId: productIdToRemove } } },
+//             { new: true })
+//         res.redirect('/cart')
+//     } catch (error) {
+//         console.log("error during removing",error)
+//         res.status(500).send("Internal server error")
+//     }
+// }
+
+cartController.removeItem = async (req, res) => {
+    const userId = req.session.userId;
+    const productIdToRemove = req.params.id;
+
     try {
         const updatedCart = await cart.findOneAndUpdate(
-            { userId: userId },
-            { $pull: { items: { productId: productIdToRemove } } },
-            { new: true })
-        res.redirect('/cart')
+                         { userId: userId },
+                         { $pull: { items: { productId: productIdToRemove } } },
+                         { new: true })
+
+        if (updatedCart) {
+            res.json({ success: true, message: 'Item removed successfully' });
+        } else {
+            res.status(404).json({ success: false, message: 'Cart or item not found' });
+        }
     } catch (error) {
-        console.log("error during removing",error)
-        res.status(500).send("Internal server error")
+        console.error('Error during removing:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
-}
+};
+
+
 
  
 cartController.updateQuantity = async (req, res) => {

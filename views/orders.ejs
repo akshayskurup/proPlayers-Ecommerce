@@ -20,6 +20,7 @@
                     <th>Products</th>
                     <th>status</th>
                     <th>Total</th>
+                    <th>Payment Method</th>
                     <th>Created</th>
                     <th></th>
                     <th></th>
@@ -50,9 +51,11 @@
                                     <% }); %>
                 </td>
                 <td>
-                    <%=order.OrderStatus%>
+                    <p id="status-<%= order._id %>" class="order-status"><%= order.OrderStatus %></p>
                 </td>
                 <td>₹<%=order.totalAmount%>
+                </td>
+                <td><%=order.paymentMethod%>
                 </td>
                 <td>
                     <%=order.orderDate.toLocaleDateString()%>
@@ -61,13 +64,19 @@
                 <!-- Inside your table row for each order -->
                 <td>
                     <% if (order.OrderStatus === 'Shipped' || order.OrderStatus === 'Order Placed') { %>
-                        <form action="/orders/<%= order._id %>" method="post" class="cancel-order-form">
-                            <button type="submit" class="cancel-order-button">Cancel Order</button>
-                        </form>
+                        <div id="order-<%= order._id %>" class="order">
+                            <!-- Order content here -->
+                            <p id="message-<%= order._id %>" class="success-message" style="display: none;">Order Cancelled</p>
+
+                            <button type="button" class="cancel-order-button" id="cancel-btn-<%=order._id%>" onclick="cancelOrder('<%= order._id %>')">Cancel Order</button>
+                        </div>
                     <% }else if (order.OrderStatus === 'Delivered') { %>
-                        <form action="/orders-return/<%= order._id %>" method="post" class="cancel-order-form">
-                            <button type="submit" class="cancel-order-button">Return Order</button>
-                        </form>
+                        <div id="return-order-<%= order._id %>" class="order">
+                            <!-- Order content here -->
+                            <p id="return-message-<%= order._id %>" class="success-message" style="display: none;">Order Returned</p>
+
+                            <button type="button" class="return-order-button" id="return-btn-<%=order._id%>" onclick="returnOrder('<%= order._id %>')">Return Order</button>
+                        </div>
                     <% } else if (order.OrderStatus === 'Returned') { %>
                         <span class="text-warning">Order Returned</span>
                     <% } else if (order.OrderStatus === 'Cancelled') { %>
@@ -78,23 +87,125 @@
                    <a class="btn btn-light border-1" href="/order-details/<%=order._id%>">View More</a>
                    
                 </td>
-                
-                
 
                 </tr>
+                
                 <%})%>
                 <%}else{%>
                     <p class="text-center bg-danger">No orders found.</p>
                     <%}%>
-
+                    
                     </tbody>
+                    
                     </table>
+                    
             </div>
+        </div>
+        <div class="pagination-container">
+            <ul class="pagination mb-3">
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="<%= currentPage === i ? 'active' : '' %>">
+                        <a href="/orders?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+            </ul>
         </div>
     </div>
     </div>
     </div>
 
 
+    <script>
+        function cancelOrder(orderId) {
+            fetch(`/orders/${orderId}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const statusElement = document.getElementById(`status-${orderId}`);
+                const messageElement = document.getElementById(`message-${orderId}`);
+                const button = document.getElementById(`cancel-btn-${orderId}`);
+                
+                if (data.success) {
+                    // Order cancellation was successful
+                    Swal.fire({
+                          icon: 'success',
+                          title: 'Order Cancelled',
+                          text: 'Your Order has been Cancelled.',
+                          timer: 1000,
+                          showCancelButton: false,
+                          showConfirmButton: false
+                        })
+                    // Update the text content and style of the status element
+                    if (statusElement) {
+                        statusElement.textContent = 'Order Cancelled';
+                        statusElement.style.color = 'red';
+                    }
+                    // Show the success message element
+                    if (messageElement) {
+                        messageElement.style.display = 'block'; // or 'inline', 'flex', etc.
+                        messageElement.style.color = 'red';
+
+                    }
+                    // Hide the button
+                    button.style.display = "none";
+                } else {
+                    // Order cancellation failed
+                    console.error('Error cancelling order:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error.message);
+            });
+        }
+
+
+        function returnOrder(orderId){
+            fetch(`/orders-return/${orderId}`,{
+                method:"POST",
+                headers:{
+                    'Content-Type':"application/json"
+                }
+            })
+            .then(response=>response.json())
+            .then(data=>{
+                const statusElement = document.getElementById(`status-${orderId}`);
+                const messageElement = document.getElementById(`return-message-${orderId}`);
+                const button = document.getElementById(`return-btn-${orderId}`);
+                if(data.success){
+                    Swal.fire({
+                          icon: 'success',
+                          title: 'Order Returned',
+                          text: 'Your Order has been Returned.',
+                          timer: 1000,
+                          showCancelButton: false,
+                          showConfirmButton: false
+                        })
+                    console.log("returned Successfully")
+                    statusElement.textContent = 'Returned';
+                        statusElement.style.color = 'Black';
+                        messageElement.style.display = 'block'; // or 'inline', 'flex', etc.
+                        messageElement.style.color = 'red';
+                        button.style.display = "none";
+
+                } else {
+                    // Order cancellation failed
+                    console.error('Error cancelling order:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error.message);
+            });
+        }
+
+
+
+
+
+    </script>
+    
 
 <%-include('footer.ejs')%>

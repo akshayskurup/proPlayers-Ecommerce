@@ -14,7 +14,8 @@
                     <p>No items in the cart.</p>
                 <% } else { %> 
                   <% items.forEach(item=>{%>  
-                  <div class="row gy-3 mb-4">
+                  <div class="row gy-3 mb-4 productItems" data-product-price="<%= item.productId.price%>">
+                    
                     <div class="col-lg-5">
                       <div class="me-lg-5">
                         <div class="d-flex">
@@ -54,11 +55,11 @@
                     <div class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
                       <div class="float-md-end">
                         <a href="#!" class="btn btn-light border px-2 icon-hover-primary"><i class="fas fa-heart fa-lg px-1 text-secondary"></i></a>
-                        <form action="/cart-item-remove/<%=item.productId._id%>" class="btn" method="post">
-                        <button type="submit" class="btn btn-light border text-danger icon-hover-danger">
+                        <input type="hidden" value="<%=item.productId._id%>" name="productId" class="productId">
+                        <button type="button"  class="btn btn-light border text-danger icon-hover-danger removeItemButton">
                           Remove
                         </button>
-                      </form>
+                      
                         
                       </div>
                     </div>
@@ -108,5 +109,65 @@
       </section>
       <!-- cart + summary -->
      
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Use event delegation to handle the click event on the container
+            document.body.addEventListener('click', async function (event) {
+                try {
+                    // Check if the clicked element has the removeItemButton class
+                    if (event.target.classList.contains('removeItemButton')) {
+                        // Find the parent .productItems element
+                        const removedItem = event.target.closest('.productItems');
+    
+                        if (removedItem) {
+                            // Get the productId from the .productId element within the removedItem
+                            const productIdElement = removedItem.querySelector('.productId');
+                            const quantityInput = removedItem.querySelector('.quantityInput');
+
+    
+                            if (productIdElement) {
+                                const productId = productIdElement.value;
+                                const productPrice = removedItem.dataset.productPrice;
+
+                                const response = await fetch(`/cart-item-remove/${productId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                });
+    
+                                if (response.ok) {
+                                    console.log('Item removed successfully');
+                                    removedItem.remove(); // Remove the item from the DOM
+                                    // You can also update the total price or perform other UI updates here
+
+                                    const cartSummaryElement = document.getElementById('cart-summary');
+                            const quantity = parseFloat(quantityInput.value);
+                            const totalPrice = parseFloat(cartSummaryElement.textContent.slice(1)); // Remove '₹' and convert to float
+                            const newTotalPrice = totalPrice - (parseFloat(productPrice) * quantity);
+                            cartSummaryElement.textContent = `₹${newTotalPrice.toFixed(2)}`;
+
+
+
+                                } else {
+                                    // Handle errors, maybe show an alert to the user
+                                    console.error('Error removing item from the cart');
+                                }
+                            } else {
+                                console.error('.productId element not found in the removed item');
+                            }
+                        } else {
+                            console.error('.productItems parent element not found');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+    
+    
       
  <%- include('footer.ejs')%>

@@ -86,9 +86,10 @@ router.get('/category-management/add',addCategoryController.showaddForm)
 router.post('/category-management/add',addCategoryController.handledata)
 
 router.get('/product-management',productManagement.showData)
-router.post('/product-management',productManagement.upload.fields([{name:'gameImage',maxCount: 1},{name:'gameImage2',maxCount: 1}]),productManagement.handleData)
+router.post('/product-management',productManagement.upload.array('gameImages', 4),productManagement.handleData)
 router.get('/product-management/edit/:id',productManagement.showEditForm)
-router.post('/product-management/edit/:id',productManagement.upload.fields([{name:'gameImage',maxCount: 1},{name:'gameImage2',maxCount: 1}]),productManagement.handleEditData)
+router.get('/search-products',productManagementController.searchProducts)
+router.post('/product-management/edit/:id',productManagement.upload.array('gameImages', 4),productManagement.handleEditData)
 
 router.get('/adminPanel/edit/:id',editCategoryController.showEditData)
 router.post('/adminPanel/edit/:id',editCategoryController.handleEditData)
@@ -108,7 +109,10 @@ router.put('/cart-update-quantity/:productId',cartController.updateQuantity)
 
 router.get('/checkout',checkBlocked,checkOutController.showData)
 router.post('/validateCoupon',checkOutController.validateCoupon)
+router.post('/cancelCoupon',checkOutController.cancelOrder)
 router.post('/checkout',checkOutController.handleData)
+router.post('/createOrder',checkOutController.createOrder)
+router.post('/verifyPayment',checkOutController.verifyPayment)
 
 // router.post('/updatingTotal',checkOutController.updateTotal)
 router.post('/edit-address',checkOutController.editAddress)

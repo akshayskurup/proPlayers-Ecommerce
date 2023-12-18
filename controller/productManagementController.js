@@ -8,19 +8,16 @@ const path = require('path');
 const fs = require('fs');
 
 
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'D:/First Project/public/productimgs/');
+      cb(null, 'D:/First Project/public/productimgs/');
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     },
-});
-
- productManagementController.upload = multer({
-    storage: storage,
-    limits: { fieldSize: 10 * 1024 * 1024 }
-});
+  });
+productManagementController.upload = multer({ storage: storage });
 const ITEMS_PER_PAGE = 10;
 productManagementController.showData = async (req, res) => {
     try {
@@ -28,7 +25,7 @@ productManagementController.showData = async (req, res) => {
         const skip = (page - 1) * ITEMS_PER_PAGE;
         const updateMess=req.query.update||""
 
-        const products = await productSchema.find().populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
+        const products = await productSchema.find().sort({_id:-1}).populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
         const categories = await category.find();
         const totalProducts = await productSchema.countDocuments();
 
@@ -45,14 +42,53 @@ productManagementController.showData = async (req, res) => {
     }
 };
 
+productManagementController.searchProducts = async (req, res) => {
+  const userId = req.session.userId;
+  try {
+      const searchQuery = req.query.query;
+      const page = parseInt(req.query.page) || 1;
+      const skip = (page - 1) * ITEMS_PER_PAGE;
+      const updateMess=req.query.update||""
+
+      const products = await productSchema.find().populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
+      const categories = await category.find();
+      const totalProducts = await productSchema.countDocuments();
+
+      const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+
+      if (!searchQuery || searchQuery.trim()=="") {
+          return res.redirect('/product-management');
+      }
+      const product = await productSchema.find({
+          isListed: true,
+          productName: searchQuery === ' ' ? { $regex: new RegExp('.*', 'i') }  : { $regex: new RegExp(`^${searchQuery}`, 'i') }
+      }).populate('productCategory');
+      res.render('productManagement', { categories, products:product, currentPage: page, totalPages, message: "",updateMess });
+
+  } catch (error) {
+      console.error('Error searching products:', error);
+      res.status(500).send('Internal Server Error');
+  }
+}; 
+
+
+
+
 productManagementController.handleData = async (req, res) => {
     const { productName, productCategory, publisher, size, totalQuantity, description, releasedDate, price, convertedSize } = req.body;
     console.log('Request Body:', req.body);
+    const capitalizedProductName = productName.toLowerCase().replace(/(?:^|\s)\S/g, function (char) {
+        return char.toUpperCase();
+      });
 
     let categories = await category.find();
     let categoryId;
+    const files = req.files;
+    const imagePaths = files.map((file) => '/productimgs/' + file.filename);
 
     try {
+        
         categoryId = new mongoose.Types.ObjectId(productCategory);
     } catch (error) {
         console.error("Error converting productCategory to ObjectId:", error);
@@ -64,24 +100,36 @@ productManagementController.handleData = async (req, res) => {
         return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Invalid productCategory ObjectId", updateMess });
     }
 
-  const newProduct = new productSchema({
-    productName,
-    productCategory: categoryId,
-    publisher,
-    size: req.body.convertedSize,
-    totalQuantity,
-    description,
-    releasedDate,
-    price,
-    image: [ '/' + path.relative('D:/First Project/public', req.files['gameImage'][0].path).replace(/\\/g, '/'),
-    req.files['gameImage2'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage2'][0].path).replace(/\\/g, '/') : null,
- ],
-  });
+    let existingProduct = await productSchema.find({
+        $or: [
+          { productName: capitalizedProductName },
+          { productName: capitalizedProductName.trim() },
+        ],
+      });
+      
+      if (existingProduct.length > 0) {
+        console.log('Product with the same name already exists.');
+        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Product Name already exists", updateMess });
+
+      } else {
+        const newProduct = new productSchema({
+            productName:capitalizedProductName,
+            productCategory: categoryId,
+            publisher,
+            size: req.body.convertedSize,
+            totalQuantity,
+            description,
+            releasedDate,
+            price,
+            image: imagePaths 
+          });
+
+      }
+
+ 
 
   try {
     const savedProduct = await newProduct.save();
-
-    // Update the category document to include the new product
     await category.findOneAndUpdate(
       { _id: categoryId },
       { $push: { products: savedProduct._id } },
@@ -123,57 +171,86 @@ productManagementController.showEditForm = async (req, res) => {
   res.render('editProduct', {product, productId, categories, message: "",formattedReleasedDate })
 }
 
+
 productManagementController.handleEditData = async (req, res) => {
   const productId = req.params.id;
   const {
-      productName, productCategory, publisher, size,convertedSize,
-      totalQuantity, description, releasedDate, price
+    productName,
+    productCategory,
+    publisher,
+    size,
+    convertedSize,
+    totalQuantity,
+    description,
+    releasedDate,
+    price,
   } = req.body;
 
   let categories = await category.find();
-  let product = await productSchema.find();
+  let product = await productSchema.findById(productId);
+
+  const capitalizedProductName = productName
+    .toLowerCase()
+    .replace(/(?:^|\s)\S/g, function (char) {
+      return char.toUpperCase();
+    });
 
   try {
+    const existingProduct = await productSchema.findOne({
+      $or: [
+        { productName: capitalizedProductName },
+        { productName: capitalizedProductName.trim() },
+      ],
+    });
 
-      const existingProduct = await productSchema.findOne({
-          productName,
-          _id: { $ne: productId }, 
+    if (existingProduct && existingProduct._id != productId) {
+
+      return res.render("editProduct", {
+        categories,
+        product,
+        message: "Product name already exists",
+        productId,
+        formattedReleasedDate: "",
       });
-      
-      if (existingProduct) {
-          return res.render("editProduct", { categories, product, message: "Product already exists", productId, formattedReleasedDate: "" });
-      }
+    }
 
-      const imageArray = [
-        req.files['gameImage'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage'][0].path).replace(/\\/g, '/') : req.body.existingImage1,
-        req.files['gameImage2'] ? '/' + path.relative('D:/First Project/public', req.files['gameImage2'][0].path).replace(/\\/g, '/') : req.body.existingImage2,
-    ];
+    let newImagePaths = [];
+    const files = req.files;
 
+    if (files && files.length > 0) {
 
+      newImagePaths = files.map((file) => '/productimgs/' + file.filename);
+    } else {
+      newImagePaths = product.image || [];
+    }
 
-      const updatedProduct = await productSchema.findByIdAndUpdate(productId, {
-          productName,
-          productCategory,
-          publisher,
-          size: req.body.convertedSize, // Use the converted size here
-          totalQuantity,
-          description,
-          releasedDate,
-          price,
-          image: imageArray
-    },
-      { new: true });
+    const updatedProduct = await productSchema.findByIdAndUpdate(
+      productId,
+      {
+        productName: capitalizedProductName,
+        productCategory,
+        publisher,
+        size: req.body.convertedSize,
+        totalQuantity,
+        description,
+        releasedDate,
+        price,
+        image: newImagePaths,
+      },
+      { new: true }
+    );
 
-      if (!updatedProduct) {
-          return res.status(404).send('Product not found');
-      }
+    if (!updatedProduct) {
+      return res.status(404).send('Product not found');
+    }
 
-      res.redirect('/product-management?update=Successfully%20Edited%20Product');
+    res.redirect('/product-management?update=Successfully%20Edited%20Product');
   } catch (err) {
-      console.error("Error during updating product:", err);
-      res.status(500).send('Internal Server Error');
+    console.error("Error during updating product:", err);
+    res.status(500).send('Internal Server Error');
   }
-}
+};
+
 
 
 

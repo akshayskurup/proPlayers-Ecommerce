@@ -130,31 +130,62 @@ userProfileController.UpdateAddress = async (req, res) => {
     }
 }
 
+// userProfileController.deleteAddress = async (req, res) => {
+//     const userId = req.session.userId;
+//     const addressIdToDelete = req.body.addressIndex;
+//     console.log("id of the address", addressIdToDelete)
+  
+//     try {
+//         const user = await User.findById(userId);
+//         const categories = await category.find()
+//         const updatedUser = await User.findOneAndUpdate(
+//             { _id: userId },
+//             { $pull: { address: { _id: addressIdToDelete } } },
+//             { new: true }
+//           );
+  
+//       if (!updatedUser) {
+//         return res.status(404).json({ error: 'Address not found' });
+//       }
+//        res.redirect('/user-profile?message=Successfully%20Deleted')
+//       // Optionally, you can redirect or send a response based on your needs
+//       //res.redirect("/user-profile"); // Redirect to the user profile page, adjust the route accordingly
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     }
+//   };
+
 userProfileController.deleteAddress = async (req, res) => {
     const userId = req.session.userId;
-    const addressIdToDelete = req.body.addressIndex;
-    console.log("id of the address", addressIdToDelete)
-  
+    const addressIndexToDelete = req.body.addressIndex;
+
     try {
         const user = await User.findById(userId);
-        const categories = await category.find()
-        const updatedUser = await User.findOneAndUpdate(
-            { _id: userId },
-            { $pull: { address: { _id: addressIdToDelete } } },
-            { new: true }
-          );
-  
-      if (!updatedUser) {
-        return res.status(404).json({ error: 'Address not found' });
-      }
-       res.redirect('/user-profile?message=Successfully%20Deleted')
-      // Optionally, you can redirect or send a response based on your needs
-      //res.redirect("/user-profile"); // Redirect to the user profile page, adjust the route accordingly
+
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        // Ensure the addressIndex is within bounds
+        if (addressIndexToDelete < 0 || addressIndexToDelete >= user.address.length) {
+            return res.status(400).json({ success: false, error: 'Invalid address index' });
+        }
+
+        // Remove the address at the specified index
+        user.address.splice(addressIndexToDelete, 1);
+        await user.save();
+
+        // Respond with success
+        res.json({ success: true });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
-  };
+};
+
+
+
   userProfileController.showChangePassword = async(req,res)=>{
     const categories = await category.find()
     res.render("changePassword",{message:"",categories})
@@ -190,12 +221,8 @@ userProfileController.uploadPhoto = async (req,res)=>{
         const croppedData = req.body.croppedData;
 
         console.log("req.body",req.body)
-
-        // Perform any additional logic (e.g., save image data to the database)
-
-        // Check if croppedData is defined before further processing
         if (croppedData) {
-            // Remove whitespace and the data URL prefix
+
             const cleanedCroppedData = croppedData.replace(/^data:image\/\w+;base64,/, '');
 
             // Create a Buffer from the cleaned Base64 data

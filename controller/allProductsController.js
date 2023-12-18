@@ -43,6 +43,9 @@ allproductsController.showProducts = async (req, res) => {
 allproductsController.searchProducts = async (req, res) => {
     const userId = req.session.userId;
         const categories = await category.find();
+        const page = parseInt(req.query.page) || 1;
+        const totalProducts = await productSchema.countDocuments();
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
     try {
         const searchQuery = req.query.query;
 
@@ -59,12 +62,12 @@ allproductsController.searchProducts = async (req, res) => {
         const categories = await category.find();
 
         // Render the search results page
-        res.render('allProducts', {userId, query: searchQuery, product, categories });
+        res.render('allProducts', {userId, query: searchQuery, product, categories,totalPages,currentPage: page });
     } catch (error) {
         console.error('Error searching products:', error);
         res.status(500).send('Internal Server Error');
     }
-};
+}; 
 
 allproductsController.sortHighToLow = async(req,res)=>{
     try {

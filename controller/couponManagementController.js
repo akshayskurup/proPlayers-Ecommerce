@@ -3,7 +3,7 @@ let coupon = require('../model/couponSchema')
 
 
 couponManagementController.showData = async(req,res)=>{
-  const couponData = await coupon.find()
+  const couponData = await coupon.find().sort({_id:-1})
     res.render('couponManagement',{couponData})
 }
 

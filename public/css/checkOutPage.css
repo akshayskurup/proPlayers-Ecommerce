@@ -29,3 +29,58 @@ input[type="radio"]:checked {
     background-color: #fb7b24; /* Change this to the desired color */
     border-color: #fb7b24;
 }
+.coupon-box{
+    background: #000;
+    color: white;
+}
+
+
+
+
+
+
+.coupon-container {
+    background-color: #0b091f;
+    border: 2px solid #fb7b24;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.coupon-container:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.coupon-type {
+    background-color: #fb7b24;
+    color: white;
+    border-radius: 4px;
+    padding: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.coupon-container:hover .coupon-type {
+    background-color: #fb7b24; /* Darker color on hover */
+}
+
+.coupon-code {
+    
+    margin: 10px 0;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.coupon-container:hover .coupon-code {
+    color: #007bff; /* Change color on hover */
+}
+
+.discount-percentage {
+    color: white;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.coupon-container:hover .discount-percentage {
+    color: #fb7b24; /* Change color on hover */
+}

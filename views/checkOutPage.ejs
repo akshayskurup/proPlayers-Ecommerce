@@ -61,7 +61,7 @@
       
                   <h5 class="card-title mb-3">Payment Method</h5>
 
-                  <form action="/checkout" method="post" onsubmit="return validateForm()">
+                  <form action="/checkout" method="post" id="checkOut" onsubmit="return validateForm()">
                   <div class="row mb-3">
                     <div class="col-lg-4 mb-3">
                       <!-- Default checked radio -->
@@ -80,9 +80,9 @@
                       <!-- Default radio -->
                       <div class="form-check h-100 border rounded-3">
                         <div class="p-3">
-                          <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault2" disabled />
+                          <input class="form-check-input" type="radio" name="paymentMethod" value="onlinePayment" id="flexRadioDefault2"  />
                           <label class="form-check-label" for="flexRadioDefault2">
-                            UPI <br />
+                            Online Payment <br />
                             <small class="text-muted"></small>
                           </label>
                         </div>
@@ -98,7 +98,7 @@
                             <input class="form-check-input" type="radio" name="paymentMethod" id="flexRadioDefault3" value="Wallet" <%= userWallet.balance >= totalPrice ? '' : 'disabled' %> />
                           <label class="form-check-label" for="flexRadioDefault3">
                             Wallet <br />
-                            <small class="text">Balance:<%=userWallet.balance?userWallet.banlance:0%></small><br>
+                            <small class="text">Balance:₹<%=userWallet.balance?userWallet.balance:0%></small><br>
                             <small class="text-muted"></small>
                           </label>
                           <%}else{%>
@@ -124,14 +124,14 @@
 
                     </div>
 
-                    <div>
-                      Have coupon
-                      <input type="text" name="couponCode" id="couponCode">
-                      <button type="button" onclick="checkCoupon()">Submit</button>
-                      <div id="couponMessage"></div>
-                    </div>
+                    <div class="mb-3">
+  Have coupon
+  <input type="text" name="couponCode" id="couponCode">
+  <button type="button" id="submit-btn" class="btn  shadow-0">Submit</button>
+  <div id="couponMessage"></div>
+</div>
 
-                    <div class="col-lg-8 mb-3">
+                   <div class="col-lg-8 mb-3">
                         <!-- Default radio -->
                         <div class="form-check h-100 border rounded-3">
                           <div class="p-3">
@@ -143,15 +143,18 @@
                                 <p class="mb-2">Discount:</p>
                                   <p class="mb-2 text-danger" id="discountValue">- ₹0</p>
                               </div>
-                              <div class="d-flex justify-content-between">
-                                <p class="mb-2">After Discount:</p>
-                                <p class="mb-2" id="discountedTotal">₹0</p>
+                              <div class=" d-flex justify-content-between" >
+                                <p class="mb-2 h-100" id="couponApplied" style="display: none;">Coupon Applied</p>
+                                <button type="button" style="display: none;" id="cancel-btn" class="btn  shadow-0">Cancel</button>
                               </div>
+                              
                               <hr />
                               <div class="d-flex justify-content-between">
                                 <p class="mb-2">Total price:</p>
                                 <p id="checkout-total" class="mb-2 fw-bold">₹<%= totalPrice %></p>
-                                <input type="hidden" id="checkout-total-input" name="checkoutTotalInput" >                            </div>
+                                <input type="hidden" id="checkout-total-input" name="checkoutTotalInput" >                           
+                               </div>
+                              
                           </div>
                             
                           </div>
@@ -168,7 +171,7 @@
                         <input type="hidden" id="selectedState" name="selectedState">
                   <div class="float-end">
                     <a class="btn" id="cancel-btn" href="/cart">Cancel</a>
-                    <button id="continueButton" class="btn  shadow-0" type="submit">Continue</button>
+                    <button id="continueButton" onclick="handleButtonClick()" class="btn  shadow-0" onclick="btnClick()" type="button">Continue</button>
 
                   </div>
                 </div>
@@ -208,25 +211,18 @@
                 
 
                 <hr />
-                <h6 class="text-dark my-4">Coupons Available</h6>
+                <h6 class="text-dark my-4 ">Coupons Available</h6>
                 <% availableCoupons.forEach(coupon=>{%>
                   <div class="d-flex align-items-center mb-4">
-                    <div class="me-3 position-relative">
-                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary">
-                        1
-                      </span>
+                    <div class="coupon-container">
+                        <p class="coupon-type"><%= coupon.discountType %></p>
+                        <p class="coupon-code">Code: <%= coupon.code %></p>
+                        <div id="discountPercentage" class="price  discount-percentage">
+                            Discount: <%= coupon.discountValue %>%
+                        </div>
                     </div>
-                    <div class="">
-                      <p class="bg-danger"><%= coupon.discountType %></p>
-                      <p  class="nav-link">
-                       Code: <%= coupon.code %><br />
-                      </p>
-
-                      <div id="discountPercentage" class="price text-muted">
-                        discount: <%= coupon.discountValue %>%
-                      </div>                    
-                    </div>
-                  </div>
+                </div>
+                
                   <% }); %>
 
 
@@ -239,8 +235,7 @@
       
       
      
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
     crossorigin="anonymous"></script>
     <!-- Bootstrap JS and dependencies -->
@@ -280,79 +275,403 @@
     document.getElementById('selectedState').value = state;
 
     return true; // Allow form submission
+    
 }
-
   // Declare checkoutTotalInput in the global scope
-const checkoutTotalInput = document.getElementById('checkout-total-input');
+//   const checkoutTotalInput = document.getElementById('checkout-total-input');
 
-function checkCoupon() {
-  const couponCode = document.getElementById('couponCode').value;
-  const couponMessage = document.getElementById('couponMessage');
-  const discountPercentageElement = document.getElementById('discountPercentage');
-  const totalPriceElement = document.getElementById('totalPrice');
+// function checkCoupon() {
+//   const couponCode = document.getElementById('couponCode').value;
+//   const couponMessage = document.getElementById('couponMessage');
+//   const discountPercentageElement = document.getElementById('discountPercentage');
+//   const totalPriceElement = document.getElementById('totalPrice');
+//   const discountValueElement = document.getElementById('discountValue');
+//   const totalAmount = parseFloat(totalPriceElement.textContent.replace('₹', '').trim());
+//   const discountPercentage = parseFloat(discountPercentageElement.getAttribute('data-discount-value'));
+//   const checkoutTotalElement = document.getElementById('checkout-total');
+
+//   const couponCodeInput = document.getElementById('couponCode');
+//   const submitBtn = document.getElementById('submit-btn');
+//   const cancelCouponBtn = document.getElementById('cancel-coupon-btn');
+
+
+//   console.log("asfasdfazsdf", totalAmount);
+
+//   fetch('/validateCoupon', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       couponCode,
+//       totalAmount,
+//       checkoutTotalInput: checkoutTotalInput.value,
+//     }),
+//   })
+//     .then(response => {
+//       if (response.status === 404) {
+//         // Coupon not found
+//         return { isValid: false, message: 'Coupon not found' };
+//       }
+//       if (!response.ok) {
+//         throw new Error(`HTTP error! Status: ${response.status}`);
+//       }
+//       return response.json();
+//     })
+//     .then(data => {
+//       // Handle the response from the server
+//       console.log(data);
+
+//   if (data.isValid) {
+//     // Coupon is valid
+//     couponMessage.textContent = 'Coupon is valid! '
+//     couponMessage.style.color = 'green'; // Set color to green
+//     checkoutTotalElement.textContent = '₹' + data.discountedTotal; // Update total amount
+
+//     document.getElementById('discountedTotal').textContent = '₹' + data.discountedTotal;
+//     discountValueElement.textContent = '- ₹' + data.discountValue;
+//     checkoutTotalInput.value = data.discountedTotal;
+//     console.log("discounted Total ", checkoutTotalInput.value);
+
+//     // Perform additional actions if needed
+//     // Hide the submit button and show the cancel button
+
+//     cancelCouponBtn.style.display = 'inline-block';
+//   } else {
+//     // Coupon is not valid or not found
+//     couponMessage.textContent = data.message || 'Coupon is not valid.';
+//     couponMessage.style.color = 'red'; // Set color to red
+
+//     // Reset the values to default
+//     checkoutTotalElement.textContent = '₹' + totalPrice; // Reset total amount
+//     document.getElementById('discountedTotal').textContent = '₹0'; // Reset discounted total
+//     discountValueElement.textContent = '- ₹0'; // Reset discount value
+//     checkoutTotalInput.value = totalPrice; // Reset input value
+
+//     // Show the submit button and hide the cancel button
+//     submitBtn.style.display = 'inline-block';
+//   }
+//   if(data.isEmpty){
+//         checkoutTotalElement.textContent = '₹' + data.discountedTotal; // Update total amount
+
+// document.getElementById('discountedTotal').textContent = '₹' + data.discountedTotal;
+// discountValueElement.textContent = '- ₹' + data.discountValue;
+// checkoutTotalInput.value = totalPrice;
+// console.log("discounted Total ", checkoutTotalInput.value);
+//       }
+// })
+//     .then(secondResponse => {
+//       // Handle the response from the second server request
+//       console.log(secondResponse);
+//     })
+//     .catch(error => {
+//       console.error('Fetch error:', error);
+//       // Handle errors if needed
+//     });
+
+// }
+
+
+
+
+document.getElementById('cancel-btn').addEventListener('click', cancelCoupon);
+
+document.getElementById('submit-btn').addEventListener('click', validateCoupon);
+const totalPriceElement = document.getElementById('totalPrice');
+const totalAmount = totalPriceElement.textContent.trim().replace('₹', '');
+  var checkoutTotalInput = document.getElementById('checkout-total-input');
   const discountValueElement = document.getElementById('discountValue');
-  const totalAmount = parseFloat(totalPriceElement.textContent.replace('₹', '').trim());
-  const discountPercentage = parseFloat(discountPercentageElement.getAttribute('data-discount-value'));
+  const discountedValue = discountValueElement.textContent.trim().replace(/₹|-/g, '');
   const checkoutTotalElement = document.getElementById('checkout-total');
+  const checkoutTotal = checkoutTotalElement.textContent.trim().replace('₹', '');
 
-  console.log("asfasdfazsdf", totalAmount);
 
-  fetch('/validateCoupon', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      couponCode,
-      totalAmount,
-      checkoutTotalInput: checkoutTotalInput.value,
-    }),
-  })
-    .then(response => {
-      if (response.status === 404) {
-        // Coupon not found
-        return { isValid: false, message: 'Coupon not found' };
+ 
+  checkoutTotalInput.value = totalAmount;
+  
+
+    async function validateCoupon() {
+      const couponCode = document.getElementById('couponCode').value;
+      const couponMessage = document.getElementById('couponMessage');
+
+      try {
+        const response = await fetch('/validateCoupon', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            couponCode,
+            totalAmount,
+            checkoutTotalInput: checkoutTotalInput.value,
+            discountedValue,
+            checkoutTotal
+           }),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          couponMessage.textContent = result.isValid ? 'Coupon is valid!' : 'Coupon is not valid or empty.';
+          handleCouponValidationResult(result);
+          document.getElementById("couponApplied").style.display = "block"
+          
+          document.getElementById("cancel-btn").style.display = "block"
+
+        } else {
+          couponMessage.textContent = 'Error validating coupon.';
+          document.getElementById("couponApplied").style.display = "none"
+          
+          document.getElementById("cancel-btn").style.display = "none"
+          
+        }
+      } catch (error) {
+        console.error('Error:', error.message);
+        couponMessage.textContent = 'An error occurred while validating the coupon.';
       }
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      // Handle the response from the server
-      console.log(data);
+    }
 
-      if (data.isValid) {
-        // Coupon is valid
-        couponMessage.textContent = 'Coupon is valid! '
-        couponMessage.style.color = 'green'; // Set color to green
-        checkoutTotalElement.textContent = '₹' + data.discountedTotal; // Update total amount
+    function handleCouponValidationResult(result) {
+    const { isValid, discountValue,checkoutTotal } = result;
 
-        document.getElementById('discountedTotal').textContent = '₹' + data.discountedTotal;
-        discountValueElement.textContent = '- ₹' + data.discountValue;
-        checkoutTotalInput.value = data.discountedTotal;
-        console.log("discounted Total ", checkoutTotalInput.value);
+    const discountValueElement = document.getElementById('discountValue');
+    const checkoutTotalElement = document.getElementById('checkout-total');
 
-        // Perform additional actions if needed
+    if (isValid) {
+      discountValueElement.textContent = `- ₹${discountValue}`;
+      checkoutTotalElement.textContent = ` ₹${checkoutTotal}`;
+    } else {
+      discountValueElement.textContent = `- ₹0`;
+      checkoutTotalElement.textContent = `₹${totalAmount}`;
+    }
+  }
 
-        // Now, after handling the response, make the second fetch request
-       
+
+  // function cancelCoupon() {
+    
+  //   const discountValueElement = document.getElementById('discountValue');
+  //   const couponAppliedText = document.getElementById('couponAppliedText');
+  //   const checkoutTotalInput = document.getElementById('checkout-total-input');
+
+  //   discountValueElement.textContent = `- ₹0`;
+  //   checkoutTotalElement.textContent = `₹${totalAmount}`;
+  //   checkoutTotalInput.value = '0';
+  //   couponAppliedText.textContent = '';
+  // }
+
+  async function cancelCoupon() {
+    const discountValueElement = document.getElementById('discountValue');
+
+    const totalPriceElement = document.getElementById('totalPrice');
+    const totalAmount = totalPriceElement.textContent.trim().replace('₹', '');
+    const couponMessage = document.getElementById('couponMessage');
+    const checkoutTotalElement = document.getElementById('checkout-total');
+
+
+    try {
+      // Send the original total price to the backend
+      const response = await fetch('/cancelCoupon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          totalAmount,
+        }),
+      });
+
+      if (response.ok) {
+        // Handle the response from the server (if needed)
+        const result = await response.json();
+        couponMessage.textContent = result.message || 'Coupon canceled successfully';
+        discountValueElement.textContent = `- ₹0`;
+        checkoutTotalElement.textContent = `₹${totalAmount}`;
       } else {
-        // Coupon is not valid
-        couponMessage.textContent = 'Coupon is not valid. '
-        couponMessage.style.color = 'red'; // Set color to red
-        // Perform addition
+        couponMessage.textContent = 'Error canceling coupon.';
       }
-    })
-    .then(secondResponse => {
-      // Handle the response from the second server request
-      console.log(secondResponse);
-    })
-    .catch(error => {
-      console.error('Fetch error:', error);
-      // Handle errors if needed
+    } catch (error) {
+      console.error('Error:', error.message);
+      couponMessage.textContent = 'An error occurred while canceling the coupon.';
+    }
+  }
+
+
+
+
+
+function handleButtonClick() {
+      const paymentOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+      if (!validateForm()) {
+         return; // Stop further execution if the form is not valid
+      }
+      if (paymentOption === 'onlinePayment'&&validateForm()) {
+         btnClick();
+      } else {
+         // If the payment option is not 'onlinePayment', submit the form
+         const form = document.getElementById('checkOut');
+         if (form) {
+            form.submit();
+         }
+      }
+   }
+
+  
+
+async function btnClick() {
+  var paymentOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+if(paymentOption=="onlinePayment"&&validateForm()){
+
+
+      try {
+        
+        const totalAmountText = document.getElementById('checkout-total').textContent;
+        const totalAmount = totalAmountText.replace('₹', '');
+        
+
+
+        const response = await fetch('/createOrder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            paymentOption: paymentOption, 
+            totalAmount: totalAmount,
+            currency: 'INR',
+          }),
+        });
+        const data = await response.json();
+        console.log('DATA : ', data.order);
+        console.log('DATA : ', data.amount);
+        console.log('DATA : ', data.currency);
+        console.log('signature:', data.signature);
+
+        if (data.paymentOption=='onlinePayment') {
+          console.log("working")
+          const order = data.order;
+          const orderId = order.id;
+          // If it's for online payment, proceed with Razorpay
+          const options = {
+            key: 'rzp_test_JGyt4WpGgZdibt',
+            amount: data.amount,
+            currency: data.currency,
+            name: 'Pro Players',
+            description: 'Test Transaction',
+            order_id: orderId,
+            handler:  function (response) {
+              console.log("Handler response data",response);
+              verifyPayment(response, data)
+            },
+            "modal": {
+              "ondismiss": function () {
+                console.log('Payment window closed');
+                paymentFailed(data);
+              }
+            },
+            prefill: {
+              name: 'John Doe',
+              email: 'john@example.com',
+              contact: '9000090000',
+            },
+            theme: {
+              color: '#fb7b24',
+            },
+          };
+          
+          const rzp = new Razorpay(options);
+          rzp.open();
+        }
+      } catch (error) {
+        console.error('Error initiating payment:', error);
+        console.error('Full error object:', error);
+        alert('Error during payment. Please try again.');
+      }
+    }
+  }
+
+
+
+    const btn = document.getElementById('continueButton');
+    btn.addEventListener('click', function (event) {
+      event.preventDefault();
+      btnClick();
     });
+
+
+
+
+
+    async function verifyPayment(payment, order) {
+      try {
+        var selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+        
+        var mobile = selectedAddress.getAttribute('data-mobile');
+        var houseName = selectedAddress.getAttribute('data-houseName');
+        var street = selectedAddress.getAttribute('data-street');
+        var city = selectedAddress.getAttribute('data-city');
+        var pincode = selectedAddress.getAttribute('data-pincode');
+        var state = selectedAddress.getAttribute('data-state');
+
+        // Set values of hidden input fields in the "Continue" form
+        document.getElementById('selectedMobile').value = mobile;
+        document.getElementById('selectedHouseName').value = houseName;
+        document.getElementById('selectedStreet').value = street;
+        document.getElementById('selectedCity').value = city;
+        document.getElementById('selectedPincode').value = pincode;
+        document.getElementById('selectedState').value = state;
+
+
+
+
+        const paymentOption = document.querySelector('input[name="paymentMethod"]:checked').value;
+        const response = await fetch('/verifyPayment',{
+          method:"POST",
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({
+            payment,
+            order,
+            paymentOption,
+            selectedMobile: mobile,
+                selectedHouseName: houseName,
+                selectedStreet: street,
+                selectedCity: city,
+                selectedPincode: pincode,
+                selectedState: state,
+          })
+        })
+        const responseData = await response.json();
+        console.log(responseData)
+      if (responseData.status) {
+          console.log("response is trrue")
+          window.location.href = '/order-confirmed';
+          
+      }else{
+        alert('Payment Failed. Try again later.');
+      }
+      } catch (error) {
+        console.error('Error verifying payment:', error);
+        alert('Error verifying payment. Please try again.');
+      }
+    
+    }
+    
+
+
+    async function paymentFailed(data) {
+  try {
+    console.log('Payment failed or window closed:', data);
+    alert('Payment failed. Please try again.');
+    window.location.href = '/checkOut';  } catch (error) {
+    console.error('Error handling payment failure:', error);
+  }
 }
+
+    
+
+
+
 
 </script>
 
