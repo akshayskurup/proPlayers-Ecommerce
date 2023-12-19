@@ -1,82 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
- <!-- Bootstrap Core CSS -->
- <link href="/css/vendors/bootstrap.min.css" rel="stylesheet">
-
- <!-- MetisMenu CSS -->
- <link href="/css/vendors/metisMenu.min.css" rel="stylesheet">
-
- <!-- DataTables CSS -->
- <link href="/css/vendors/dataTables/dataTables.bootstrap.css" rel="stylesheet">
-
- <!-- DataTables Responsive CSS -->
- <link href="/css/vendors/dataTables/dataTables.responsive.css" rel="stylesheet">
-
- <!-- Custom CSS -->
- <link href="/css/vendors/startmin.css" rel="stylesheet">
-
- <!-- Custom Fonts -->
- <link href="/css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
-
- <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
- 
-</head>
-<style>
- .table-description {
-   max-width: 100px;
-  
- }
-</style>
-<script src="https://unpkg.com/cropperjs"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Initialize Cropper.js on the image with id "imagePreview"
-    var image = document.getElementById('imagePreview');
-    
-    // Set a fixed size for the Cropper container (adjust as needed)
-    var cropperContainer = document.getElementById('cropperContainer');
-    var cropper = new Cropper(image, {
-      aspectRatio: 0, // You can set the aspect ratio as needed
-      viewMode: 2, // You can set the view mode as needed
-      dragMode: 'move', // You can set the drag mode as needed
-      // ... Other Cropper options
-    });
-
-    // Event listener for the file input change
-    document.getElementById('image_uploader').addEventListener('change', function () {
-      // Set the source of the Cropper to the selected image file
-      var input = this;
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        // Update the Cropper's image source
-        cropper.replace(e.target.result);
-      };
-      reader.readAsDataURL(input.files[0]);
-
-      // Log to console for debugging
-      console.log('File selected, Cropper updated.');
-    });
-
-    // Event listener for the "Crop Image" button
-    document.getElementById('cropButton').addEventListener('click', function () {
-      // Get the cropped data as a base64-encoded string
-      var croppedData = cropper.getCroppedCanvas().toDataURL();
-
-      // Set the value of the hidden input for cropped image
-      document.getElementById('croppedImageData').value = croppedData;
-
-      // Display a success message or perform any other actions as needed
-      console.log('Image cropped successfully!');
-    });
-  });
-</script>
-<body>
-    <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management/edit/<%=productId%>" onsubmit="return validateForm()" enctype="multipart/form-data">
+<%-include("adminHeader.ejs")%>
+    <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management/edit/<%=productId%>" onsubmit="return validateForm()" enctype="multipart/form-data" id="edit-products">
         <fieldset>
     
           <!-- Form Name -->
@@ -305,7 +228,27 @@ if (isNaN(price) || price < 0) {
     }
 
 }
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('edit-products');
+
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Product Updated',
+                text: 'The product has been successfully updated.',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If the user clicks 'OK', submit the form
+                    form.submit();
+                }
+            });
+        });
+    }
+});
+
 
       </script>
-</body>
-</html>
+<%-include('adminFooter.ejs')%>

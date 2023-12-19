@@ -1,21 +1,16 @@
-Pendings
-pagination for products user side
-profile picture implementation not done
-multiple images upload not done
-total price on final order sucessful page
-sorting/filter not done
 
-Next week
-User side :
-Integrate online payment method(Razorpay
- or Paypal)
-Change order status(cancel,return etc.)
-Coupon Management
-Search, Category filtering
-Wishlist(optional)
-Wallet(for canceled orders)
-
-Admin side : 
-Coupon Management
+Filter pagination sort and search for every grid : admin side
 
 
+multiple images upload not done : not proper
+Delete single image ,Expiry for return
+Image preview need to updated with change files
+reason for cancelling product
+
+completed
+Confirmation if required,No results found placeholder
+Need to add validations for every forms
+Form validations for coupon
+There must be common layout for all pages : admin
+Confirmation for cancelling product
+Filter pagination sort and search should be interconnected

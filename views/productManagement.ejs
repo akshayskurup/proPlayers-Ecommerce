@@ -2,7 +2,7 @@
 
 
 
-  <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management" onsubmit="return validateForm()" enctype="multipart/form-data">
+  <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/product-management" onsubmit="return validateForm()" enctype="multipart/form-data" id="add-product">
     <fieldset>
 
       <!-- Form Name -->
@@ -394,7 +394,32 @@ serverDateElements.forEach(serverDateElement => {
 setTimeout(() => {
               document.getElementById('message-container').style.display = 'none';
           }, 3000);
+
+
+          document.addEventListener('DOMContentLoaded', function () {
+  var form = document.getElementById('add-product');
+
+  if (form) {
+      form.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          Swal.fire({
+                    icon: 'success',
+                    title: 'Product Added',
+                    text: 'New product has been successfully added.',
+                  }).then((result) => {
+              if (result.isConfirmed) {
+                  // If the user clicks 'Yes', submit the form
+                  form.submit();
+              }
+          });
+      });
+  }
+});
   </script>
+
+
+
 </body>
 
 </html>

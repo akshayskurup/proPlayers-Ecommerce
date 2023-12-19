@@ -159,4 +159,42 @@ a {
     background:#fb7b24;
     color: white;
 }
+.line{
+    height: 5px;
+    width: 100%;
+    background: #fb7b24;
+}
+.home-container {
+    position: relative;
+    background-image: url('/homeimgs/footer.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center, top right, center center;
+    background-repeat: repeat-y, no-repeat, repeat;
+    background-attachment: fixed, scroll, fixed;
+}
 
+#category-container {
+    position: relative; /* Ensure stacking context within the container */
+    z-index: 1; /* Place the container above the background overlay */
+}
+
+#category-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -63px;
+    width: 110%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.63); /* Background overlay color */
+    z-index: -1; /* Place the overlay behind the container content */
+}
+.watch{
+    border: 4px solid #ffffff;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: 0 8px 16px rgb(5, 71, 214);
+}
+
+
+/* Add styles for other elements as needed */

@@ -9,7 +9,7 @@ orderManagementController.showData = async (req,res)=>{
         const page = parseInt(req.query.page) || 1;
         const skip = (page - 1) * ITEMS_PER_PAGE;
 
-        const orderDetails = await orders.find().populate({path:'customer'}).populate({
+        const orderDetails = await orders.find().sort({_id:-1}).populate({path:'customer'}).populate({
             path: 'items.product',
             model: 'products',
             select: 'productName image', }).skip(skip).limit(ITEMS_PER_PAGE);

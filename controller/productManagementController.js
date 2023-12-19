@@ -81,23 +81,25 @@ productManagementController.handleData = async (req, res) => {
     const capitalizedProductName = productName.toLowerCase().replace(/(?:^|\s)\S/g, function (char) {
         return char.toUpperCase();
       });
-
+      const ITEMS_PER_PAGE = 10;
     let categories = await category.find();
     let categoryId;
     const files = req.files;
     const imagePaths = files.map((file) => '/productimgs/' + file.filename);
+    const updateMess=req.query.update||""
 
     try {
-        
+      const page = parseInt(req.query.page) || 1;
+      const skip = (page - 1) * ITEMS_PER_PAGE;
+      const totalProducts = await productSchema.countDocuments();
+      const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+      const products = await productSchema.find().sort({_id:-1}).populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
+
         categoryId = new mongoose.Types.ObjectId(productCategory);
-    } catch (error) {
-        console.error("Error converting productCategory to ObjectId:", error);
-        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Error converting productCategory to ObjectId",updateMess });
-    }
+    
 
     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
         console.error("Invalid ObjectId after conversion:", categoryId);
-        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Invalid productCategory ObjectId", updateMess });
     }
 
     let existingProduct = await productSchema.find({
@@ -109,7 +111,7 @@ productManagementController.handleData = async (req, res) => {
       
       if (existingProduct.length > 0) {
         console.log('Product with the same name already exists.');
-        return res.render("productManagement", { categories,currentPage: page, totalPages, message: "Product Name already exists", updateMess });
+        return res.render("productManagement", { products,categories,currentPage: page, totalPages, message: "Product Name already exists", updateMess:"" });
 
       } else {
         const newProduct = new productSchema({
@@ -123,12 +125,6 @@ productManagementController.handleData = async (req, res) => {
             price,
             image: imagePaths 
           });
-
-      }
-
- 
-
-  try {
     const savedProduct = await newProduct.save();
     await category.findOneAndUpdate(
       { _id: categoryId },
@@ -137,6 +133,7 @@ productManagementController.handleData = async (req, res) => {
     );
 
     res.redirect('/product-management?update=Successfully%20Inserted%20Product');
+  }
   } catch (err) {
     console.error("Error during product creation:", err);
     res.status(500).send('Internal Server Error');
