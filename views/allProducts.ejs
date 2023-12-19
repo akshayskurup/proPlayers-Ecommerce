@@ -50,10 +50,13 @@
        
                 
                   
+        
 
+        <% if(product.length>0){%>
         <div class="container mt-5">
           <div class="row g-5">
             <% product.forEach((item) => { %>
+              
               <div class="col-md-3" style="width: 250px; margin-left: 45px;">
                 <div class="card product-card" style="background: #0d0e1b;">
                   <img height="250px" src="<%= item.image[0] %>" class="card-img-top" alt="...">
@@ -70,9 +73,12 @@
                   </div>
                 </div>
               </div>
+              
             <% }); %>
           </div>
         </div> 
+        
+        <%if(totalPages){%>
         
         <div class="pagination-container">
           <ul class="pagination">
@@ -83,11 +89,17 @@
               <% } %>
           </ul>
       </div>
+      <%}%>
+      
+      
             </section>
         
     </main>
   </div>
 </div>
+<%}else{%>
+  <p class="text-center">No products found</p>
+<%}%>
     
     
     <!-- End Main -->

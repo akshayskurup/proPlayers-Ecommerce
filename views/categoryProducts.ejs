@@ -23,8 +23,8 @@
                     Sort
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
-                    <li><a class="dropdown-item" href="#">Price: Low to High</a></li> 
+                    <li><a class="dropdown-item" href="/products/<%=productCategory%>/sort/-1">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="/products/<%=productCategory%>/sort/1">Price: Low to High</a></li> 
                   </ul>
                 </li>
               </ul>
@@ -34,10 +34,11 @@
               <%})%>
               
               
-              <form action="/searchProducts" method="GET" class="d-flex" style="margin-left: auto;">
-                <input type="search" name="query" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" style="width: 280px;" />
-                    <button type="submit" class="btn search-button" data-mdb-ripple-init>Search</button>
-              </form>
+              <form action="/categoryProducts/<%= productCategory %>" method="GET" class="d-flex" style="margin-left: auto;">
+                <input type="search" name="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" style="width: 280px;" />
+                <button type="submit" class="btn search-button" data-mdb-ripple-init>Search</button>
+            </form>
+            
 
               
               
@@ -51,6 +52,7 @@
         <div class="container mt-5">
           
           <div class="row g-5">
+            <% if(products){%>
             
               <% products.forEach((item) => { %>
               <div class="col-md-3" style="width: 250px; margin-left: 45px;">
@@ -65,12 +67,36 @@
                   </div>
               </div>
               <% }); %>
+              <!-- <div class="pagination-container">
+                <ul class="pagination">
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="<%= currentPage === i ? 'active' : '' %>">
+                            <a href="/products/<%= productCategory %>/sort/<%= sortDirection %>?page=<%= i %>&sortField=<%= sortField %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div> -->
+            <div class="pagination-container">
+              <ul class="pagination">
+                  <% for (let i = 1; i <= totalPages; i++) { %>
+                      <li class="<%= currentPage === i ? 'active' : '' %>">
+                          <a href="/products/<%= productCategory %>/<%= sortDirection ? 'sort/' + sortDirection : '' %>?page=<%= i %>&sortField=<%= sortField %>"><%= i %></a>
+                      </li>
+                  <% } %>
+              </ul>
+          </div>
+          
+          
+              <%}else{%>
+              <p>No Products Found</p>
+              <%}%>
           </div>
       </div>
             </section>
         
     </main>
   </div>
+  
     
     
     <!-- End Main -->

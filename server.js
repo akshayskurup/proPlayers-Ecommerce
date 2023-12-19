@@ -7,6 +7,8 @@ const routes = require('./routes/router');
 const connectDB = require('./model/database');
 const nocache = require("nocache");
 const crypto = require('crypto');
+const adminRouter = require("./routes/adminRouter")
+const userRouter = require("./routes/userRouter")
 
 // Load environment variables from .env
 require('dotenv').config();
@@ -36,7 +38,11 @@ app.use(express.static('public'));
 app.use('/productimgs', express.static(path.join(__dirname, 'public', 'productimgs')));
 
 // Use routes
-app.use('/', routes);
+// app.use('/', routes);
+app.use(userRouter);
+
+// Use the admin router for admin routes
+app.use(adminRouter);
 
 
 // Set view engine and views

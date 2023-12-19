@@ -1,3 +1,16 @@
-replace imgs
+
+Filter pagination sort and search for every grid : admin side
 
 
+multiple images upload not done : not proper
+Delete single image ,Expiry for return
+Image preview need to updated with change files
+reason for cancelling product
+
+completed
+Confirmation if required,No results found placeholder
+Need to add validations for every forms
+Form validations for coupon
+There must be common layout for all pages : admin
+Confirmation for cancelling product
+Filter pagination sort and search should be interconnected

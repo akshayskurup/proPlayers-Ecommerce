@@ -1,36 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <!-- Bootstrap Core CSS -->
-     <link href="/css/vendors/bootstrap.min.css" rel="stylesheet">
-
-     <!-- MetisMenu CSS -->
-     <link href="/css/vendors/metisMenu.min.css" rel="stylesheet">
-
-     <!-- DataTables CSS -->
-     <link href="/css/vendors/dataTables/dataTables.bootstrap.css" rel="stylesheet">
-
-     <!-- DataTables Responsive CSS -->
-     <link href="/css/vendors/dataTables/dataTables.responsive.css" rel="stylesheet">
-
-     <!-- Custom CSS -->
-     <link href="/css/vendors/startmin.css" rel="stylesheet">
-
-     <!-- Custom Fonts -->
-     <link href="/css/vendors/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-     <!--Sweet Alert-->
-     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-     <!--[if lt IE 9]>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-     <![endif]-->
+<%-include("adminHeader.ejs")%>
 
      <style>
          .custom-form {
@@ -46,7 +14,7 @@
      </style>
 
 </head>
-<body>
+
     <form action="/edit-coupon/<%=couponData._id%>" method="post" onsubmit="return validate()" id="edit-coupon">
         <div class="container">
             <div class="custom-form">
@@ -84,70 +52,71 @@
         </div>
     </form>
     <script>
-          function validate() {
-      let discountValue= document.getElementById("discountValue");
-      let minimumCartAmount = document.getElementById("minimumCartAmount")
-      const expiryInput = document.getElementById("expiry");
-
-     
-      const errorMessageContainer = document.getElementById("error-message-container");
-
-      let trimmedDiscountValue = discountValue.value.trim();
-      let expression = /^[0-9]+$/;
-      let expiryDate = new Date(expiryInput.value);
-      let currentDate = new Date();
-
-      errorMessageContainer.innerText = "";
-
-      if (trimmedDiscountValue === "") {
-        errorMessageContainer.innerText = "Please fill the field";
-        return false;
-      }
-      if(!expression.test(trimmedDiscountValue)){
-        errorMessageContainer.innerText = "Type positive number only";
-        return false
-      }
-      if (parseInt(trimmedDiscountValue, 10) >= 100) {
-         errorMessageContainer.textContent = "Enter a value less than 100%";
-         return false;
-      }
-      if (parseInt(trimmedDiscountValue, 10) <= 0) {
-         errorMessageContainer.textContent = "Enter a value greater than 0%";
-         return false;
-      }
-      if(minimumCartAmount.value<=0){
-        errorMessageContainer.textContent = "Enter a value greater than 0";
-         return false;
-      }
-      if (expiryDate <= currentDate) {
-    errorMessageContainer.textContent = "Please enter a future date";
-    return false;
-  }
-
-        return true
-      
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-        var form = document.getElementById('edit-coupon');
-
-        if (form) {
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-
-                Swal.fire({
-                          icon: 'success',
-                          title: 'Coupon Edited',
-                          text: 'Coupon Edited successfully.',
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('edit-coupon');
+    
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+    
+                    // Validate the form
+                    if (validate()) {
+                        // SweetAlert for successful validation
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Coupon Inserted',
+                            text: 'Coupon has been Edited successfully.',
                         }).then((result) => {
-                    if (result.isConfirmed) {
-                        // If the user clicks 'Yes', submit the form
-                        form.submit();
+                            if (result.isConfirmed) {
+                                // If the user clicks 'Yes', submit the form
+                                form.submit();
+                            }
+                        });
                     }
                 });
-            });
+            }
+        });
+    
+        function validate() {
+            let discountValue = document.getElementById("discountValue");
+            let minimumCartAmount = document.getElementById("minimumCartAmount");
+            const expiryInput = document.getElementById("expiry");
+    
+            const errorMessageContainer = document.getElementById("error-message-container");
+    
+            let trimmedDiscountValue = discountValue.value.trim();
+            let expression = /^[0-9]+$/;
+            let expiryDate = new Date(expiryInput.value);
+            let currentDate = new Date();
+    
+            errorMessageContainer.innerText = "";
+    
+            if (trimmedDiscountValue === "") {
+                errorMessageContainer.innerText = "Please fill the field";
+                return false;
+            }
+            if (!expression.test(trimmedDiscountValue)) {
+                errorMessageContainer.innerText = "Type positive numbers only";
+                return false
+            }
+            if (parseInt(trimmedDiscountValue, 10) >= 100) {
+                errorMessageContainer.textContent = "Enter a value less than 100%";
+                return false;
+            }
+            if (parseInt(trimmedDiscountValue, 10) <= 0) {
+                errorMessageContainer.textContent = "Enter a value greater than 0%";
+                return false;
+            }
+            if (minimumCartAmount.value <= 0) {
+                errorMessageContainer.textContent = "Enter a value greater than 0";
+                return false;
+            }
+            if (expiryDate <= currentDate) {
+                errorMessageContainer.textContent = "Please enter a future date";
+                return false;
+            }
+    
+            return true;
         }
-    });
-
     </script>
-</body>
-</html>
+<%-include("adminFooter.ejs")%>

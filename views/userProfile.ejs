@@ -171,45 +171,62 @@
               var deleteButtons = document.querySelectorAll('.delete-btn');
           
               deleteButtons.forEach(function (button) {
-                button.addEventListener('click', function () {
-                  var addressIndex = button.getAttribute('data-address-index');
-          
-                  fetch('/delete-address', {
+    button.addEventListener('click', function () {
+        var addressIndex = button.getAttribute('data-address-index');
+
+        // Show a confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User clicked "Yes, delete it!"
+                fetch('/delete-address', {
                     method: 'POST',
                     headers: {
-                      'Content-Type': 'application/json',
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ addressIndex: addressIndex }),
-                  })
+                })
                     .then(response => response.json())
                     .then(data => {
-                      if (data.success) {
-                        // Show SweetAlert success message
-                        Swal.fire({
-                          icon: 'success',
-                          title: 'Address Deleted',
-                          text: 'Your address has been successfully deleted.',
-                        }).then(function () {
-                          // Remove the deleted address element from the DOM
-                          var deletedAddress = document.querySelector('.address-card[data-index="' + addressIndex + '"]');
-                          if (deletedAddress) {
-                            deletedAddress.remove();
-                          }
-                        });
-                      } else {
-                        // Show SweetAlert error message
-                        Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'Failed to delete address. Please try again.',
-                        });
-                      }
+                        if (data.success) {
+                            // Show SweetAlert success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Address Deleted',
+                                text: 'Your address has been successfully deleted.',
+                            }).then(function () {
+                                // Remove the deleted address element from the DOM
+                                var deletedAddress = document.querySelector('.address-card[data-index="' + addressIndex + '"]');
+                                if (deletedAddress) {
+                                    deletedAddress.remove();
+                                }
+                            });
+
+                        } else {
+                            // Show SweetAlert error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete address. Please try again.',
+                            });
+                        }
                     })
                     .catch(error => {
-                      console.error('Error:', error);
+                        console.error('Error:', error);
                     });
-                });
-              });
+            }
+            // else: User clicked "Cancel" or closed the dialog, do nothing
+        });
+    });
+});
             });
           </script>
     
