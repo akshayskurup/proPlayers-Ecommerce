@@ -175,8 +175,6 @@ productManagementController.handleEditData = async (req, res) => {
     productName,
     productCategory,
     publisher,
-    size,
-    convertedSize,
     totalQuantity,
     description,
     releasedDate,
@@ -188,9 +186,7 @@ productManagementController.handleEditData = async (req, res) => {
 
   const capitalizedProductName = productName
     .toLowerCase()
-    .replace(/(?:^|\s)\S/g, function (char) {
-      return char.toUpperCase();
-    });
+    .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
 
   try {
     const existingProduct = await productSchema.findOne({
@@ -201,7 +197,6 @@ productManagementController.handleEditData = async (req, res) => {
     });
 
     if (existingProduct && existingProduct._id != productId) {
-
       return res.render("editProduct", {
         categories,
         product,
@@ -211,16 +206,24 @@ productManagementController.handleEditData = async (req, res) => {
       });
     }
 
-    let newImagePaths = [];
-    const files = req.files;
+    // Initialize gameImages array
+    let gameImages = [];
+    let existingImages = [];
 
-    if (files && files.length > 0) {
+    for (let i = 1; i <= 4; i++) {
+      const fileKey = `gameImages${i}`;
+      if (req.files[fileKey] && req.files[fileKey].length > 0) {
+        // If a new file is uploaded, update the image path
+        gameImages[i - 1] = `/productimgs/${req.files[fileKey][0].filename}`;
+        existingImages.push(product.image[i - 1]);
 
-      newImagePaths = files.map((file) => '/productimgs/' + file.filename);
-    } else {
-      newImagePaths = product.image || [];
+      } else {
+        // If no new file is uploaded, keep the existing image
+        gameImages[i - 1] = product.image[i - 1];
+      }
     }
-
+    
+    // Remove null values and preserve the order
     const updatedProduct = await productSchema.findByIdAndUpdate(
       productId,
       {
@@ -232,7 +235,7 @@ productManagementController.handleEditData = async (req, res) => {
         description,
         releasedDate,
         price,
-        image: newImagePaths,
+        image: gameImages,
       },
       { new: true }
     );
@@ -241,6 +244,23 @@ productManagementController.handleEditData = async (req, res) => {
       return res.status(404).send('Product not found');
     }
 
+    existingImages.forEach((existingImagePath) => {
+      // Prepend the base path to the existing image path
+      const fullPath = path.join('D:\\First Project\\public', existingImagePath);
+    
+      try {
+        // Check if the file exists before attempting to delete it
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+          console.log(`Deleted file: ${fullPath}`);
+        } else {
+          console.log(`File not found: ${fullPath}`);
+        }
+      } catch (err) {
+        console.error(`Error deleting file: ${fullPath}`, err);
+        // Handle the error as needed
+      }
+    });
     res.redirect('/product-management?update=Successfully%20Edited%20Product');
   } catch (err) {
     console.error("Error during updating product:", err);
@@ -248,8 +268,54 @@ productManagementController.handleEditData = async (req, res) => {
   }
 };
 
+productManagementController.removeImage = async(req,res)=>{
+  console.log("Remove image haiiii")
+  console.log(req.body)
+  const productId = req.body.productId
+  const product = await productSchema.findById(productId);
+  console.log("product in removeimage",product)
+  try {
+    // Get the image index to remove from the request body
+    console.log("inside try")
+    const imageIndexToRemove = parseInt(req.body.imageIndexToRemove);
+    console.log("Before 1st if")
+    if (!isNaN(imageIndexToRemove) && imageIndexToRemove >= 0 && imageIndexToRemove < product.image.length) {
+      const imagePathToRemove = path.join('D:\\First Project\\public', product.image[imageIndexToRemove]);
 
+      // Check if the file exists before attempting to delete it
+      console.log("Before second if")
+      try {
+        // Check if the file exists before attempting to delete it
+        await fs.promises.access(imagePathToRemove);
+      
+        // If the file exists, proceed with deletion
+        await fs.promises.unlink(imagePathToRemove);
+        console.log(`Deleted file: ${imagePathToRemove}`);
+      
+        // Set the path in the product object to an empty string to reflect the removal
+        product.image[imageIndexToRemove] = '';
+      
+        // Save the updated product to the database (assuming you're using some sort of database)
+        await product.save();
+      
+        // Send a response indicating success
+        res.status(200).json({ message: 'Image removed successfully.' });
+        return;
+      } catch (err) {
+        console.error(`Error removing image: ${err.message}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      
+    } else {
+      console.log('Invalid image index provided.');
+    }
 
-
-
+    // Send an error response if the image removal fails
+    res.status(400).json({ error: 'Image removal failed. Invalid index or file not found.' });
+  } catch (err) {
+    console.error('Error removing image:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
 module.exports = productManagementController;

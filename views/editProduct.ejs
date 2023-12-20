@@ -104,25 +104,50 @@
           <input type="hidden" id="existingImageData" name="existingImage" value="">
 
               
-          <div class="form-group">
-            <label class="col-md-4 control-label">Image</label>
-            <input
-            class="input-file"
-                type="file"
-                name="gameImages"
-                id="imageInput"
-                multiple 
-            />
-            <img id="imagePreview" style="max-width: 100%" />
-            <% product.image.forEach((image, index) => { %>
-              <img id="imagePreview<%= index %>" src="<%= image %>" style="width: 200px; height: 150px;" />
-            <% }); %>
-            
-            <div id="errorImage" style="color: red;"></div>
-        
-           
-        </div>
-        
+           <!-- Image 1 -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Image 1</label>
+  <input type="hidden" name="imageIndex0" value="1" />
+  <input class="input-file" type="file" name="gameImages1" id="imageInput1" onchange="previewImage(this, 0)"/>
+  <img id="imagePreview0" src="<%= product.image[0]%>" style="width: 200px; height: 150px;"/>
+  <button type="button" onclick="removeImage(0)">Remove this image</button>
+  <div id="errorImage" style="color: red;"></div>
+</div>
+
+<!-- Image 2 -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Image 2</label>
+  <input type="hidden" name="imageIndex1" value="2" />
+  <input class="input-file" type="file" name="gameImages2" id="imageInput2" onchange="previewImage(this, 1)"/>
+  <img id="imagePreview1" src="<%= product.image[1]%>" style="width: 200px; height: 150px;"/>
+  <button type="button" onclick="removeImage(1)">Remove this image</button>
+  <div id="errorImage" style="color: red;"></div>
+</div>
+
+<!-- Image 3 -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Image 3</label>
+  <input type="hidden" name="imageIndex2" value="3" />
+  <input class="input-file" type="file" name="gameImages3" id="imageInput3" value="<%=product.image[2]%>" onchange="previewImage(this, 2)"/>
+  <img id="imagePreview2" src="<%= product.image[2]%>" style="width: 200px; height: 150px;"/>
+  <button type="button" onclick="removeImage(2)">Remove this image</button>
+  <div id="errorImage" style="color: red;"></div>
+</div>
+
+<!-- Image 4 -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Image 4</label>
+  <input type="hidden" name="imageIndex3" value="4" />
+  <input class="input-file" type="file" name="gameImages4" id="imageInput4" value="<%=product.image[3]%>" onchange="previewImage(this, 3)"/>
+  <img id="imagePreview3" src="<%= product.image[3]%>" style="width: 200px; height: 150px;"/>
+  <button type="button" onclick="removeImage(3)">Remove this image</button>
+  <div id="errorImage" style="color: red;"></div>
+</div>
+
+<input type="text" name="productId" id="productId" value="<%=product._id%>" placeholder="<%=product._id%>">
+
+          
+          
         
           
               <!-- File Button -->
@@ -249,6 +274,102 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+
+
+// document.getElementById('imageInput1').addEventListener('change', function () {
+//   // Update the hidden input value with the correct index
+//   document.getElementById('imageIndex0').value = 0;
+// });
+
+// document.getElementById('imageInput2').addEventListener('change', function () {
+//   document.getElementById('imageIndex1').value = 1;
+// });
+
+// document.getElementById('imageInput3').addEventListener('change', function () {
+//   document.getElementById('imageIndex2').value = 2;
+// });
+
+// document.getElementById('imageInput4').addEventListener('change', function () {
+//   document.getElementById('imageIndex3').value = 3;
+// });
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const fileInputs = document.querySelectorAll('.input-file');
+
+  fileInputs.forEach(function (fileInput, index) {
+    fileInput.addEventListener('change', function () {
+      const hiddenIndexInput = document.getElementById(`imageIndex${index}`);
+      hiddenIndexInput.value = index;
+    });
+  });
+});
+  async function removeImage(imageIndex) {
+    // Set the corresponding input file to an empty string
+    const imageInputId = `#imageInput${imageIndex}`;
+  const imagePreviewId = `#imagePreview${imageIndex}`;
+
+  // Log the IDs for debugging
+  console.log('Attempting to remove image with IDs:', imageInputId, imagePreviewId);
+
+  // Set the corresponding input file to an empty string
+  const imageInput = document.querySelector(imageInputId);
+  if (imageInput) {
+    imageInput.value = '';
+  } else {
+    console.error(`Image input not found: ${imageInputId}`);
+  }
+
+  // Hide the image preview
+  const imagePreview = document.querySelector(imagePreviewId);
+  if (imagePreview) {
+    imagePreview.src = '';
+  } else {
+    console.error(`Image preview not found: ${imagePreviewId}`);
+  }
+
+    var productId = document.getElementById('productId').value
+    console.log(productId);
+
+    try {
+      const response = await fetch('/remove-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageIndexToRemove: imageIndex,productId: productId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message);
+      } else {
+        const errorData = await response.json();
+        console.error('Error removing image:', errorData.error);
+      }
+    } catch (error) {
+      console.error('Error removing image:', error);
+    }
+  }
+
+  function previewImage(input, index) {
+    var previewElement = document.getElementById("imagePreview" + index);
+    var errorElement = document.getElementById("errorImage" + index);
+
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        previewElement.src = e.target.result;
+        errorElement.innerHTML = ""; // Clear error message
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      previewElement.src = ""; // Clear preview if no file selected
+      errorElement.innerHTML = "No image selected";
+    }
+  }
 
       </script>
 <%-include('adminFooter.ejs')%>

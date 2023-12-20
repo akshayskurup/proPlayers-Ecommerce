@@ -34,7 +34,13 @@ adminRouter.get('/product-management',productManagement.showData)
 adminRouter.post('/product-management',productManagement.upload.array('gameImages', 4),productManagement.handleData)
 adminRouter.get('/product-management/edit/:id',productManagement.showEditForm)
 adminRouter.get('/search-products',productManagementController.searchProducts)
-adminRouter.post('/product-management/edit/:id',productManagement.upload.array('gameImages', 4),productManagement.handleEditData)
+adminRouter.post('/product-management/edit/:id', productManagement.upload.fields([
+    { name: 'gameImages1', maxCount: 1 },
+    { name: 'gameImages2', maxCount: 1 },
+    { name: 'gameImages3', maxCount: 1 },
+    { name: 'gameImages4', maxCount: 1 },
+  ]),productManagement.handleEditData);
+adminRouter.post('/remove-image',productManagement.removeImage)
 adminRouter.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
 
 adminRouter.get('/adminPanel/edit/:id',editCategoryController.showEditData)

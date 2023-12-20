@@ -129,9 +129,10 @@
                       name="gameImages"
                       id="imageInput"
                       multiple
+                      onchange="previewImages(this)"
                     />
-                    <img id="imagePreview" style="max-width: 100%" />
-                    <div id="errorImage" style="color: red;"></div>
+                    <div id="imagePreviewContainer"></div>
+    <div id="errorImage" style="color: red;"></div>
 
                   </div>
 
@@ -265,6 +266,33 @@
         responsive: true
       });
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+  var form = document.getElementById('add-product');
+
+  if (form) {
+      form.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          if(validateForm()){
+
+          
+          Swal.fire({
+                    icon: 'success',
+                    title: 'Product Added',
+                    text: 'New product has been successfully added.',
+                  }).then((result) => {
+              if (result.isConfirmed) {
+                  // If the user clicks 'Yes', submit the form
+                  form.submit();
+              }
+          });
+        }
+      });
+  }
+});
+
+
   // Function to validate the form
   function validateForm() {
     var productName = document.getElementById('product_name').value.trim();
@@ -396,26 +424,31 @@ setTimeout(() => {
           }, 3000);
 
 
-          document.addEventListener('DOMContentLoaded', function () {
-  var form = document.getElementById('add-product');
+         
 
-  if (form) {
-      form.addEventListener('submit', function (e) {
-          e.preventDefault();
+ function previewImages(input) {
+        var previewContainer = document.getElementById("imagePreviewContainer");
+        previewContainer.innerHTML = ""; // Clear previous previews
 
-          Swal.fire({
-                    icon: 'success',
-                    title: 'Product Added',
-                    text: 'New product has been successfully added.',
-                  }).then((result) => {
-              if (result.isConfirmed) {
-                  // If the user clicks 'Yes', submit the form
-                  form.submit();
-              }
-          });
-      });
-  }
-});
+        var files = input.files;
+
+        for (var i = 0; i < files.length; i++) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var image = document.createElement("img");
+                image.src = e.target.result;
+                image.style.width = "150px";
+                image.style.height = "150px";
+                image.style.margin ="20px"
+                previewContainer.appendChild(image);
+            };
+
+            reader.readAsDataURL(files[i]);
+        }
+    }
+
+
   </script>
 
 
