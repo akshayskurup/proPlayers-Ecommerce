@@ -15,3 +15,20 @@ Delete single image
 Image preview need to updated with change files
 
 
+
+
+next week task
+ 
+ 	
+User side :
+Invoice download (pending :- show only after delivered and all , set gst , )
+Offer module(product offer, category offer,Referal offer).
+Admin side :
+Banner management
+Admin Dashboard - Chart with filter(yearly,monthly etc.)
+Sales Report - Pdf and excel download(with order summary)
+
+
+completed
+
+Invoice download(almost)

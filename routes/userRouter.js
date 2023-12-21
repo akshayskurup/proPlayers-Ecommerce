@@ -16,6 +16,7 @@ const addAddressController = require('../controller/addAddressController')
 const ordersController = require('../controller/ordersController')
 const allProductsController = require('../controller/allProductsController')
 const walletManagementController = require('../controller/walletManagementController')
+const pdfController = require('../controller/pdfController')
 
 
 
@@ -90,6 +91,8 @@ userRouter.get('/orders',ordersController.showData)
 userRouter.post('/orders/:orderId',ordersController.cancelOrder)
 userRouter.post('/orders-return/:orderId',ordersController.returnOrder)
 userRouter.get('/order-details/:orderId',ordersController.orderDetails)
+// userRouter.get('/download-invoice/:orderId',ordersController.generatePdf)
+userRouter.get('/generate-invoice/:orderId',pdfController.generateInvoice);
 
 userRouter.get('/wallet',walletManagementController.showData)
 

@@ -4,6 +4,11 @@ let Product = require('../model/productSchema')
 let category = require('../model/categorySchema')
 let User = require('../model/userSchema')
 let wallet = require('../model/walletSchema')
+const pdfController = require('./pdfController');
+const { createInvoice } = require('../controller/pdfController');
+const path = require('path');
+const fs = require('fs');
+
 const ITEMS_PER_PAGE = 7;
 ordersController.showData = async (req,res)=>{
     try {
@@ -203,5 +208,47 @@ ordersController.orderDetails = async (req,res)=>{
     }
     
 }
+
+
+
+ordersController.generatePdf = async (req, res) => {
+    try {
+      const orderId = req.params.orderId;
+      // Get the absolute path to the project directory
+      const projectDir = path.resolve(__dirname, '..'); // Assuming "controller" is one level above
+  
+      // Generate PDF with order details
+      const pdfFileName = `invoice_${Date.now()}.pdf`;
+      const pdfPath = path.join(projectDir, 'public', 'invoices', pdfFileName);
+  
+      // Generate the PDF and get the file path
+      const generatedPath = await pdfController.generateInvoice(orderId, pdfPath, res);
+
+  
+      // Wait for the PDF generation to complete before sending the download response
+     
+      res.download(generatedPath, 'invoice.pdf', (downloadErr) => {
+        // Remove the PDF file after the download is completed or if there's an error
+        console.log('Removing PDF file:', generatedPath);
+        // Uncomment the next line if you want to remove the file after download
+        // fs.unlinkSync(generatedPath);
+  
+        if (downloadErr) {
+          console.error(downloadErr);
+          res.status(500).send('Download Failed');
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+  
+
+
+
+
+
+
 
 module.exports = ordersController
