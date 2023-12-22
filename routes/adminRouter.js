@@ -12,6 +12,7 @@ const couponManagementController = require('../controller/couponManagementContro
 const orderManagementController = require('../controller/orderManagementController')
 const addCategoryController = require('../controller/addCategoryController')
 const productManagementController = require("../controller/productManagementController")
+const offerManagementController = require('../controller/offerManagementController')
 
 
 
@@ -58,5 +59,12 @@ adminRouter.post('/add-coupon',couponManagementController.handleCoupon)
 adminRouter.get('/coupon-management/toggle/:id',couponManagementController.toggleListCategory)
 adminRouter.get('/coupon-management/edit/:id',couponManagementController.showEditData)
 adminRouter.post('/edit-coupon/:id',couponManagementController.handleEditData)
+
+adminRouter.get('/offer-management',offerManagementController.showOffers)
+adminRouter.get('/add-offer',offerManagementController.showAddOffer)
+adminRouter.post('/add-offer',offerManagementController.handleData)
+adminRouter.get('/offer-management/toggle/:offerId',offerManagementController.toggleListOffer)
+adminRouter.get('/offer-management/edit/:offerId',offerManagementController.editOffer)
+adminRouter.post('/edit-offer/:offerId',offerManagementController.handleEditOffer)
 
 module.exports=adminRouter

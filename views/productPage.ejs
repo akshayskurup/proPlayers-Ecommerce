@@ -55,7 +55,13 @@
                         </div>
 
                         <div class="mb-3">
+                           
                             <span class="h5">₹<%=product.price%></span>
+                            <%if(product.discount!=0){%>
+                                <span class="h6" style="margin-left: 10px; text-decoration: line-through;">₹<%=product.originalPrice%></span>
+                            <span class="h6" style="color: red;"><%=product.discount%>% off</span>
+                            <%}%>
+                            
                         </div>
 
                         <p>

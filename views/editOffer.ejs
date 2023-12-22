@@ -1,0 +1,202 @@
+
+<%-include('adminHeader.ejs')%>
+<style>
+    .custom-form {
+        max-width: 400px;
+        height: 485px;
+        margin: auto;
+        margin-top: 100px;
+        padding-bottom: 50px
+    }
+    .edit{
+        margin-left: 10px;
+    }
+</style>
+<form action="/edit-offer/<%=offers._id%>" method="post" onsubmit="return validate()"  id="add-offer">
+   <div class="container">
+       <div class="custom-form">
+           <h2 class="mb-4">Edit-Offer</h2>
+           
+           <div class="bg-danger" id="error-message-container"><%=message%></div>
+           <div class="form-group">
+            <label for="name">Offer Name:</label>
+            <input type="text" name="offerName" id="offerName" value="<%=offers.offerName%>">
+                             
+        </div>
+        <div class="form-group">
+            <label for="name">Discount On:</label>
+            <select id="discountOn" name="discountOn">
+                <option <%=offers.discountOn==="category"?'selected':''%>>category</option>
+                <option <%=offers.discountOn==="product"?'selected':''%>>product</option>
+            </select>                           
+        </div>
+               <div class="form-group">
+                   <label for="name">Discount Value (in %):</label>
+                   <input type="text" name="discountValue" id="discountValue" value="<%=offers.discountValue%>">
+                                    
+               </div>
+               <div class="form-group">
+                   <label for="name">Start Date</label>
+                  <input type="date" name="startDate" id="startDate" value="<%=formattedStartDate%>">
+                                    
+               </div>
+               <div class="form-group">
+                <label for="name">End Date</label>
+               <input type="date" name="endDate" id="endDate" value="<%=formattedEndDate%>">
+                                 
+            </div>
+            <div class="form-group" id="categorySelector" style="<%=offers.discountOn==='category' ? '' : 'display: none;' %>">
+                <label for="name">Category Select:</label>
+                <select id="selectedCategory" name="selectedCategory">
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category._id %>" <%= offers.discountOn === 'category' && offers.selectedCategory.toString() === category._id.toString() ? 'selected' : '' %>>
+                            <%= category.categoryName %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="form-group" id="productSelector" style="<%=offers.discountOn==='product' ? '' : 'display: none;' %>">
+                <label for="name">Product Select:</label>
+                <select id="selectedProducts" name="selectedProducts">
+                    <%products.forEach(product=>{%>
+                        <option value="<%=product._id%>" <%= offers.discountOn === 'product' && offers.selectedProducts.toString() === product._id.toString() ? 'selected' : '' %>><%=product.productName%></option>
+                    <%})%>
+                    
+                </select>                             
+            </div>
+   
+               
+               <button type="submit" class="btn btn-primary">Save</button>
+           
+       </div>
+   </div>
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var discountOnSelect = document.getElementById('discountOn');
+        var categorySelector = document.getElementById('categorySelector');
+        var productSelector = document.getElementById('productSelector');
+
+        // Trigger the change event to show/hide the selectors based on the pre-selected "Discount On" value
+        discountOnSelect.dispatchEvent(new Event('change'));
+
+        discountOnSelect.addEventListener('change', function () {
+            // Check the selected value
+            var selectedValue = discountOnSelect.value;
+
+            // Show/hide the categorySelector and productSelector based on the selected value
+            if (selectedValue === 'category') {
+                categorySelector.style.display = 'block';
+                productSelector.style.display = 'none';
+                productSelector.value = "";
+            } else if (selectedValue === 'product') {
+                categorySelector.style.display = 'none';
+                categorySelector.value = "";
+                productSelector.style.display = 'block';
+            } else {
+                // Hide both if neither category nor product is selected
+                productSelector.style.display = 'none';
+            }
+        });
+    
+       if (form) {
+           form.addEventListener('submit', function (e) {
+               e.preventDefault();
+
+               // Validate the form
+               if (validate()) {
+                   // SweetAlert for successful validation
+                   Swal.fire({
+                       icon: 'success',
+                       title: 'Coupon Inserted',
+                       text: 'New coupon has been successfully inserted.',
+                   }).then((result) => {
+                       if (result.isConfirmed) {
+                           // If the user clicks 'Yes', submit the form
+                           form.submit();
+                       }
+                   });
+               }
+           });
+       }
+   });
+
+   function validate() {
+    let offerName = document.getElementById("offerName");
+    let discountValue = document.getElementById("discountValue");
+
+    const errorMessageContainer = document.getElementById("error-message-container");
+
+    var startDateInput = document.getElementById('startDate');
+    var endDateInput = document.getElementById('endDate');
+
+    // Get the current date
+    var currentDate = new Date();
+
+    // Get the selected dates
+    var startDate = new Date(startDateInput.value);
+    var endDate = new Date(endDateInput.value);
+
+    let trimmedDiscountValue = discountValue.value.trim();
+    let trimmedOfferName = offerName.value.trim()
+    let expression = /^[0-9]+$/;
+    let alphabets = /^[a-zA-Z\s]+$/;
+
+    errorMessageContainer.innerText = "";
+
+    if (trimmedDiscountValue === "" && trimmedOfferName === "") {
+        errorMessageContainer.innerText = "Please fill all the fields";
+        return false;
+    }
+
+    if (trimmedOfferName === "") {
+        errorMessageContainer.innerText = "Please fill the offerName field";
+        return false;
+    }
+
+    if (!alphabets.test(trimmedOfferName)) {
+        errorMessageContainer.innerText = "Offer name should contain alphabets only";
+        return false;
+    }
+
+    if (!expression.test(trimmedDiscountValue)) {
+        errorMessageContainer.innerText = "Type positive numbers only";
+        return false;
+    }
+
+    if (parseInt(trimmedDiscountValue, 10) >= 100) {
+        errorMessageContainer.textContent = "Enter a value less than 100%";
+        return false;
+    }
+
+    if (parseInt(trimmedDiscountValue, 10) <= 0) {
+        errorMessageContainer.textContent = "Enter a value greater than 0%";
+        return false;
+    }
+
+    // Check if minimumCartAmount is defined (assuming it's part of your form)
+    let minimumCartAmount = document.getElementById("minimumCartAmount");
+    if (minimumCartAmount && minimumCartAmount.value <= 0) {
+        errorMessageContainer.textContent = "Enter a value greater than 0";
+        return false;
+    }
+
+    
+
+    if (endDate <= currentDate) {
+        errorMessageContainer.textContent = 'End Date must be in the future.';
+        return false;
+    }
+
+    // Check if End Date is after Start Date
+    if (endDate <= startDate) {
+        errorMessageContainer.textContent = 'End Date must be after Start Date.';
+        return false;
+    }
+
+    return true;
+}
+</script>
+
+<%-include('adminFooter.ejs')%>

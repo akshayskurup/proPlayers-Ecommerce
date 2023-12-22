@@ -19,6 +19,7 @@ let productSchema = mongoose.Schema({
     },
     description:String,
     releasedDate:Date,
+    originalPrice:Number,
     price:Number,
     image: [{
         type: String,
@@ -26,7 +27,11 @@ let productSchema = mongoose.Schema({
     isListed:{
         type:Boolean,
         default:true
-    }
+    },
+    discount: {
+        type: Number,
+        default: 0
+      },
 })
 
 const product = mongoose.model('products',productSchema)

@@ -67,8 +67,10 @@
                         <a href="/product-page/<%= item._id %>" class="btn" id="view-btn">View</a>
                       </div>
                       <div class="col">
-                        <p>₹<%= item.price %></p>
+                        <p style="margin-bottom: 7px;">₹<%= item.price %></p><br>
+                        <p style="margin-top: -35px;margin-bottom: 3px; font-size: 15px; color: red;"><%= item.discount %>% off</p>
                       </div>
+                      
                     </div>
                   </div>
                 </div>
