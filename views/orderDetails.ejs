@@ -120,8 +120,9 @@
                                                                 style="width: 100%;">Payment
                                                                 Method : <%=orderDetails.paymentMethod%></p>
                                                         </div>
+                                                        <%if(orderDetails.OrderStatus==="Delivered"){%>
                                                         <a href="/generate-invoice/<%=orderDetails._id%>"  target="_blank" rel="noopener noreferrer">Invoice Download</a>
-
+                                                        <%}%>
                                                         <hr />
                                                     </div>
                                                 </div>

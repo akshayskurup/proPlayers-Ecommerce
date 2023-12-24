@@ -68,7 +68,11 @@
                       </div>
                       <div class="col">
                         <p style="margin-bottom: 7px;">₹<%= item.price %></p><br>
-                        <p style="margin-top: -35px;margin-bottom: 3px; font-size: 15px; color: red;"><%= item.discount %>% off</p>
+                        
+                        <%if(item.discount&&item.discount!=0){%>
+                          <p style="margin-top: -35px;margin-bottom: 3px; font-size: 15px; color: red;"><%= item.discount %>% off</p>
+
+                        <%}%>
                       </div>
                       
                     </div>

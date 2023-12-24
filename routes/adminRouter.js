@@ -61,6 +61,7 @@ adminRouter.get('/coupon-management/edit/:id',couponManagementController.showEdi
 adminRouter.post('/edit-coupon/:id',couponManagementController.handleEditData)
 
 adminRouter.get('/offer-management',offerManagementController.showOffers)
+adminRouter.get('/check-and-expire-offers',offerManagementController.checkAndExpireOffers)
 adminRouter.get('/add-offer',offerManagementController.showAddOffer)
 adminRouter.post('/add-offer',offerManagementController.handleData)
 adminRouter.get('/offer-management/toggle/:offerId',offerManagementController.toggleListOffer)

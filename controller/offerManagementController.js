@@ -4,6 +4,21 @@ const categorySchema= require('../model/categorySchema')
 const offerSchema = require('../model/offerSchema')
 const mongoose = require('mongoose')
 
+offerManagementController.checkAndExpireOffers = async () => {
+    try {
+        const expiredOffers = await offerSchema.find({
+            isActive: true,
+            endDate: { $lte: new Date() },
+        });
+        for (const offer of expiredOffers) {
+            offer.isActive = false;
+            await offer.save();
+        }
+    } catch (error) {
+        console.error('Error checking and expiring offers:', error);
+    }
+}
+
 offerManagementController.showOffers = async (req,res)=>{
     const allOffers = await offerSchema.find().populate('selectedCategory').populate('selectedProducts')
     try {

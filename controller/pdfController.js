@@ -47,7 +47,7 @@ const generateInvoice = async (req, res) => {
     doc.moveUp();
     doc.text('Quantity', { align: 'center' });
     doc.moveUp();
-    doc.text('Price', { align: 'right' });
+    doc.text('Price(Rs)', { align: 'right' });
     doc.moveUp();
 
     // Products Table Body
@@ -70,9 +70,7 @@ const generateInvoice = async (req, res) => {
     doc.moveDown()
     doc.moveDown()
     doc.moveDown()
-    doc.moveDown().text(`Subtotal: $${invoiceData.totalAmount.toFixed(2)}`);
-    doc.text(`Tax (${(invoiceData.taxRate * 100).toFixed(2)}%): $${invoiceData.totalAmount.toFixed(2)}`);
-    doc.text(`Total: $${invoiceData.totalAmount.toFixed(2)}`);
+    doc.text(`Total Amount: Rs.${invoiceData.totalAmount.toFixed(2)}`);
 
     // Invoice Footer
     doc.moveDown().text('Thank you for your purchase!. Team ProPlayers', { align: 'center' });

@@ -62,27 +62,70 @@
                 </td>
                 
                 <!-- Inside your table row for each order -->
-                <td>
-                    <% if (order.OrderStatus === 'Shipped' || order.OrderStatus === 'Order Placed') { %>
-                        <div id="order-<%= order._id %>" class="order">
-                            <!-- Order content here -->
-                            <p id="message-<%= order._id %>" class="success-message" style="display: none;">Order Cancelled</p>
-
-                            <button type="button" class="cancel-order-button" id="cancel-btn-<%=order._id%>" onclick="cancelOrder('<%= order._id %>')">Cancel Order</button>
+                <!-- Inside your table row for each order -->
+<td>
+    <% if (order.OrderStatus === 'Shipped' || order.OrderStatus === 'Order Placed') { %>
+        <!-- Order content here -->
+        <div id="order-<%= order._id %>" class="order">
+            <p id="message-<%= order._id %>" class="success-message" style="display: none;">Order Cancelled</p>
+            
+            <!-- Cancel Order Button with Modal Trigger -->
+            <button type="button" class="cancel-order-button" data-toggle="modal" data-target="#cancelModal-<%= order._id %>">Cancel Order</button>
+            
+            <!-- Cancel Order Modal -->
+            <div class="modal fade" id="cancelModal-<%= order._id %>" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelModalLabel">Cancel Order</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    <% }else if (order.OrderStatus === 'Delivered') { %>
-                        <div id="return-order-<%= order._id %>" class="order">
-                            <!-- Order content here -->
-                            <p id="return-message-<%= order._id %>" class="success-message" style="display: none;">Order Returned</p>
-
-                            <button type="button" class="return-order-button" id="return-btn-<%=order._id%>" onclick="returnOrder('<%= order._id %>')">Return Order</button>
+                        <div class="modal-body">
+                            <!-- Form for providing cancellation reason -->
+                            <form id="cancelForm-<%= order._id %>">
+                                <div class="form-group">
+                                    <label for="cancellationReason">Reason for Cancellation:</label>
+                                    <textarea class="form-control" id="cancellationReason-<%= order._id %>"  name="cancellationReason" rows="3" required></textarea>
+                                </div>
+                            </form>
                         </div>
-                    <% } else if (order.OrderStatus === 'Returned') { %>
-                        <span class="text-warning">Order Returned</span>
-                    <% } else if (order.OrderStatus === 'Cancelled') { %>
-                        <span class="text-danger">Order Cancelled</span>
-                    <% } %>
-                </td>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="cancelOrderWithReason('<%= order._id %>')">Confirm Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } else if (order.OrderStatus === 'Delivered') { %>
+        <!-- Order content here -->
+        <div id="return-order-<%= order._id %>" class="order">
+            <p id="return-message-<%= order._id %>" class="success-message" style="display: none;">Order Returned</p>
+
+            <% if (order.deliveredAt) { %>
+                <% const twoDaysAfterDelivery = new Date(order.deliveredAt); %>
+                <% twoDaysAfterDelivery.setDate(twoDaysAfterDelivery.getDate() + 2); %>
+                <% if (new Date() <= twoDaysAfterDelivery) { %>
+                    <button type="button" class="return-order-button" id="return-btn-<%= order._id %>" onclick="returnOrder('<%= order._id %>')">Return Order</button>
+                <% } else { %>
+                    <!-- Return is expired, hide the button -->
+                    <span class="text-warning">Return Expired</span>
+                <% } %>
+            <% } else { %>
+                <!-- Handle case where deliveredAt is not set -->
+                <span class="text-warning">Delivered date not available</span>
+            <% } %>
+            
+        </div>
+    <% } else if (order.OrderStatus === 'Returned') { %>
+        <span class="text-warning">Order Returned</span>
+    <% } else if (order.OrderStatus === 'Cancelled') { %>
+        <span class="text-danger">Order Cancelled</span>
+    <% } %>
+</td>
+
                 <td>
                    <a class="btn btn-light border-1" href="/order-details/<%=order._id%>">View More</a>
                    
@@ -116,70 +159,155 @@
 
 
     <script>
-        function cancelOrder(orderId) {
-    // Show a confirmation dialog
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'You won\'t be able to revert this!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, cancel it!',
-        cancelButtonText: 'No'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // User clicked "Yes, cancel it!"
-            // Proceed with order cancellation
-            fetch(`/orders/${orderId}`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const statusElement = document.getElementById(`status-${orderId}`);
-                const messageElement = document.getElementById(`message-${orderId}`);
-                const button = document.getElementById(`cancel-btn-${orderId}`);
+//         function cancelOrder(orderId) {
+//     // Show a confirmation dialog
+//     Swal.fire({
+//         title: 'Are you sure?',
+//         text: 'You won\'t be able to revert this!',
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#3085d6',
+//         cancelButtonColor: '#d33',
+//         confirmButtonText: 'Yes, cancel it!',
+//         cancelButtonText: 'No'
+//     }).then((result) => {
+//         if (result.isConfirmed) {
+//             // User clicked "Yes, cancel it!"
+//             // Proceed with order cancellation
+//             fetch(`/orders/${orderId}`, {
+//                 method: "POST",
+//                 headers: {
+//                     'Content-Type': "application/json"
+//                 }
+//             })
+//             .then(response => response.json())
+//             .then(data => {
+//                 const statusElement = document.getElementById(`status-${orderId}`);
+//                 const messageElement = document.getElementById(`message-${orderId}`);
+//                 const button = document.getElementById(`cancel-btn-${orderId}`);
 
-                if (data.success) {
-                    // Order cancellation was successful
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Order Cancelled',
-                        text: 'Your Order has been Cancelled.',
-                        timer: 1000,
-                        showCancelButton: false,
-                        showConfirmButton: false
-                    });
+//                 if (data.success) {
+//                     // Order cancellation was successful
+//                     Swal.fire({
+//                         icon: 'success',
+//                         title: 'Order Cancelled',
+//                         text: 'Your Order has been Cancelled.',
+//                         timer: 1000,
+//                         showCancelButton: false,
+//                         showConfirmButton: false
+//                     });
 
-                    // Update the text content and style of the status element
-                    if (statusElement) {
-                        statusElement.textContent = 'Order Cancelled';
-                        statusElement.style.color = 'red';
-                    }
+//                     // Update the text content and style of the status element
+//                     if (statusElement) {
+//                         statusElement.textContent = 'Order Cancelled';
+//                         statusElement.style.color = 'red';
+//                     }
 
-                    // Show the success message element
-                    if (messageElement) {
-                        messageElement.style.display = 'block'; // or 'inline', 'flex', etc.
-                        messageElement.style.color = 'red';
-                    }
+//                     // Show the success message element
+//                     if (messageElement) {
+//                         messageElement.style.display = 'block'; // or 'inline', 'flex', etc.
+//                         messageElement.style.color = 'red';
+//                     }
 
-                    // Hide the button
-                    button.style.display = "none";
-                } else {
-                    // Order cancellation failed
-                    console.error('Error cancelling order:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error.message);
+//                     // Hide the button
+//                     button.style.display = "none";
+//                 } else {
+//                     // Order cancellation failed
+//                     console.error('Error cancelling order:', data.error);
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error('Error:', error.message);
+//             });
+//         }
+//         // else: User clicked "No" or closed the dialog, do nothing
+//     });
+// }
+
+
+function cancelOrderWithReason(orderId) {
+    console.log('Cancel Order Button Clicked. Order ID:', orderId);
+
+    const cancellationReasonElement = document.getElementById(`cancellationReason-${orderId}`);
+    const messageElement = document.getElementById(`message-${orderId}`);
+
+    if (cancellationReasonElement) {
+        const cancellationReason = cancellationReasonElement.value;
+        console.log('Cancellation Reason:', cancellationReason);
+
+        // Check if there is a cancellation reason
+        if (cancellationReason.trim() !== '') {
+    // Perform the cancellation logic with the reason
+    fetch(`/orders/${orderId}`, {
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify({ cancellationReason })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusElement = document.getElementById(`status-${orderId}`);
+        const messageElement = document.getElementById(`message-${orderId}`);
+        const button = document.getElementById(`cancel-btn-${orderId}`);
+        const modal = $(`#cancelModal-${orderId}`);
+
+
+        if (data.success) {
+            // Close the modal
+            modal.modal('hide');
+            console.log('Redirecting to /orders');
+        window.location.href = '/orders';
+            // Order cancellation was successful
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Cancelled',
+                text: 'Your Order has been Cancelled.',
+                timer: 1000,
+                showCancelButton: false,
+                showConfirmButton: false
             });
+
+            // Update the text content and style of the status element
+            if (statusElement) {
+                statusElement.textContent = 'Order Cancelled';
+                statusElement.style.color = 'red';
+            }
+
+            // Show the success message element
+            if (messageElement) {
+                messageElement.style.display = 'block'; // or 'inline', 'flex', etc.
+                messageElement.style.color = 'red';
+            }
+
+            // Hide the button
+            button.style.display = "none";
+
+            
+            
+
+        } else {
+            // Order cancellation failed
+            console.error('Error cancelling order:', data.error);
         }
-        // else: User clicked "No" or closed the dialog, do nothing
+    })
+    .catch(error => {
+        console.error('Error:', error.message);
     });
+    messageElement.textContent = 'Order Cancelled';
+            messageElement.style.display = 'block'; // or 'inline', 'flex', etc.
+            messageElement.style.color = 'red';
+
+            // Close the modal
+            $(`#cancelModal-${orderId}`).modal('hide');
+        } else {
+            console.warn('Cancellation reason is required.');
+        }
+    } else {
+        console.error('Element with ID not found:', `cancellationReason-${orderId}`);
+    }
 }
+
 
 
         function returnOrder(orderId){

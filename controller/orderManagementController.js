@@ -40,6 +40,10 @@ orderManagementController.updateOrderStatus = async (req, res) => {
             await userWallet.save();
         }
         console.log("after first if")
+        if(newStatus ==="Delivered"){
+            order.deliveredAt=new Date()
+            await order.save()
+        }
         if(newStatus === "Cancelled" || newStatus ==="Returned"){
             const orderAmount = order.totalAmount
             userWallet.balance += orderAmount;

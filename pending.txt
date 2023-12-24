@@ -1,7 +1,5 @@
 
 Filter pagination sort and search for every grid : admin side
-Expiry for return
-reason for cancelling product
 
 completed
 Confirmation if required,No results found placeholder
@@ -13,6 +11,8 @@ Filter pagination sort and search should be interconnected
 multiple images upload not done : not proper
 Delete single image 
 Image preview need to updated with change files
+Expiry for return
+reason for cancelling product
 
 
 
@@ -21,8 +21,7 @@ next week task
  
  	
 User side :
-Invoice download (pending :- show only after delivered and all , set gst , )
-Offer module(product offer, category offer,Referal offer).
+Referal offer
 Admin side :
 Banner management
 Admin Dashboard - Chart with filter(yearly,monthly etc.)
@@ -31,4 +30,5 @@ Sales Report - Pdf and excel download(with order summary)
 
 completed
 
-Invoice download(almost)
+Invoice download
+Offer module(product offer, category offer,)
