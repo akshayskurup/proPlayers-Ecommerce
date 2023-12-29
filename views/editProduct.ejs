@@ -304,15 +304,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-  async function removeImage(imageIndex) {
-    // Set the corresponding input file to an empty string
-    const imageInputId = `#imageInput${imageIndex}`;
+async function removeImage(imageIndex) {
+  const imageInputId = `#imageInput${imageIndex+1}`;
   const imagePreviewId = `#imagePreview${imageIndex}`;
 
-  // Log the IDs for debugging
   console.log('Attempting to remove image with IDs:', imageInputId, imagePreviewId);
 
-  // Set the corresponding input file to an empty string
   const imageInput = document.querySelector(imageInputId);
   if (imageInput) {
     imageInput.value = '';
@@ -320,7 +317,6 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error(`Image input not found: ${imageInputId}`);
   }
 
-  // Hide the image preview
   const imagePreview = document.querySelector(imagePreviewId);
   if (imagePreview) {
     imagePreview.src = '';
@@ -328,29 +324,46 @@ document.addEventListener('DOMContentLoaded', function () {
     console.error(`Image preview not found: ${imagePreviewId}`);
   }
 
-    var productId = document.getElementById('productId').value
-    console.log(productId);
-
-    try {
-      const response = await fetch('/remove-image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ imageIndexToRemove: imageIndex,productId: productId }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data.message);
-      } else {
-        const errorData = await response.json();
-        console.error('Error removing image:', errorData.error);
-      }
-    } catch (error) {
-      console.error('Error removing image:', error);
-    }
+  const productId = document.getElementById('productId').value;
+  const productImagePath = `product.image[${imageIndex}]`;
+  const productImagePathInput = document.querySelector(`input[name="${productImagePath}"]`);
+  
+  if (productImagePathInput) {
+    productImagePathInput.value = '';
+    console.log('Updated form data:', new FormData(document.getElementById('yourFormId')));
+  } else {
+    console.error(`Product image path input not found: ${productImagePath}`);
   }
+
+  const formInputId = `#gameImages${imageIndex + 1}`;
+  const formInput = document.querySelector(formInputId);
+  if (formInput) {
+    formInput.value = '';
+  } else {
+    console.error(`Form input not found: ${formInputId}`);
+  }
+
+
+  try {
+    const response = await fetch('/remove-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ imageIndexToRemove: imageIndex, productId: productId }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data.message);
+    } else {
+      const errorData = await response.json();
+      console.error('Error removing image:', errorData.error);
+    }
+  } catch (error) {
+    console.error('Error removing image:', error);
+  }
+}
 
   function previewImage(input, index) {
     var previewElement = document.getElementById("imagePreview" + index);

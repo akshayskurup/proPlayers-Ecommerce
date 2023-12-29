@@ -125,65 +125,6 @@ checkOutController.UpdateAddresss = async (req, res) => {
 }
 
 
-// checkOutController.validateCoupon = async(req,res)=>{
-//     const {couponCode, totalAmount,discountedTotal} = req.body
-//         try {
-//             console.log('Session in validateCoupon:', req.session);
-//             console.log("checkoutTotalInput",discountedTotal)
-//             const userId = req.session.userId
-//             const userCart = await cart.findOne({ userId }).populate('items.productId');
-//             const items = userCart.items;
-
-//             const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
-//             const coupon = await Coupons.findOne({ code: couponCode });
-//             console.log("total Price before",totalPrice)
-//             if(couponCode ==""){
-//                 const discountValue = 0
-//                 const discountedTotal = 0
-//                 res.status(200).json({
-//                     isEmpty: true,
-//                     message: 'Coupon is valid. Discount applied successfully',
-//                     discountedTotal,discountValue
-//                 });
-//             }
-//             if (!coupon) {
-//                 // Coupon not found
-//                 res.status(404).json({ isValid: false, message: 'Coupon not found' });
-//                 return;
-//             }
-           
-//             const discountPercentage = coupon.discountValue
-//             // If coupon is valid, apply the discount
-//             if (!isNaN(discountPercentage) && !isNaN(totalAmount)) {
-//                 const discountValue = (discountPercentage / 100) * totalAmount;
-//                 const discountedTotal = totalAmount - discountValue;
-    
-//                 res.status(200).json({
-//                     isValid: true,
-//                     message: 'Coupon is valid. Discount applied successfully',
-//                     discountedTotal,discountValue
-//                 });
-//                 const parsedCheckoutTotalInput = parseFloat(discountedTotal).toFixed(2);
-//                 console.log("after parsed",parsedCheckoutTotalInput)
-//             if (!isNaN(parsedCheckoutTotalInput)) {
-//                 req.session.updatedTotalPrice = parsedCheckoutTotalInput;
-//                 req.session.save(); 
-//                 console.log("total Price after", req.session.updatedTotalPrice);
-//             } else {
-//                 console.error('Invalid checkoutTotalInput value');
-//             }  //checkOut total after discount saved to the totalprice
-//                 console.log("total Price after",totalPrice)
-//             } else {
-//                 // Invalid discount or total amount
-//                 res.status(400).json({ isValid: false, message: 'Invalid discount percentage or total amount' });
-//             }
-//         }
-//          catch (error) {
-//             console.error('Error handling Coupon data:', error);
-//             res.status(500).json({ isValid: false, message: 'Internal Server Error' });
-//         }
-// }
-
 checkOutController.validateCoupon = async (req, res) => {
     const { couponCode, totalAmount , checkoutTotalInput , discountedTotal , discountedValue, checkoutTotal} = req.body;
     try {
@@ -384,20 +325,7 @@ checkOutController.createOrder = async(req,res)=>{
 
 
 
-// checkOutController.updateTotal = async(req,res)=>{
-//     try {
-//         const { discountedTotal } = req.body;
 
-//   // Process the discounted total as needed
-//   console.log('Received discounted total:', discountedTotal);
-
-//   // Send a response back to the client
-//   res.json({ message: 'Discounted total received successfully' });
-//     } catch (error) {
-//         console.error('Error handling Coupon data:', error);
-//         res.status(500).json({ isValid: false, message: 'Internal Server Error' });
-//     }
-// }
 
 
 checkOutController.verifyPayment = async(req,res)=>{

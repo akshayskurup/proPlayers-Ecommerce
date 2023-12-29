@@ -3,7 +3,6 @@ const adminRouter = express.Router()
 const checkBlocked = require('../middleware/isBlocked');
 const userAuth = require('../middleware/userAuth')
 const adminController = require('../controller/adminController')
-const adminPanelController = require('../controller/adminPanelController')
 const userManagementController = require('../controller/userManagementController')
 const categoryManagementController = require('../controller/categoryManagementController')
 const productManagement = require('../controller/productManagementController')
@@ -13,6 +12,7 @@ const orderManagementController = require('../controller/orderManagementControll
 const addCategoryController = require('../controller/addCategoryController')
 const productManagementController = require("../controller/productManagementController")
 const offerManagementController = require('../controller/offerManagementController')
+const salesReportController = require('../controller/salesReportController')
 
 
 
@@ -20,9 +20,18 @@ const offerManagementController = require('../controller/offerManagementControll
 
 adminRouter.get('/admin',adminController.showAdminLogin)
 adminRouter.post('/admin',adminController.handleAdminLogin)
+adminRouter.get('/order-graph-data', adminController.getOrderGraphData);
 
-adminRouter.get('/adminPanel',adminPanelController.showadminPanel)
-adminRouter.post('/adminPanel/logout',adminPanelController.logOut)
+// adminRouter.get('/admin/getRevenueData', adminController.getDeliveredRevenueData);
+adminRouter.get('/admin/getOrderDataByCategory',adminController.getOrderData)
+adminRouter.get('/admin/additional-revenue-chart', adminController.getAdditionalRevenueChartData);
+adminRouter.get('/sales-report/download/:filter/:selectedValue', salesReportController.generatePdfReport);
+
+
+
+
+adminRouter.get('/adminPanel',adminController.showadminPanel)
+adminRouter.post('/adminPanel/logout',adminController.logOut)
 
 adminRouter.get('/user-management',userManagementController.showData)
 adminRouter.get('/adminPanel/block/:id', userManagementController.blockUser);

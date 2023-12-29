@@ -1,5 +1,7 @@
-
+pending
 Filter pagination sort and search for every grid : admin side
+clear the offer before review 
+invoice is taking the phone. it need to be taken from selected address
 
 completed
 Confirmation if required,No results found placeholder
@@ -24,11 +26,10 @@ User side :
 Referal offer
 Admin side :
 Banner management
-Admin Dashboard - Chart with filter(yearly,monthly etc.)
 Sales Report - Pdf and excel download(with order summary)
 
 
 completed
-
+Admin Dashboard - Chart with filter(yearly,monthly etc.)
 Invoice download
 Offer module(product offer, category offer,)

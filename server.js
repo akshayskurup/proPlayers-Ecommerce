@@ -22,7 +22,7 @@ app.use(nocache());
 // Set up session middleware
 app.use(session({
     secret: sessionSecret,
-    resave: false,
+    resave: true,
     saveUninitialized: true
 }));
 
@@ -38,7 +38,6 @@ app.use(express.static('public'));
 app.use('/productimgs', express.static(path.join(__dirname, 'public', 'productimgs')));
 
 // Use routes
-// app.use('/', routes);
 app.use(userRouter);
 
 // Use the admin router for admin routes
