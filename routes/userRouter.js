@@ -29,6 +29,7 @@ userRouter.post('/signup',signupController.handleSignup)
 
 userRouter.get('/signup-otp',signupController.showOTP)
 userRouter.post('/signup-otp',signupController.verifyOTP)
+userRouter.get('/checkReferral',signupController.checkReferral)
 userRouter.post('/resendOtp',signupController.resendOtp)
 
 userRouter.get('/reset-password', passwordResetController.forgotPasswordForm);

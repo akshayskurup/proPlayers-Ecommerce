@@ -22,7 +22,7 @@ offerManagementController.checkAndExpireOffers = async () => {
 offerManagementController.showOffers = async (req,res)=>{
     const allOffers = await offerSchema.find().populate('selectedCategory').populate('selectedProducts')
     try {
-        res.render('offerManagement',{allOffers})
+        res.render('offerManagement',{allOffers,message:""})
     } catch (error) {
         console.error("Error during coupon showing:", error);
     res.status(500).send('Internal Server Error');
@@ -138,65 +138,31 @@ try {
 }
 }
 
-// offerManagementController.toggleListOffer = async (req,res)=>{
-//     const offerId = req.params.offerId
-//     try {
-//         const allOffers = await offerSchema.findOne({_id:offerId})
-//         if(allOffers){
-//             if (allOffers.discountOn === 'category' && allOffers.selectedCategory) {
-//                 const categoryId = allOffers.selectedCategory;
-//                 let products = await productSchema.find({productCategory:categoryId});
-//                  // Iterate through each product and update the prices
-//                  for (const product of products) {
-//                     product.price = product.originalPrice;
-//                     product.originalPrice = 0;
-                    
-//                     await product.save();
-//                 }
-//             }
-//         } 
-//             if(allOffers.isActive){
-//                 allOffers.originalPrice = allOffers.price;
-//                 allOffers.price = 0;
-//             }
-//             allOffers.isActive = !allOffers.isActive
-//             await allOffers.save()
-//             res.redirect('/offer-management')
-        
-       
-
-//     } catch (error) {
-//         console.error('Error toggling offer  status:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// }
-
 
 offerManagementController.toggleListOffer = async (req, res) => {
     const offerId = req.params.offerId;
     try {
         const offer = await offerSchema.findOne({ _id: offerId });
+        const allOffers = await offerSchema.find().populate('selectedCategory').populate('selectedProducts')
+
         if (offer) {
+            if (offer.endDate <= new Date()) {
+                return res.render('offerManagement',{allOffers, message:'Offer has expired'});
+            }
             if (offer.discountOn === 'category' && offer.selectedCategory) {
                 const categoryId = offer.selectedCategory;
                 const products = await productSchema.find({ productCategory: categoryId });
 
-                // Iterate through each product and update the prices
                 for (const product of products) {
                     if (offer.isActive) {
-                        // Deactivate: Revert the product price to the original price
                         product.price = product.originalPrice;
                         product.originalPrice = 0;
 
-                        // Restore the original discount value
-                        product.discount = 0; // Set to zero as discount is being deactivated
+                        product.discount = 0; 
                     } else {
-                        // Activate: Store the original price and apply the discount
                         product.originalPrice = product.price;
                         const discountedPrice = product.price - (product.price * offer.discountValue) / 100;
                         product.price = discountedPrice;
-
-                        // Store the original discount value
                         product.discount = offer.discountValue;
                     }
                     await product.save();
@@ -206,25 +172,20 @@ offerManagementController.toggleListOffer = async (req, res) => {
                 const product = await productSchema.findOne({ _id: productId });
 
                 if (offer.isActive) {
-                    // Deactivate: Revert the product price to the original price
                     product.price = product.originalPrice;
                     product.originalPrice = 0;
 
-                    // Restore the original discount value
-                    product.discount = 0; // Set to zero as discount is being deactivated
+                    product.discount = 0; 
                 } else {
-                    // Activate: Store the original price and apply the discount
                     product.originalPrice = product.price;
                     const discountedPrice = product.price - (product.price * offer.discountValue) / 100;
                     product.price = discountedPrice;
 
-                    // Store the original discount value
                     product.discount = offer.discountValue;
                 }
                 await product.save();
             }
 
-            // Update offer status
             offer.isActive = !offer.isActive;
             await offer.save();
 

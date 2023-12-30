@@ -55,18 +55,32 @@
             <% if(products){%>
             
               <% products.forEach((item) => { %>
-              <div class="col-md-3" style="width: 250px; margin-left: 45px;">
+              
+                <div class="col-md-3" style="width: 250px; margin-left: 45px;">
                   <div class="card product-card" style="background: #0d0e1b;">
-                      <img height="250px" src="<%= item.image[0] %>" class="card-img-top" alt="...">
-                      
-                      <div class="card-body">
-                        <div class="product-name"><%= item.productName %></div>
-
+                    <img height="250px" src="<%= item.image[0] %>" class="card-img-top" alt="...">
+                    <div class="card-body">
+                      <div class="product-name"><%= item.productName %></div>
+                      <div class="row">
+                        <div class="col">
                           <a href="/product-page/<%= item._id %>" class="btn" id="view-btn">View</a>
+                        </div>
+                        <div class="col">
+                          <p style="margin-bottom: 7px; margin-left: -15px; letter-spacing :0.02em;">₹<%= item.price %></p><br>
+                          
+                          <%if(item.discount&&item.discount!=0){%>
+                            <p style="margin-top: -35px;margin-bottom: 3px; font-size: 15px; color: red;"><%= item.discount %>% off</p>
+  
+                          <%}%>
+                        </div>
+                        
                       </div>
+                    </div>
                   </div>
-              </div>
+                </div>
+                
               <% }); %>
+  
               <!-- <div class="pagination-container">
                 <ul class="pagination">
                     <% for (let i = 1; i <= totalPages; i++) { %>

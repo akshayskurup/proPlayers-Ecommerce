@@ -72,19 +72,32 @@
 
         <div class="container mt-5">
           <div class="row g-5">
-              <% product.forEach((item) => { %>
-              <div class="col-md-3" style="width: 250px; margin-left: 37px;">
-                  <div class="card product-card" style="background: #0d0e1b;">
-                      <img height="250px" src="<%= item.image[0] %>" class="card-img-top" alt="...">
-                      
-                      <div class="card-body">
-                        <div class="product-name"><%= item.productName %></div>
-
-                          <a href="/product-page/<%= item._id %>" class="btn" id="view-btn">View</a>
+            <% product.forEach((item) => { %>
+              
+              <div class="col-md-3" style="width: 250px; margin-left: 45px;">
+                <div class="card product-card" style="background: #0d0e1b;">
+                  <img height="250px" src="<%= item.image[0] %>" class="card-img-top" alt="...">
+                  <div class="card-body">
+                    <div class="product-name"><%= item.productName %></div>
+                    <div class="row">
+                      <div class="col">
+                        <a href="/product-page/<%= item._id %>" class="btn" id="view-btn">View</a>
                       </div>
+                      <div class="col">
+                        <p style="margin-bottom: 7px; letter-spacing :0.06em;">₹<%= item.price %></p><br>
+                        
+                        <%if(item.discount&&item.discount!=0){%>
+                          <p style="margin-top: -35px;margin-bottom: 3px; font-size: 15px; color: red;"><%= item.discount %>% off</p>
+
+                        <%}%>
+                      </div>
+                      
+                    </div>
                   </div>
+                </div>
               </div>
-              <% }); %>
+              
+            <% }); %>
           </div>
       </div>
       

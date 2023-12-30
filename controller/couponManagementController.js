@@ -52,9 +52,13 @@ couponManagementController.toggleListCategory = async (req, res) => {
 
       if (Coupon) {
           // Toggle isListed value
-          Coupon.isActive = !Coupon.isActive;
-          await Coupon.save();
-          res.redirect('/coupon-management');
+          if (Coupon.expiry > new Date()) {
+            Coupon.isActive = !Coupon.isActive;
+            await Coupon.save();
+            res.redirect('/coupon-management');
+          }else{
+            res.redirect('/coupon-management')
+          }
       } else {
           res.status(404).send('Coupon not found');
       }
@@ -88,10 +92,13 @@ couponManagementController.handleEditData = async(req,res)=>{
             minimumCartAmount,
             expiry
     })
+    if (couponData.expiry > new Date()) {
+      await coupon.findOneAndUpdate({_id:couponId}, { isExpired: false });
+    }
     res.redirect('/coupon-management')
   }
   catch(err){
-    console.error('Error on updating Edit Data:', error);
+    console.error('Error on updating Edit Data:', err);
     res.status(500).send('Internal Server Error');
   }
 

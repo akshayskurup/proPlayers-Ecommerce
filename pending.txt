@@ -23,13 +23,27 @@ next week task
  
  	
 User side :
-Referal offer
+complete while deactivate category product need to be hide
+need to show the banner on the client side
 Admin side :
-Banner management
+
 
 
 completed
+Banner management
+Referal offer
 Admin Dashboard - Chart with filter(yearly,monthly etc.)
 Invoice download
 Offer module(product offer, category offer,)
 Sales Report - Pdf and excel download(with order summary)
+design the product for the offer
+
+
+
+
+
+
+
+
+
+wallet management need to transfer
