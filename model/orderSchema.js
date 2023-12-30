@@ -34,7 +34,8 @@ const orderSchema = new mongoose.Schema({
     default: Date.now 
   },
   paymentMethod: String,
-  orderId:String
+  orderId:String,
+  deliveredAt:Date
 });
 
 const order = mongoose.model('orders', orderSchema);

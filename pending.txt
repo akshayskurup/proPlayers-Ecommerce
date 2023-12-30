@@ -1,11 +1,7 @@
-
+pending
 Filter pagination sort and search for every grid : admin side
-
-
-multiple images upload not done : not proper
-Delete single image ,Expiry for return
-Image preview need to updated with change files
-reason for cancelling product
+clear the offer before review 
+invoice is taking the phone. it need to be taken from selected address
 
 completed
 Confirmation if required,No results found placeholder
@@ -14,3 +10,26 @@ Form validations for coupon
 There must be common layout for all pages : admin
 Confirmation for cancelling product
 Filter pagination sort and search should be interconnected
+multiple images upload not done : not proper
+Delete single image 
+Image preview need to updated with change files
+Expiry for return
+reason for cancelling product
+
+
+
+
+next week task
+ 
+ 	
+User side :
+Referal offer
+Admin side :
+Banner management
+
+
+completed
+Admin Dashboard - Chart with filter(yearly,monthly etc.)
+Invoice download
+Offer module(product offer, category offer,)
+Sales Report - Pdf and excel download(with order summary)

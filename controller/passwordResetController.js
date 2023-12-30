@@ -76,51 +76,61 @@ passwordResetController.showOTPForm = (req, res) => {
     res.render('resetOtp', { message: '', email: req.session.resetPasswordData.email });
 };
 
-passwordResetController.verifyOTPForPasswordReset = (req, res) => {
-    const { enteredOTP } = req.body;
-    const resetData = req.session.resetPasswordData;
+passwordResetController.verifyOTPForPasswordReset = async (req, res) => {
+  const { enteredOTP } = req.body;
+  const resetData = req.session.resetPasswordData;
 
-    const otpExpirationTime = 10*5000; // 5 sec in milliseconds
+  const otpExpirationTime = 10 * 5000; // 5 seconds in milliseconds
 
-    if (Date.now() - resetData.timestamp > otpExpirationTime) {
-        // OTP has expired
-        return res.render('resetOtp', { message: 'OTP has expired. Please request a new one.', email: resetData.email });
-    }
+  if (Date.now() - resetData.timestamp > otpExpirationTime) {
+    // OTP has expired
+    return res.status(400).json({ success: false, message: 'OTP has expired. Please request a new one.' });
+  }
 
-    if (enteredOTP === resetData.generatedOTP) {
-        res.redirect('/reset-password/new-password');
-    } else {
-        res.render('resetOtp', { message: 'Incorrect OTP. Please try again.', email: resetData.email });
-    }
+  if (enteredOTP === resetData.generatedOTP) {
+    // Redirect to the new password form
+    res.status(200).json({ success: true, message: 'OTP verification successful' });
+  } else {
+    // Incorrect OTP, respond with an error message
+    res.json({ success: false, message: 'Incorrect OTP. Please try again.' });
+  }
 };
+
+// Resend OTP for password reset
 passwordResetController.resendOtp = async (req, res) => {
-    if (!req.session.resetPasswordData) {
-      return res.json({ success: false, message: 'resetPasswordData not found in session' });
-    }
-  
-    const resetPasswordData = req.session.resetPasswordData;
-  
-    const resendCooldown = 15 * 1000; // 15 seconds in milliseconds
-    if (Date.now() - resetPasswordData.timestamp < resendCooldown) {
-      return res.json({ success: false, message: 'Resend cooldown not met' });
-    }
-  
-    delete req.session.resetPasswordData.generatedOTP;
-  
-    // Generate a new OTP
-    const newOTP = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
-  
-    req.session.resetPasswordData.generatedOTP = newOTP;
-    req.session.resetPasswordData.timestamp = Date.now(); 
-  
-    try {
-      await sendOTP(resetPasswordData.email, newOTP);
-      res.json({ success: true, message: 'OTP resent successfully' });
-    } catch (err) {
-      console.error('Error during resend:', err);
-      res.json({ success: false, message: 'Error during resend' });
-    }
+  // Check if resetPasswordData is set in the session
+  if (!req.session.resetPasswordData) {
+    return res.status(400).json({ success: false, message: 'resetPasswordData not found in session' });
+  }
+
+  const resetPasswordData = req.session.resetPasswordData;
+
+  // Check if the time since the last OTP request is more than 15 seconds
+  const resendCooldown = 15 * 1000; // 15 seconds in milliseconds
+  if (Date.now() - resetPasswordData.timestamp < resendCooldown) {
+    return res.status(400).json({ success: false, message: 'Resend cooldown not met' });
+  }
+
+  // Clear the previously sent OTP from the session
+  delete req.session.resetPasswordData.generatedOTP;
+
+  // Generate a new OTP
+  const newOTP = otpGenerator.generate(6, { digits: true, alphabets: false, upperCase: false, specialChars: false });
+
+  // Update the stored reset data with the new OTP and timestamp
+  req.session.resetPasswordData.generatedOTP = newOTP;
+  req.session.resetPasswordData.timestamp = Date.now();
+
+  // Send the new OTP to the user's email
+  try {
+    await sendOTP(resetPasswordData.email, newOTP);
+    res.json({ success: true});
+  } catch (err) {
+    console.error('Error during resend:', err);
+    res.status(500).json({ success: false, message: 'Error during resend' });
+  }
 };
+
 
 
 

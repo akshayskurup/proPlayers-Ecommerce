@@ -17,22 +17,16 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-comments fa-5x"></i>
+                                          
+                                            <i class="fa-solid fa-boxes-stacked fa-5x" ></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">26</div>
-                                            <div>New Comments!</div>
+                                            <div class="huge"><%=orderCount%></div>
+                                            <div>Total Orders</div>
                                         </div>
                                     </div>
                                 </div>
-                                <a href="#">
-                                    <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </a>
+                               
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
@@ -40,22 +34,16 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-tasks fa-5x"></i>
+                                            
+                                            <i class="fa-solid fa-truck fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">12</div>
-                                            <div>New Tasks!</div>
+                                            <div class="huge"><%=deliveredOrder%></div>
+                                            <div>Total Delivered Orders</div>
                                         </div>
                                     </div>
                                 </div>
-                                <a href="#">
-                                    <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </a>
+                               
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
@@ -63,22 +51,15 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-shopping-cart fa-5x"></i>
+                                            <i class="fa-solid fa-ticket fa-5x"></i>                                        
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">124</div>
-                                            <div>New Orders!</div>
+                                            <div class="huge"><%=activeCoupon%></div>
+                                            <div>Active coupon</div>
                                         </div>
                                     </div>
                                 </div>
-                                <a href="#">
-                                    <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </a>
+                                
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6">
@@ -86,22 +67,15 @@
                                 <div class="panel-heading">
                                     <div class="row">
                                         <div class="col-xs-3">
-                                            <i class="fa fa-support fa-5x"></i>
+                                            <i class="fa fa-tag  fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">13</div>
-                                            <div>Support Tickets!</div>
+                                            <div class="huge"><%=activeOffer%></div>
+                                            <div>Active offers</div>
                                         </div>
                                     </div>
                                 </div>
-                                <a href="#">
-                                    <div class="panel-footer">
-                                        <span class="pull-left">View Details</span>
-                                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </a>
+                                
                             </div>
                         </div>
                     </div>
@@ -110,284 +84,11 @@
                         <div class="col-lg-8">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
-                                    <div class="pull-right">
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                                Actions
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu pull-right" role="menu">
-                                                <li><a href="#">Action</a>
-                                                </li>
-                                                <li><a href="#">Another action</a>
-                                                </li>
-                                                <li><a href="#">Something else here</a>
-                                                </li>
-                                                <li class="divider"></li>
-                                                <li><a href="#">Separated link</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> Sales Graph
                                 </div>
-                                <!-- /.panel-heading -->
                                 <div class="panel-body">
-                                    <div id="morris-area-chart"></div>
+                                    <canvas id="orderGraph" width="100%" height="50"></canvas>
                                 </div>
-                                <!-- /.panel-body -->
-                            </div>
-                            <!-- /.panel -->
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <i class="fa fa-bar-chart-o fa-fw"></i> Bar Chart Example
-                                    <div class="pull-right">
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                                Actions
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu pull-right" role="menu">
-                                                <li><a href="#">Action</a>
-                                                </li>
-                                                <li><a href="#">Another action</a>
-                                                </li>
-                                                <li><a href="#">Something else here</a>
-                                                </li>
-                                                <li class="divider"></li>
-                                                <li><a href="#">Separated link</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered table-hover table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Date</th>
-                                                            <th>Time</th>
-                                                            <th>Amount</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>3326</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>3:29 PM</td>
-                                                            <td>$321.33</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3325</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>3:20 PM</td>
-                                                            <td>$234.34</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3324</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>3:03 PM</td>
-                                                            <td>$724.17</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3323</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>3:00 PM</td>
-                                                            <td>$23.71</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3322</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>2:49 PM</td>
-                                                            <td>$8345.23</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3321</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>2:23 PM</td>
-                                                            <td>$245.12</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3320</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>2:15 PM</td>
-                                                            <td>$5663.54</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3319</td>
-                                                            <td>10/21/2013</td>
-                                                            <td>2:13 PM</td>
-                                                            <td>$943.45</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <!-- /.table-responsive -->
-                                        </div>
-                                        <!-- /.col-lg-4 (nested) -->
-                                        <div class="col-lg-8">
-                                            <div id="morris-bar-chart"></div>
-                                        </div>
-                                        <!-- /.col-lg-8 (nested) -->
-                                    </div>
-                                    <!-- /.row -->
-                                </div>
-                                <!-- /.panel-body -->
-                            </div>
-                            <!-- /.panel -->
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <i class="fa fa-clock-o fa-fw"></i> Responsive Timeline
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    <ul class="timeline">
-                                        <li>
-                                            <div class="timeline-badge"><i class="fa fa-check"></i>
-                                            </div>
-                                            <div class="timeline-panel">
-                                                <div class="timeline-heading">
-                                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-
-                                                    <p>
-                                                        <small class="text-muted"><i class="fa fa-clock-o"></i> 11 hours ago via
-                                                            Twitter
-                                                        </small>
-                                                    </p>
-                                                </div>
-                                                <div class="timeline-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero
-                                                        laboriosam
-                                                        dolor perspiciatis omnis exercitationem. Beatae, officia pariatur? Est
-                                                        cum
-                                                        veniam excepturi. Maiores praesentium, porro voluptas suscipit facere
-                                                        rem
-                                                        dicta, debitis.</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="timeline-inverted">
-                                            <div class="timeline-badge warning"><i class="fa fa-credit-card"></i>
-                                            </div>
-                                            <div class="timeline-panel">
-                                                <div class="timeline-heading">
-                                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                                </div>
-                                                <div class="timeline-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem dolorem
-                                                        quibusdam, tenetur commodi provident cumque magni voluptatem libero,
-                                                        quis
-                                                        rerum. Fugiat esse debitis optio, tempore. Animi officiis alias, officia
-                                                        repellendus.</p>
-
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium
-                                                        maiores
-                                                        odit qui est tempora eos, nostrum provident explicabo dignissimos
-                                                        debitis
-                                                        vel! Adipisci eius voluptates, ad aut recusandae minus eaque facere.</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="timeline-badge danger"><i class="fa fa-bomb"></i>
-                                            </div>
-                                            <div class="timeline-panel">
-                                                <div class="timeline-heading">
-                                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                                </div>
-                                                <div class="timeline-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus
-                                                        numquam
-                                                        facilis enim eaque, tenetur nam id qui vel velit similique nihil iure
-                                                        molestias aliquam, voluptatem totam quaerat, magni commodi quisquam.</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="timeline-inverted">
-                                            <div class="timeline-panel">
-                                                <div class="timeline-heading">
-                                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                                </div>
-                                                <div class="timeline-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates est
-                                                        quaerat asperiores sapiente, eligendi, nihil. Itaque quos, alias
-                                                        sapiente
-                                                        rerum quas odit! Aperiam officiis quidem delectus libero, omnis ut
-                                                        debitis!</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="timeline-badge info"><i class="fa fa-save"></i>
-                                            </div>
-                                            <div class="timeline-panel">
-                                                <div class="timeline-heading">
-                                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                                </div>
-                                                <div class="timeline-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus
-                                                        modi
-                                                        quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam
-                                                        debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.</p>
-                                                    <hr>
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-                                                            <i class="fa fa-gear"></i> <span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu" role="menu">
-                                                            <li><a href="#">Action</a>
-                                                            </li>
-                                                            <li><a href="#">Another action</a>
-                                                            </li>
-                                                            <li><a href="#">Something else here</a>
-                                                            </li>
-                                                            <li class="divider"></li>
-                                                            <li><a href="#">Separated link</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="timeline-panel">
-                                                <div class="timeline-heading">
-                                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                                </div>
-                                                <div class="timeline-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sequi fuga odio
-                                                        quibusdam. Iure expedita, incidunt unde quis nam! Quod, quisquam.
-                                                        Officia
-                                                        quam qui adipisci quas consequuntur nostrum sequi. Consequuntur,
-                                                        commodi.</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="timeline-inverted">
-                                            <div class="timeline-badge success"><i class="fa fa-graduation-cap"></i>
-                                            </div>
-                                            <div class="timeline-panel">
-                                                <div class="timeline-heading">
-                                                    <h4 class="timeline-title">Lorem ipsum dolor</h4>
-                                                </div>
-                                                <div class="timeline-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt
-                                                        obcaecati,
-                                                        quaerat tempore officia voluptas debitis consectetur culpa amet,
-                                                        accusamus
-                                                        dolorum fugiat, animi dicta aperiam, enim incidunt quisquam maxime neque
-                                                        eaque.</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- /.panel-body -->
                             </div>
                             <!-- /.panel -->
                         </div>
@@ -395,206 +96,76 @@
                         <div class="col-lg-4">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <i class="fa fa-bell fa-fw"></i> Notifications Panel
+                                    <i class="fa fa-bar-chart-o fa-fw"></i> order Graph
                                 </div>
-                                <!-- /.panel-heading -->
                                 <div class="panel-body">
-                                    <div class="list-group">
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-comment fa-fw"></i> New Comment
-                                            <span class="pull-right text-muted small"><em>4 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                            <span class="pull-right text-muted small"><em>12 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                            <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-tasks fa-fw"></i> New Task
-                                            <span class="pull-right text-muted small"><em>43 minutes ago</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                            <span class="pull-right text-muted small"><em>11:32 AM</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-bolt fa-fw"></i> Server Crashed!
-                                            <span class="pull-right text-muted small"><em>11:13 AM</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-warning fa-fw"></i> Server Not Responding
-                                            <span class="pull-right text-muted small"><em>10:57 AM</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-shopping-cart fa-fw"></i> New Order Placed
-                                            <span class="pull-right text-muted small"><em>9:49 AM</em>
-                                            </span>
-                                        </a>
-                                        <a href="#" class="list-group-item">
-                                            <i class="fa fa-money fa-fw"></i> Payment Received
-                                            <span class="pull-right text-muted small"><em>Yesterday</em>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <!-- /.list-group -->
-                                    <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+                                    <canvas id="categoryDoughnutChart"></canvas>
                                 </div>
-                                <!-- /.panel-body -->
                             </div>
+                            <!-- /.panel -->
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="error" id="error-message" style="color: red;"></div>
+
+                            <label for="sales-report-filter">Select Time Interval:</label>
+                            <select id="sales-report-filter" onchange="handleTimeIntervalChange()">
+                             <option value="daily">Daily</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                            <input type="date" name="sales-report-date" id="sales-report-date">
+                            <select id="sales-report-month" style="display: none;">
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value='3'>March</option>
+                                <option value='4'>April</option>
+                                <option value='5'>May</option>
+                                <option value='6'>June</option>
+                                <option value='7'>July</option>
+                                <option value='8'>August</option>
+                                <option value='9'>September</option>
+                                <option value='10'>October</option>
+                                <option value='11'>November</option>
+                                <option value='12'>December</option>
+                            </select>
+                            <select id="sales-report-year" style="display: none;">
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                            </select>
+                            <a href="javascript:void(0)" onclick="downloadReport('pdf')" class="btn">Download as PDF</a>
+                            <a href="javascript:void(0)" onclick="downloadReport('excel')" class="btn">Download as Excel</a>
+
+                        </div>
+                    </div>
+                    
+                    
+                            <!-- /.panel -->
+                           <!-- Add this dropdown above the existing revenueChart canvas -->
+                           <label for="filter">Select Time Interval:</label>
+                           <select id="filter" onchange="updateChart()">
+                            <option value="daily">Daily</option>
+                               <option value="weekly">Weekly</option>
+                               <option value="monthly">Monthly</option>
+                               <option value="yearly">Yearly</option>
+                           </select>
+                           
+                           <!-- Add a canvas for the additional revenue chart -->
+                           <canvas id="additionalRevenueChart" width="100%" height="50"></canvas>
+                   
+                            <!-- /.panel -->
+                            
+                        <!-- /.col-lg-8 -->
+                        
                             <!-- /.panel -->
                             <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <i class="fa fa-bar-chart-o fa-fw"></i> Donut Chart Example
-                                </div>
-                                <div class="panel-body">
-                                    <div id="morris-donut-chart"></div>
-                                    <a href="#" class="btn btn-default btn-block">View Details</a>
-                                </div>
+                                
                                 <!-- /.panel-body -->
                             </div>
                             <!-- /.panel -->
-                            <div class="chat-panel panel panel-default">
-                                <div class="panel-heading">
-                                    <i class="fa fa-comments fa-fw"></i>
-                                    Chat
-                                    <div class="btn-group pull-right">
-                                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa fa-chevron-down"></i>
-                                        </button>
-                                        <ul class="dropdown-menu slidedown">
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-refresh fa-fw"></i> Refresh
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-check-circle fa-fw"></i> Available
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-times fa-fw"></i> Busy
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-clock-o fa-fw"></i> Away
-                                                </a>
-                                            </li>
-                                            <li class="divider"></li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-sign-out fa-fw"></i> Sign Out
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    <ul class="chat">
-                                        <li class="left clearfix">
-                                                <span class="chat-img pull-left">
-                                                    <img src="http://via.placeholder.com/50/55C1E7/fff" alt="User Avatar"
-                                                         class="img-circle"/>
-                                                </span>
-
-                                            <div class="chat-body clearfix">
-                                                <div class="header">
-                                                    <strong class="primary-font">Jack Sparrow</strong>
-                                                    <small class="pull-right text-muted">
-                                                        <i class="fa fa-clock-o fa-fw"></i> 12 mins ago
-                                                    </small>
-                                                </div>
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
-                                                    ornare dolor, quis ullamcorper ligula sodales.
-                                                </p>
-                                            </div>
-                                        </li>
-                                        <li class="right clearfix">
-                                                <span class="chat-img pull-right">
-                                                    <img src="http://via.placeholder.com/50/FA6F57/fff" alt="User Avatar"
-                                                         class="img-circle"/>
-                                                </span>
-
-                                            <div class="chat-body clearfix">
-                                                <div class="header">
-                                                    <small class=" text-muted">
-                                                        <i class="fa fa-clock-o fa-fw"></i> 13 mins ago
-                                                    </small>
-                                                    <strong class="pull-right primary-font">Bhaumik Patel</strong>
-                                                </div>
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
-                                                    ornare dolor, quis ullamcorper ligula sodales.
-                                                </p>
-                                            </div>
-                                        </li>
-                                        <li class="left clearfix">
-                                                <span class="chat-img pull-left">
-                                                    <img src="http://via.placeholder.com/50/55C1E7/fff" alt="User Avatar"
-                                                         class="img-circle"/>
-                                                </span>
-
-                                            <div class="chat-body clearfix">
-                                                <div class="header">
-                                                    <strong class="primary-font">Jack Sparrow</strong>
-                                                    <small class="pull-right text-muted">
-                                                        <i class="fa fa-clock-o fa-fw"></i> 14 mins ago
-                                                    </small>
-                                                </div>
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
-                                                    ornare dolor, quis ullamcorper ligula sodales.
-                                                </p>
-                                            </div>
-                                        </li>
-                                        <li class="right clearfix">
-                                                <span class="chat-img pull-right">
-                                                    <img src="http://via.placeholder.com/50/FA6F57/fff" alt="User Avatar"
-                                                         class="img-circle"/>
-                                                </span>
-
-                                            <div class="chat-body clearfix">
-                                                <div class="header">
-                                                    <small class=" text-muted">
-                                                        <i class="fa fa-clock-o fa-fw"></i> 15 mins ago
-                                                    </small>
-                                                    <strong class="pull-right primary-font">Bhaumik Patel</strong>
-                                                </div>
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum
-                                                    ornare dolor, quis ullamcorper ligula sodales.
-                                                </p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <!-- /.panel-body -->
-                                <div class="panel-footer">
-                                    <div class="input-group">
-                                        <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-warning btn-sm" id="btn-chat">
-                                                Send
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
+                            
+                               
                                 <!-- /.panel-footer -->
-                            </div>
+                           
                             <!-- /.panel .chat-panel -->
                         </div>
                         <!-- /.col-lg-4 -->
@@ -609,3 +180,272 @@
         <!-- /#wrapper -->
 
         <%- include("adminFooter.ejs")%>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/dayjs@1"></script>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+               async function updateOrderGraph() {
+    try {
+        const response = await fetch('/order-graph-data');
+        const orderData = await response.json();
+
+        // Sort the data based on the _id field
+        orderData.sort((a, b) => a._id.localeCompare(b._id));
+
+        // Convert date strings to formatted date labels
+        const formattedLabels = orderData.map(item => dayjs(item._id).format('YYYY-MM-DD'));
+
+        // Check if the orderGraph variable exists and has the clear method
+        if (orderGraph && typeof orderGraph.clear === 'function') {
+            orderGraph.clear(); // Use clear for Chart.js 3.x and later
+        }
+
+        // Update the order graph with the new data
+        updateOrderGraphWithData(formattedLabels, orderData);
+    } catch (error) {
+        console.error("Error fetching order graph data:", error);
+    }
+}
+    
+
+// Function to initialize or update the order graph with data
+function updateOrderGraphWithData(labels, orderData) {
+    const ctx = document.getElementById('orderGraph').getContext('2d');
+    orderGraph = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Order Count',
+                data: orderData.map(item => item.orderCount),
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false // Set to false for a line chart
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Initial chart and order graph update when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+
+    updateOrderGraph();
+});
+
+
+                //doughnut
+    // Fetch data from the server
+    fetch('/admin/getOrderDataByCategory')
+        .then(response => response.json())
+        .then(data => {
+            // Extract labels and data for Chart.js
+            const labels = data.map(entry => entry.categoryName);
+            const datasetData = data.map(entry => entry.orderCount);
+
+            // Create doughnut chart
+            const ctx = document.getElementById('categoryDoughnutChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: datasetData,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            // Add more colors as needed
+                        ],
+                    }],
+                },
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    let myChart; // Reference to the chart instance
+
+// Function to update the chart based on the selected filter
+async function updateChart() {
+    const filter = document.getElementById('filter').value;
+
+    try {
+        const response = await fetch(`/admin/additional-revenue-chart?filter=${filter}`);
+        const data = await response.json();
+
+        // Sort the data based on the week number
+        data.sort((a, b) => a._id - b._id);
+
+        // Convert week or month numbers to formatted date strings
+        const formattedLabels = data.map(item => formatLabel(item._id, filter));
+
+        // Destroy the existing chart before creating a new one
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        // Assuming you have a function to update the chart, replace the following line with your implementation
+        updateChartWithData(formattedLabels, data);
+    } catch (error) {
+        console.error("Error fetching additional revenue data:", error);
+    }
+}
+
+// Function to format the labels based on the selected filter
+function formatLabel(value, filter) {
+    if (filter === 'daily') {
+        return dayjs(value).format('YYYY-MM-DD');
+    }else if (filter === 'weekly') {
+        return formatISOWeekDate(value);
+    } else if (filter === 'monthly') {
+        return formatMonthDate(value);
+    } else if (filter === 'yearly') {
+        return value.toString();
+    }
+
+    return '';
+}
+
+// Function to format ISO week date without using date-fns
+function formatISOWeekDate() {
+    const currentDate = new Date();
+
+    // Get the ISO week number
+    const weekNumber = getISOWeekNumber(currentDate);
+
+    // Format the ISOWeekDate as "YYYY-MM-DD"
+    const localDate = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata' });
+    return `${localDate} (W${weekNumber})`;
+}
+
+// Function to get ISO week number
+function getISOWeekNumber(date) {
+    const dayOfWeek = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayOfWeek);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    const weekNumber = Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
+    return weekNumber;
+}
+
+// Function to format month date without using date-fns
+function formatMonthDate(month) {
+    // Assuming month is a number between 1 and 12
+    return new Date(2000, month - 1, 1).toLocaleDateString('en-US', { month: 'long' });
+}
+
+// Function to initialize or update the chart with data
+function updateChartWithData(labels, data) {
+    // Assuming you are using Chart.js, replace the following lines with your chart initialization and update logic
+    const ctx = document.getElementById('additionalRevenueChart').getContext('2d');
+    myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Additional Revenue',
+                data: data.map(item => item.totalRevenue), // Adjust this based on your data structure
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', updateChart);
+
+
+function handleTimeIntervalChange() {
+var filter = document.getElementById('sales-report-filter').value
+
+if(filter=='daily'){
+    document.getElementById('sales-report-date').style.display = 'inline-block';
+    document.getElementById('sales-report-month').style.display = 'none';
+        document.getElementById('sales-report-year').style.display = 'none';
+
+}else if(filter=='monthly'){
+    document.getElementById('sales-report-date').style.display = 'none';
+    document.getElementById('sales-report-month').style.display = 'inline-block';
+        document.getElementById('sales-report-year').style.display = 'inline-block';
+
+}else if(filter=='yearly'){
+    document.getElementById('sales-report-date').style.display = 'none';
+    document.getElementById('sales-report-month').style.display = 'none';
+        document.getElementById('sales-report-year').style.display = 'inline-block';
+
+}
+}
+
+function downloadReport(format) {
+    var filter = document.getElementById('sales-report-filter').value;
+    var selectedValue = '';
+
+    if (filter === 'daily') {
+        selectedValue = document.getElementById('sales-report-date').value;
+    } else if (filter === 'monthly') {
+        var selectedYear = document.getElementById('sales-report-year').value;
+        var selectedMonth = document.getElementById('sales-report-month').value;
+        selectedValue = `${selectedYear}-${selectedMonth}`;
+    } else if (filter === 'yearly') {
+        selectedValue = document.getElementById('sales-report-year').value;
+    }
+
+    var downloadUrl = `/sales-report/download/${filter}/${selectedValue}/${format}`;
+
+    fetch(downloadUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Report not available: ${response.statusText}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            if (format === 'pdf') {
+                // Handle PDF download
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'sales-report.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } else if (format === 'excel') {
+                // Handle Excel download
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
+                    XLSX.writeFile(workbook, 'sales-report.xlsx');
+                };
+                reader.readAsArrayBuffer(blob);
+            }
+        })
+        .catch(error => {
+            // Display the error message
+            console.error("Error downloading file:", error);
+            document.getElementById('error-message').innerText = `Error: ${error.message}`;
+            setTimeout(() => {
+                document.getElementById('error-message').innerText = '';
+            }, 3000);
+        });
+}
+
+</script>

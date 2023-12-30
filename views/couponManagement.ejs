@@ -95,25 +95,7 @@
                 });
             });
 
-            function validate() {
-      let categoryname= document.getElementById("categoryName");
-     
-      let trimmedCategoryname = categoryname.value.trim();
-      let expression = /^[A-A-Za-z\-]+$/
-
-      errorMessageContainer.innerText = ""; // Clear previous error messages
-
-      if (trimmedCategoryname === "") {
-        errorMessageContainer.innerText = "Please fill the field";
-        return false;
-      }
-      if(!expression.test(trimmedCategoryname)){
-        errorMessageContainer.innerText = "Symbols are not allowded";
-        return false
-      }
-        return true
-      
-    }
+            
         </script>
 
     </body>

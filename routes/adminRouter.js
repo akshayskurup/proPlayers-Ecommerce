@@ -3,7 +3,6 @@ const adminRouter = express.Router()
 const checkBlocked = require('../middleware/isBlocked');
 const userAuth = require('../middleware/userAuth')
 const adminController = require('../controller/adminController')
-const adminPanelController = require('../controller/adminPanelController')
 const userManagementController = require('../controller/userManagementController')
 const categoryManagementController = require('../controller/categoryManagementController')
 const productManagement = require('../controller/productManagementController')
@@ -12,6 +11,8 @@ const couponManagementController = require('../controller/couponManagementContro
 const orderManagementController = require('../controller/orderManagementController')
 const addCategoryController = require('../controller/addCategoryController')
 const productManagementController = require("../controller/productManagementController")
+const offerManagementController = require('../controller/offerManagementController')
+const salesReportController = require('../controller/salesReportController')
 
 
 
@@ -19,9 +20,21 @@ const productManagementController = require("../controller/productManagementCont
 
 adminRouter.get('/admin',adminController.showAdminLogin)
 adminRouter.post('/admin',adminController.handleAdminLogin)
+adminRouter.get('/order-graph-data', adminController.getOrderGraphData);
 
-adminRouter.get('/adminPanel',adminPanelController.showadminPanel)
-adminRouter.post('/adminPanel/logout',adminPanelController.logOut)
+// adminRouter.get('/admin/getRevenueData', adminController.getDeliveredRevenueData);
+adminRouter.get('/admin/getOrderDataByCategory',adminController.getOrderData)
+adminRouter.get('/admin/additional-revenue-chart', adminController.getAdditionalRevenueChartData);
+adminRouter.get('/sales-report/download/:filter/:selectedValue/pdf', salesReportController.generatePdfReport);
+
+// Add a route for Excel download
+adminRouter.get('/sales-report/download/:filter/:selectedValue/excel', salesReportController.generateExcelReport);
+
+
+
+
+adminRouter.get('/adminPanel',adminController.showadminPanel)
+adminRouter.post('/adminPanel/logout',adminController.logOut)
 
 adminRouter.get('/user-management',userManagementController.showData)
 adminRouter.get('/adminPanel/block/:id', userManagementController.blockUser);
@@ -34,7 +47,13 @@ adminRouter.get('/product-management',productManagement.showData)
 adminRouter.post('/product-management',productManagement.upload.array('gameImages', 4),productManagement.handleData)
 adminRouter.get('/product-management/edit/:id',productManagement.showEditForm)
 adminRouter.get('/search-products',productManagementController.searchProducts)
-adminRouter.post('/product-management/edit/:id',productManagement.upload.array('gameImages', 4),productManagement.handleEditData)
+adminRouter.post('/product-management/edit/:id', productManagement.upload.fields([
+    { name: 'gameImages1', maxCount: 1 },
+    { name: 'gameImages2', maxCount: 1 },
+    { name: 'gameImages3', maxCount: 1 },
+    { name: 'gameImages4', maxCount: 1 },
+  ]),productManagement.handleEditData);
+adminRouter.post('/remove-image',productManagement.removeImage)
 adminRouter.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
 
 adminRouter.get('/adminPanel/edit/:id',editCategoryController.showEditData)
@@ -52,5 +71,13 @@ adminRouter.post('/add-coupon',couponManagementController.handleCoupon)
 adminRouter.get('/coupon-management/toggle/:id',couponManagementController.toggleListCategory)
 adminRouter.get('/coupon-management/edit/:id',couponManagementController.showEditData)
 adminRouter.post('/edit-coupon/:id',couponManagementController.handleEditData)
+
+adminRouter.get('/offer-management',offerManagementController.showOffers)
+adminRouter.get('/check-and-expire-offers',offerManagementController.checkAndExpireOffers)
+adminRouter.get('/add-offer',offerManagementController.showAddOffer)
+adminRouter.post('/add-offer',offerManagementController.handleData)
+adminRouter.get('/offer-management/toggle/:offerId',offerManagementController.toggleListOffer)
+adminRouter.get('/offer-management/edit/:offerId',offerManagementController.editOffer)
+adminRouter.post('/edit-offer/:offerId',offerManagementController.handleEditOffer)
 
 module.exports=adminRouter

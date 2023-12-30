@@ -15,13 +15,13 @@
                 <div class="card-body p-5 text-center">
                   <h4>Verify</h4>
                   <p>Your code was sent to you via email</p>
-                  <div class="bg-danger"><%= message %></div>
+                  <div id="message" class="bg-danger"><%= message %></div>
                   <p id="countdown-timer" class="text-muted mb-0"></p>
-                  <form action="/signup-otp" method="post">
+                  <form id="otpForm" action="/signup-otp" method="post">
                     <div class="otp-field mb-4">
                       <label for="enteredOTP">Enter OTP:</label>
                       <input id="enteredOTP" style="width: 300px;" type="number" name="enteredOTP" required />
-                      <input type="hidden" name="email" value="<%= email %>">
+                      <input type="hidden" id="email" name="email" value="<%= email %>">
                     </div>
       
                     <button class="btn btn-primary mb-3" type="submit">Verify</button>
@@ -40,8 +40,51 @@
           </div>
       </section>
 
-<!-- Update your HTML file with the following script -->
 <script>
+
+document.getElementById('otpForm').addEventListener('submit', function (event) {
+    event.preventDefault(); 
+
+    handleFormSubmit();
+  });
+
+  function handleFormSubmit() {
+    const enteredOTP = document.getElementById('enteredOTP').value;
+    const email = document.getElementById('email').value;
+
+    fetch(`/signup-otp?email=${encodeURIComponent(email)}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ enteredOTP }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.success) {
+          console.error('OTP verification failed:', data.message);
+          document.getElementById('message').innerText = 'Incorrect OTP. Please try again.';
+        } else {
+          countdown = 50;
+          startCountdown();
+          window.location.href = '/home';
+        }
+      })
+      .catch(error => {
+        console.error('Error during OTP verification:', error);
+        document.getElementById('message').innerText = 'Error during OTP verification. Please try again.';
+      });
+  }
+
+
+
+
+
+
+
+
+
+
   let countdown = 50; // Resend cooldown in seconds
   let timer;
   let isResendInProgress = false;

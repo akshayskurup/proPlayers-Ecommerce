@@ -2,6 +2,7 @@ let homeController = {};
 const productSchema = require('../model/productSchema');
 let User = require('../model/userSchema');
 let category = require('../model/categorySchema');
+let offerSchema = require('../model/offerSchema')
 const { query } = require('express');
 
 homeController.showHome = async (req, res) => {
@@ -23,6 +24,19 @@ homeController.showHome = async (req, res) => {
         const categories = await category.find();
         console.log('user id', userId);
         console.log('home', req.session.UserLogin);
+
+        try {
+            const expiredOffers = await offerSchema.find({
+                isActive: true,
+                endDate: { $lte: new Date() },
+            });
+            for (const offer of expiredOffers) {
+                offer.isActive = false;
+                await offer.save();
+            }
+        } catch (error) {
+            console.error('Error checking and expiring offers:', error);
+        }
 
         // Render the home page
         res.render('homePage', { userId, product, categories });
