@@ -26,10 +26,10 @@ User side :
 Referal offer
 Admin side :
 Banner management
-Sales Report - Pdf and excel download(with order summary)
 
 
 completed
 Admin Dashboard - Chart with filter(yearly,monthly etc.)
 Invoice download
 Offer module(product offer, category offer,)
+Sales Report - Pdf and excel download(with order summary)

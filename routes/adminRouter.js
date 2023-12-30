@@ -25,7 +25,10 @@ adminRouter.get('/order-graph-data', adminController.getOrderGraphData);
 // adminRouter.get('/admin/getRevenueData', adminController.getDeliveredRevenueData);
 adminRouter.get('/admin/getOrderDataByCategory',adminController.getOrderData)
 adminRouter.get('/admin/additional-revenue-chart', adminController.getAdditionalRevenueChartData);
-adminRouter.get('/sales-report/download/:filter/:selectedValue', salesReportController.generatePdfReport);
+adminRouter.get('/sales-report/download/:filter/:selectedValue/pdf', salesReportController.generatePdfReport);
+
+// Add a route for Excel download
+adminRouter.get('/sales-report/download/:filter/:selectedValue/excel', salesReportController.generateExcelReport);
 
 
 

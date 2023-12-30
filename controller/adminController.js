@@ -2,6 +2,8 @@ let adminSchema = require("../model/adminSchema")
 const Order = require("../model/orderSchema");
 const coupon = require("../model/couponSchema")
 const offer = require("../model/offerSchema")
+const { ObjectId } = require('mongodb');
+
 
 let adminController = {}
 
@@ -13,6 +15,7 @@ adminController.showAdminLogin = (req,res)=>{
     }
     else{
         res.redirect('/adminPanel')
+        
     }
     }
 
@@ -49,6 +52,7 @@ adminController.showadminPanel=async(req,res)=>{
     const orderCount = await Order.countDocuments();
     const activeCoupon = await coupon.find({isActive:true}).countDocuments()
     const activeOffer = await offer.find({isActive:true}).countDocuments()
+
     try {
         if(req.session.AdminLogin){
             res.render("adminPanel",{deliveredOrder,orderCount,activeCoupon,activeOffer})
@@ -84,15 +88,24 @@ adminController.getOrderGraphData = async (req, res) => {
                     _id: { $dateToString: { format: '%Y-%m-%d', date: '$orderDate' } },
                     orderCount: { $sum: 1 }
                 }
-            }
+            },
+            { $sort: { _id: 1 } } // Sort the result by date
         ]);
 
-        res.json(orderGraphData);
+        // Check if _id is defined before using localeCompare
+        const sortedOrderGraphData = orderGraphData.sort((a, b) => {
+            const aId = a._id || '';
+            const bId = b._id || '';
+            return aId.localeCompare(bId);
+        });
+
+        res.json(sortedOrderGraphData);
     } catch (error) {
         console.error("Error fetching order graph data:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 
 // Add a new method to fetch revenue data
@@ -213,6 +226,7 @@ adminController.getAdditionalRevenueChartData = async (req, res) => {
 
         // Fetch additional revenue data based on the selected filter
         const additionalRevenueData = await Order.aggregate(aggregateOptions);
+
 
         res.json(additionalRevenueData);
     } catch (error) {

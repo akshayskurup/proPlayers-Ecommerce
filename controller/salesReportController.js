@@ -1,24 +1,19 @@
-let salesReportController = {}
-let Order = require('../model/orderSchema')
+let salesReportController = {};
+let Order = require('../model/orderSchema');
 const PDFDocument = require('pdfkit');
+const XLSX = require('xlsx'); // Import the xlsx library
 
 salesReportController.generatePdfReport = async (req, res) => {
     try {
-        const filter = req.params.filter; 
-        const selectedValue = req.params.selectedValue; 
-        const [year,month] = selectedValue.split('-');
+        const { filter, selectedValue } = req.params;
+        const [year, month] = selectedValue.split('-');
         const salesData = await fetchSalesData(filter, selectedValue);
 
-        console.log('Fetched Sales Data:', salesData);
-
         if (!salesData || salesData.length === 0) {
-            // If no data is fetched, send an appropriate response
             return res.status(404).json({ error: "No data found for the selected filter and value" });
         }
 
-        // Create a PDF document
         const pdfDoc = new PDFDocument();
-       
 
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=sales-report-${filter}-${selectedValue}.pdf`);
@@ -34,12 +29,11 @@ salesReportController.generatePdfReport = async (req, res) => {
         } else if (filter === 'yearly') {
             title += ` (${year})`;
         }
-        
+
         pdfDoc.text(title, { align: 'center', underline: true });
         pdfDoc.moveDown();
         salesData.forEach(entry => {
             pdfDoc.moveDown();
-            
             pdfDoc.text(`Order ID: ${entry.orderId}`);
             pdfDoc.text(`Customer: ${entry.customer.name}`);
             entry.items.forEach((item, itemIndex) => {
@@ -47,14 +41,133 @@ salesReportController.generatePdfReport = async (req, res) => {
             });
             pdfDoc.text(`Total Amount: ${entry.totalAmount}`);
             pdfDoc.text(`Order Date: ${entry.orderDate.toLocaleDateString()}`);
-
-
         });
         pdfDoc.end();
     } catch (error) {
         console.error("Error generating PDF report:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
+};
+
+salesReportController.generateExcelReport = async (req, res) => {
+//     try {
+//         const { filter, selectedValue } = req.params;
+//         const salesData = await fetchSalesData(filter, selectedValue);
+
+//         if (!salesData || salesData.length === 0) {
+//             return res.status(404).json({ error: "No data found for the selected filter and value" });
+//         }
+//         console.log("Sales data: ",salesData);
+
+//         // Convert the data to an array of arrays
+//         // const dataForExcel = salesData.map(entry => [
+//         //     entry.orderId,
+//         //     entry.customer.name,
+//         //     entry.totalAmount,
+//         //     entry.orderDate.toLocaleDateString()
+//         // ]);
+//         // console.log("Data for Excel: ", dataForExcel);
+
+
+//         // // Create a workbook
+//         // const workbook = XLSX.utils.book_new();
+//         // // const worksheet = XLSX.utils.aoa_to_sheet([
+//         // //     ['Order ID', 'Customer', 'Total Amount', 'Order Date'], // Header row
+//         // //     ...dataForExcel // Data rows
+//         // // ]);
+//         // const worksheet = XLSX.utils.json_to_sheet(dataForExcel, {
+//         //     header: ['Order ID', 'Customer', 'Total Amount', 'Order Date'],
+//         //     ...dataForExcel
+//         //   });
+//         // console.log("Worksheet: ", worksheet);
+
+//         const worksheet = XLSX.utils.json_to_sheet(dataForExcel, {
+//             header: ['Order ID', 'Customer', 'Total Amount', 'Order Date'],
+//         });
+        
+//         // Modify dataForExcel to be an array of objects
+//         const dataForExcel = salesData.map(entry => ({
+//             'Order ID': entry.orderId,
+//             'Customer': entry.customer.name,
+//             'Total Amount': entry.totalAmount,
+//             'Order Date': entry.orderDate.toLocaleDateString()
+//         }));
+        
+//         // Enable Shared Strings Table for styling
+//         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Report');
+
+
+       
+
+//         const headerCellStyle = { font: { bold: true }, fill: { fgColor: { rgb: 'FFFF00' } } };
+// Object.keys(worksheet).forEach(key => {
+//   if (key.startsWith('A1')) {
+//     worksheet[key].s = headerCellStyle;
+//   }
+// });
+//         // Enable Shared Strings Table for styling
+//         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Report');
+
+//         // Enable Shared Strings Table for styling
+//         const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer', bookSST: true });
+        
+//         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//         res.setHeader('Content-Disposition', `attachment; filename=sales-report-${filter}-${selectedValue}.xlsx`);
+
+//         // Send the buffer as the response
+//         res.end(excelBuffer);
+//     } catch (error) {
+//         console.error("Error generating Excel report:", error);
+//         res.status(500).json({ error: "Internal Server Error" });
+//     }
+
+const { filter, selectedValue } = req.params;
+try {
+    const salesData = await fetchSalesData(filter, selectedValue);
+
+    if (!salesData || salesData.length === 0) {
+        return res.status(404).json({ error: "No data found for the selected filter and value" });
+    }
+    console.log("Sales data: ", salesData);
+
+    // Convert the data to an array of objects
+    const dataForExcel = salesData.map(entry => ({
+        'Order ID': entry.orderId,
+        'Customer': entry.customer.name,
+        'Total Amount': entry.totalAmount,
+        'Order Date': entry.orderDate.toLocaleDateString()
+    }));
+    console.log("Data for Excel: ", dataForExcel);
+
+    // Create a workbook
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(dataForExcel, {
+        header: ['Order ID', 'Customer', 'Total Amount', 'Order Date'],
+    });
+    console.log("Worksheet: ", worksheet);
+
+    const headerCellStyle = { font: { bold: true }, fill: { fgColor: { rgb: 'FFFF00' } } };
+    Object.keys(worksheet).forEach(key => {
+        if (key.startsWith('A1')) {
+            worksheet[key].s = headerCellStyle;
+        }
+    });
+
+    // Enable Shared Strings Table for styling
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Report');
+
+    // Enable Shared Strings Table for styling
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer', bookSST: true });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=sales-report-${filter}-${selectedValue}.xlsx`);
+
+    // Send the buffer as the response
+    res.end(excelBuffer);
+} catch (error) {
+    console.error("Error generating Excel report:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+}
 };
 
 

@@ -132,7 +132,8 @@
                                 <option value="2023">2023</option>
                                 <option value="2024">2024</option>
                             </select>
-                            <a href="javascript:void(0)" onclick="downloadPdf()" class="btn">Download as PDF</a>
+                            <a href="javascript:void(0)" onclick="downloadReport('pdf')" class="btn">Download as PDF</a>
+                            <a href="javascript:void(0)" onclick="downloadReport('excel')" class="btn">Download as Excel</a>
 
                         </div>
                     </div>
@@ -191,11 +192,11 @@
         const response = await fetch('/order-graph-data');
         const orderData = await response.json();
 
-        // Sort the data based on the date
-        orderData.sort((a, b) => a.date.localeCompare(b.date));
+        // Sort the data based on the _id field
+        orderData.sort((a, b) => a._id.localeCompare(b._id));
 
         // Convert date strings to formatted date labels
-        const formattedLabels = orderData.map(item => dayjs(item.date).format('YYYY-MM-DD'));
+        const formattedLabels = orderData.map(item => dayjs(item._id).format('YYYY-MM-DD'));
 
         // Check if the orderGraph variable exists and has the clear method
         if (orderGraph && typeof orderGraph.clear === 'function') {
@@ -208,6 +209,7 @@
         console.error("Error fetching order graph data:", error);
     }
 }
+    
 
 // Function to initialize or update the order graph with data
 function updateOrderGraphWithData(labels, orderData) {
@@ -391,24 +393,23 @@ if(filter=='daily'){
 }
 }
 
-function downloadPdf() {
-        var filter = document.getElementById('sales-report-filter').value;
-        var selectedValue = '';
+function downloadReport(format) {
+    var filter = document.getElementById('sales-report-filter').value;
+    var selectedValue = '';
 
-        if (filter === 'daily') {
-            selectedValue = document.getElementById('sales-report-date').value;
-        } else if (filter === 'monthly') {
-            var selectedYear = document.getElementById('sales-report-year').value;
+    if (filter === 'daily') {
+        selectedValue = document.getElementById('sales-report-date').value;
+    } else if (filter === 'monthly') {
+        var selectedYear = document.getElementById('sales-report-year').value;
         var selectedMonth = document.getElementById('sales-report-month').value;
+        selectedValue = `${selectedYear}-${selectedMonth}`;
+    } else if (filter === 'yearly') {
+        selectedValue = document.getElementById('sales-report-year').value;
+    }
 
-        selectedValue = `${selectedYear}-${selectedMonth}`;        
-        } else if (filter === 'yearly') {
-            selectedValue = document.getElementById('sales-report-year').value;
-        }
+    var downloadUrl = `/sales-report/download/${filter}/${selectedValue}/${format}`;
 
-        var downloadUrl = `/sales-report/download/${filter}/${selectedValue}`;
-
-        fetch(downloadUrl)
+    fetch(downloadUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Report not available: ${response.statusText}`);
@@ -416,24 +417,35 @@ function downloadPdf() {
             return response.blob();
         })
         .then(blob => {
-            // Handle the blob, for example, by creating a download link
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'sales-report.pdf';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
+            if (format === 'pdf') {
+                // Handle PDF download
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'sales-report.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } else if (format === 'excel') {
+                // Handle Excel download
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
+                    XLSX.writeFile(workbook, 'sales-report.xlsx');
+                };
+                reader.readAsArrayBuffer(blob);
+            }
         })
         .catch(error => {
             // Display the error message
-            console.error("Error downloading PDF:", error);
+            console.error("Error downloading file:", error);
             document.getElementById('error-message').innerText = `Error: ${error.message}`;
             setTimeout(() => {
                 document.getElementById('error-message').innerText = '';
             }, 3000);
         });
-    }
+}
 
 </script>
