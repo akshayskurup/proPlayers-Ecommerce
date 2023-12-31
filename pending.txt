@@ -1,7 +1,6 @@
 pending
 Filter pagination sort and search for every grid : admin side
 clear the offer before review 
-invoice is taking the phone. it need to be taken from selected address
 
 completed
 Confirmation if required,No results found placeholder
@@ -23,8 +22,6 @@ next week task
  
  	
 User side :
-complete while deactivate category product need to be hide
-need to show the banner on the client side
 Admin side :
 
 

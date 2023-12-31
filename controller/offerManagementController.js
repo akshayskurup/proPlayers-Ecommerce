@@ -4,24 +4,55 @@ const categorySchema= require('../model/categorySchema')
 const offerSchema = require('../model/offerSchema')
 const mongoose = require('mongoose')
 
+
 offerManagementController.checkAndExpireOffers = async () => {
     try {
+        console.log("in checking expirty")
         const expiredOffers = await offerSchema.find({
             isActive: true,
             endDate: { $lte: new Date() },
         });
+        console.log('expiredOffers',expiredOffers)
+
         for (const offer of expiredOffers) {
             offer.isActive = false;
             await offer.save();
+
+            // Handle product expiration based on discountOn
+            if (offer.discountOn === 'category' && offer.selectedCategory) {
+                const categoryId = offer.selectedCategory;
+                const productsInCategory = await productSchema.find({ productCategory: categoryId });
+                console.log("productsInCategory",productsInCategory)
+
+                for (const product of productsInCategory) {
+                    // Revert the product prices and discounts to their original values
+                    product.price = product.originalPrice;
+                    product.originalPrice = 0;
+                    product.discount = 0;
+                    await product.save();
+                }
+            } else if (offer.discountOn === 'product' && offer.selectedProducts) {
+                const productId = offer.selectedProducts;
+                const product = await productSchema.findOne({ _id: productId });
+
+                // Revert the product prices and discounts to their original values
+                product.price = product.originalPrice;
+                product.originalPrice = 0;
+                product.discount = 0;
+                await product.save();
+            }
         }
     } catch (error) {
         console.error('Error checking and expiring offers:', error);
     }
-}
+};
+
+
 
 offerManagementController.showOffers = async (req,res)=>{
     const allOffers = await offerSchema.find().populate('selectedCategory').populate('selectedProducts')
     try {
+        await offerManagementController.checkAndExpireOffers();
         res.render('offerManagement',{allOffers,message:""})
     } catch (error) {
         console.error("Error during coupon showing:", error);
@@ -263,7 +294,7 @@ offerManagementController.handleEditOffer = async (req, res) => {
         if (discountOn === 'category') {
             // Check uniqueness for selectedCategory only if it has changed
             if (selectedCategory !== offers.selectedCategory) {
-                const existingCategoryOffer = await offerSchema.findOne({ selectedCategory });
+                const existingCategoryOffer = await offerSchema.findOne({ selectedCategory, _id: { $ne: offerId }});
                 if (existingCategoryOffer) {
                     return res.render("editOffer", {
                         offers,
@@ -271,7 +302,7 @@ offerManagementController.handleEditOffer = async (req, res) => {
                         formattedEndDate,
                         products,
                         categories,
-                        message: "An offer for this category already exists.",
+                        message: "An offer for this  already exists.",
                     });
                 }
             }

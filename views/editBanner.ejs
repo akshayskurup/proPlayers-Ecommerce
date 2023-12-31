@@ -1,6 +1,6 @@
 <%- include("adminHeader.ejs") %>
 
-<form class="form-horizontal mx-auto" style="margin-top: 0px; margin-left: 50px;" method="post" action="/edit-banner/<%= Banner._id %>" enctype="multipart/form-data">
+<form class="form-horizontal mx-auto" style="margin-top: 0px; margin-left: 50px;" method="post" action="/edit-banner/<%= Banner._id %>" enctype="multipart/form-data" onsubmit="return validate()">
     <div class="row">
         <center>
             <p class="h2" style="margin-top: 90px;">Edit Banner</p>
@@ -8,12 +8,13 @@
     </div>
     <fieldset>
 
+        <center><div id="message" class="text-danger"></div></center>
         <!-- Image Input -->
         <div class="form-group">
             <label class="col-md-4 control-label" for="image">Image</label>
             <div class="col-md-4">
                 <input id="image" name="image" class="form-control input-md" type="file" onchange="previewImage(event)">
-                <img id="preview" src="<%= Banner.image %>" alt="Preview" style="max-width: 100%; max-height: 150px; margin-top: 10px; <% if (!Banner.image) { %> display: none; <% } %> ">
+                <img   id="preview" src="<%= Banner.image %>" alt="Preview" style="max-width: 100%; max-height: 150px; margin-top: 10px; <% if (!Banner.image) { %> display: none; <% } %> ">
             </div>
         </div>
 
@@ -54,6 +55,7 @@
 <!-- Image Preview JavaScript -->
 <script>
     function previewImage(event) {
+        validateImage();
         const input = event.target;
         const preview = document.getElementById('preview');
 
@@ -71,4 +73,37 @@
             preview.style.display = '<%= Banner.image ? "block" : "none" %>';
         }
     }
+    var message = document.getElementById("message")
+    function validate(){
+        var title = document.getElementById("title").value.trim()
+        var link = document.getElementById("link").value.trim()
+        var image = document.getElementById('image')
+
+        
+        message.innerText = "";
+
+        if(title=="" || link=="" || image==""){
+            message.innerText = "Please fill all the field"
+            return false
+        }
+        if(title.length>=75){
+            message.innerText = "Title need to less the 75 words"
+            return false
+        }
+
+        return true
+        
+    }
+    function validateImage() {
+  var input = document.getElementById('image');
+  var fileName = input.value;
+  var allowedExtensions = /\.(jpg|jpeg|png|webp)$/i;
+
+  if (!allowedExtensions.test(fileName)) {
+    message.innerText='Invalid file type. Please upload an image with a valid extension (jpg, jpeg, png, webp).'
+    input.value = '';
+    return false;
+  }
+}
+
 </script>
