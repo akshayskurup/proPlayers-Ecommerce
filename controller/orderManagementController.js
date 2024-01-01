@@ -52,7 +52,7 @@ orderManagementController.showData = async (req, res) => {
         const totalProducts = await orders.countDocuments();
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
-        res.render('orderManagement', { orderDetails, currentPage: page, totalPages, req });
+        res.render('Admin/orderManagement', { orderDetails, currentPage: page, totalPages, req });
 
     } catch (error) {
         console.error('Error fetching data:', error);

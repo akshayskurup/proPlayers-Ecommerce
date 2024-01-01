@@ -453,19 +453,6 @@ const totalAmount = totalPriceElement.textContent.trim().replace('₹', '');
     }
   }
 
-
-  // function cancelCoupon() {
-    
-  //   const discountValueElement = document.getElementById('discountValue');
-  //   const couponAppliedText = document.getElementById('couponAppliedText');
-  //   const checkoutTotalInput = document.getElementById('checkout-total-input');
-
-  //   discountValueElement.textContent = `- ₹0`;
-  //   checkoutTotalElement.textContent = `₹${totalAmount}`;
-  //   checkoutTotalInput.value = '0';
-  //   couponAppliedText.textContent = '';
-  // }
-
   async function cancelCoupon() {
     const discountValueElement = document.getElementById('discountValue');
 
@@ -488,7 +475,6 @@ const totalAmount = totalPriceElement.textContent.trim().replace('₹', '');
       });
 
       if (response.ok) {
-        // Handle the response from the server (if needed)
         const result = await response.json();
         couponMessage.textContent = result.message || 'Coupon canceled successfully';
         discountValueElement.textContent = `- ₹0`;
@@ -515,7 +501,6 @@ function handleButtonClick() {
       if (paymentOption === 'onlinePayment'&&validateForm()) {
          btnClick();
       } else {
-         // If the payment option is not 'onlinePayment', submit the form
          const form = document.getElementById('checkOut');
          if (form) {
             form.submit();
@@ -620,7 +605,6 @@ if(paymentOption=="onlinePayment"&&validateForm()){
         var pincode = selectedAddress.getAttribute('data-pincode');
         var state = selectedAddress.getAttribute('data-state');
 
-        // Set values of hidden input fields in the "Continue" form
         document.getElementById('selectedMobile').value = mobile;
         document.getElementById('selectedHouseName').value = houseName;
         document.getElementById('selectedStreet').value = street;

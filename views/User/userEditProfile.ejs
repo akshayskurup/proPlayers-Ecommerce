@@ -11,8 +11,11 @@
                         <div class="card">
                             <div class="card-body-edit-profile">
                                 <div class="d-flex flex-column align-items-center text-center">
-                                    <img style="width: 200px; height: 200px;" src="<%=user.image%>" alt="Admin"
-                                        class="rounded-circle" width="150" />
+                                    <% if(user.image=="user.png"){%>
+                                        <i class="fa fa-user fa-6x" aria-hidden="true"></i>
+                                        <%} else{%>
+                                        <img style="width: 200px; height: 200px;" src="<%=user.image%>" alt="Profile" class="rounded-circle" width="150" />
+                                    <%}%>                                        
                                     <div class="mt-3">
                                         <h4><%=user.name%></h4>
                                         

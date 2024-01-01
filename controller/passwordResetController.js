@@ -37,7 +37,7 @@ const sendOTP = async (email, otp) => {
   };
 
 passwordResetController.forgotPasswordForm = (req, res) => {
-    res.render('passwordReset', { message: '' });
+    res.render('User/passwordReset', { message: '' });
 };
 
 passwordResetController.requestPasswordReset = async (req, res) => {
@@ -45,7 +45,7 @@ passwordResetController.requestPasswordReset = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-        return res.render('passwordReset', { message: 'User not found' });
+        return res.render('User/passwordReset', { message: 'User not found' });
     }
 
     // Generate OTP
@@ -67,13 +67,13 @@ passwordResetController.requestPasswordReset = async (req, res) => {
         res.redirect('/reset-password/verify-otp');
     } catch (err) {
         console.error('Error during OTP sending:', err);
-        res.render('passwordReset', { message: 'Error during OTP sending. Please try again.' });
+        res.render('User/passwordReset', { message: 'Error during OTP sending. Please try again.' });
     }
 };
 
 
 passwordResetController.showOTPForm = (req, res) => {
-    res.render('resetOtp', { message: '', email: req.session.resetPasswordData.email });
+    res.render('User/resetOtp', { message: '', email: req.session.resetPasswordData.email });
 };
 
 passwordResetController.verifyOTPForPasswordReset = async (req, res) => {
@@ -135,7 +135,7 @@ passwordResetController.resendOtp = async (req, res) => {
 
 
 passwordResetController.showPasswordResetForm = (req, res) => {
-    res.render('passwordResetForm');
+    res.render('User/passwordResetForm');
 };
 
 passwordResetController.resetPassword = async (req, res) => {
@@ -149,7 +149,7 @@ passwordResetController.resetPassword = async (req, res) => {
         res.redirect('/'); 
     } catch (err) {
         console.error('Error updating password:', err);
-        res.render('resetPassword', { message: 'Error updating password. Please try again.' });
+        res.render('User/resetPassword', { message: 'Error updating password. Please try again.' });
     }
 };
 

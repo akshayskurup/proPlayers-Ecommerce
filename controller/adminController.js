@@ -11,7 +11,7 @@ let adminController = {}
 
 adminController.showAdminLogin = (req,res)=>{
     if(!req.session.AdminLogin){
-        res.render('admin',{message:""})
+        res.render('Admin/admin',{message:""})
     }
     else{
         res.redirect('/adminPanel')
@@ -31,13 +31,13 @@ adminController.handleAdminLogin = async (req, res) => {
         const admin = await adminSchema.findOne({ email, password });
 
         if (!admin) {
-            res.render("admin", { message: "No admin with this email" });
+            res.render("Admin/admin", { message: "No admin with this email" });
         } else if (req.body.password !== admin.password) {
-             res.render("admin", { message: "Password is incorrect" });
+             res.render("Admin/admin", { message: "Password is incorrect" });
         }
         req.session.AdminLogin = true;
         console.log('Successfully logged in');
-        res.render("adminPanel",{orderCount,deliveredOrder,activeCoupon,activeOffer});
+        res.render("Admin/adminPanel",{orderCount,deliveredOrder,activeCoupon,activeOffer});
     } catch (error) {
         console.log("Error",error)
         res.status(500).send({ error: "Internal Server Error" });
@@ -55,7 +55,7 @@ adminController.showadminPanel=async(req,res)=>{
 
     try {
         if(req.session.AdminLogin){
-            res.render("adminPanel",{deliveredOrder,orderCount,activeCoupon,activeOffer})
+            res.render("Admin/adminPanel",{deliveredOrder,orderCount,activeCoupon,activeOffer})
         }
         else{
             res.redirect('/admin')

@@ -9,10 +9,10 @@ let wallet = require('../model/walletSchema')
 let Coupons = require('../model/couponSchema')
 const Razorpay = require('razorpay');
 const crypto = require("crypto");
-
+require('dotenv').config();
 const instance = new Razorpay({
-    key_id: 'rzp_test_JGyt4WpGgZdibt',
-    key_secret: 'KsMsg1hvtW6qUxgdY3BWwPvf',
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
   });
 
 
@@ -61,7 +61,7 @@ checkOutController.showData = async (req, res) => {
 
 
             if(req.session.UserLogin){
-                res.render('checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: '',availableCoupons,isCouponAvailable,userWallet})
+                res.render('User/checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: '',availableCoupons,isCouponAvailable,userWallet})
                 return;
             }
             else{
@@ -87,7 +87,7 @@ checkOutController.editAddress = async (req, res) => {
         const user = await User.findById(userId);
         const categories = await category.find()
         const userAddressToEdit = user.address[addressIndex];
-        res.render('editAddress', { user, userAddressToEdit, addressIndex,categories });
+        res.render('User/editAddress', { user, userAddressToEdit, addressIndex,categories });
     } catch (err) {
         console.error('Error fetching user data:', err);
         res.status(500).send('Internal Server Error');
@@ -227,7 +227,7 @@ checkOutController.handleData = async (req, res) => {
     const hasItemWithQuantity = items.some(item => item.productId.totalQuantity > 0);
 
     if (!hasItemWithQuantity) {
-      return res.render('checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: 'Selected item must be in available' });
+      return res.render('User/checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: 'Selected item must be in available' });
     }
     
     if(!userWallet){
@@ -354,7 +354,7 @@ checkOutController.verifyPayment = async(req,res)=>{
         let totalAmount=order.amount
         console.log("total amount : ",totalAmount)
         if (!hasItemWithQuantity) {
-            return res.render('checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: 'Selected item must be in available' });
+            return res.render('User/checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: 'Selected item must be in available' });
           }
         for (const item of inStockItems) {
             const productId = item.productId._id;
@@ -406,16 +406,14 @@ checkOutController.verifyPayment = async(req,res)=>{
 
 checkOutController.orderConfirmed = async (req, res) => {
     try {
-        // Fetch the latest order for the current user
         const userId = req.session.userId;
         const latestOrder = await Order.findOne({ customer: userId }).sort({ orderDate: -1 }).populate('items.product');
         const user = await User.findById(userId);
         const categories = await category.find()
 
         console.log("latest order",latestOrder)
-        // Render the 'orderConfirmed' view with the latest order details
         if(req.session.UserLogin){
-            res.render('orderConfirmed', { categories,latestOrder,userName:user.name , user });
+            res.render('User/orderConfirmed', { categories,latestOrder,userName:user.name , user });
         }
         else{
             res.redirect('/')
@@ -428,5 +426,3 @@ checkOutController.orderConfirmed = async (req, res) => {
 };
 
 module.exports = checkOutController
-
-

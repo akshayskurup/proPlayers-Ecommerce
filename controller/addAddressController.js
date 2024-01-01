@@ -1,8 +1,10 @@
 const addAddressController = {}
 const User = require('../model/userSchema')
+const category = require('../model/categorySchema')
 
-addAddressController.showForm = (req,res)=>{
-    res.render('addAddress')
+addAddressController.showForm = async (req,res)=>{
+    categories = await category.find()
+    res.render('User/addAddress',{categories})
 }
 
 addAddressController.handleData = async (req,res)=>{

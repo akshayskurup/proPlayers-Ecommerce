@@ -18,7 +18,7 @@ bannerController.upload = multer({ storage: storage }).single('image');
 bannerController.showBanners = async(req,res)=>{
     const banners = await banner.find()
     try {
-        res.render('bannerManagement',{banners})
+        res.render('Admin/bannerManagement',{banners})
     } catch (error) {
         console.errror("Error displaying the banner", error)
         res.status(500).send("internal server error")
@@ -27,7 +27,7 @@ bannerController.showBanners = async(req,res)=>{
 
 bannerController.addBanner = (req,res)=>{
     try {
-        res.render('addBanner')
+        res.render('Admin/addBanner')
     } catch (error) {
         console.error('Error displaying add-banner :', error);
       res.status(500).send('Internal Server Error');
@@ -79,7 +79,7 @@ bannerController.showBannerEdit = async(req,res)=>{
     const Banner = await banner.findById(bannerId)
     try {
         if(banner){
-          res.render("editBanner",{Banner})  
+          res.render("Admin/editBanner",{Banner})  
         }
         
     } catch (error) {

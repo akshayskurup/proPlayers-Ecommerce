@@ -4,11 +4,11 @@ let coupon = require('../model/couponSchema')
 
 couponManagementController.showData = async(req,res)=>{
   const couponData = await coupon.find().sort({_id:-1})
-    res.render('couponManagement',{couponData})
+    res.render('Admin/couponManagement',{couponData})
 }
 
 couponManagementController.addCoupon = (req,res)=>{
-    res.render('addCoupon')
+    res.render('Admin/addCoupon')
 }
 couponManagementController.handleCoupon = async (req,res)=>{
     const {discountType,discountValue,minimumCartAmount,expiry} = req.body
@@ -54,6 +54,7 @@ couponManagementController.toggleListCategory = async (req, res) => {
           // Toggle isListed value
           if (Coupon.expiry > new Date()) {
             Coupon.isActive = !Coupon.isActive;
+            Coupon.isExpired = false
             await Coupon.save();
             res.redirect('/coupon-management');
           }else{
@@ -73,7 +74,7 @@ couponManagementController.showEditData = async(req,res)=>{
   const couponData = await coupon.findById(couponId)
   const formattedexpiry = couponData.expiry.toISOString().split('T')[0];
   try {
-    res.render('editCoupon',{couponData,formattedexpiry})
+    res.render('Admin/editCoupon',{couponData,formattedexpiry})
   } catch (error) {
     console.error('Error on showEditData:', error);
       res.status(500).send('Internal Server Error');

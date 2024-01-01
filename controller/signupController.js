@@ -36,7 +36,7 @@ signupController.showSignupForm = (req, res) => {
   if (req.session.UserLogin) {
     res.redirect("/home");
   } else {
-    res.render('signup', { message: '' });
+    res.render('User/signup', { message: '' });
 
     req.session.signupUser = true
     req.session.save()
@@ -52,7 +52,7 @@ signupController.handleSignup = async (req, res) => {
   console.log("Form Body:", req.body);
 
   if (existingUser) {
-    return res.render("signup", { message: "Email already exists" });
+    return res.render("User/signup", { message: "Email already exists" });
   }
   console.log("refff",req.session.referral)
 console.log("ref input",referral)
@@ -109,7 +109,7 @@ signupController.showOTP = (req, res) => {
   const email = req.query.email;
   const name = req.query.name;
   if(req.session.signupUser){
-    res.render('signupOTP', { message: "", email, name });
+    res.render('User/signupOTP', { message: "", email, name });
   }else{
     res.redirect('/')
   }

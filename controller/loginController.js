@@ -9,7 +9,7 @@ loginController.showLoginForm = (req, res) => {
         res.redirect('/home')
     }
     else{
-        res.render('login',{message:""});
+        res.render('User/login',{message:""});
     }
     
 };
