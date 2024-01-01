@@ -6,7 +6,6 @@ let categoryManagementController = {};
 categoryManagementController.showData = async (req, res) => {
     const update = req.query.update || ""
     try {
-        // Use .populate() to include product details for each category
         const categories = await category.find().populate('products');
         
         if (req.session.AdminLogin) {
@@ -26,10 +25,21 @@ categoryManagementController.toggleListCategory = async (req, res) => {
     try {
         const categories = await category.findById(categoryId);
 
+        const categoryProducts = categories.products
+        console.log(categoryProducts)
+
         if (categories) {
             // Toggle isListed value
             categories.isListed = !categories.isListed;
             await categories.save();
+            if(categoryProducts){
+                for(const product of categoryProducts){
+                    const Product = await productSchema.findById(product);
+
+                    Product.isListed = !Product.isListed
+                    await Product.save()
+                }
+            }
             res.redirect('/category-management');
         } else {
             res.status(404).send('Category not found');

@@ -212,18 +212,26 @@
 
                 <hr />
                 <h6 class="text-dark my-4 ">Coupons Available</h6>
-                <% availableCoupons.forEach(coupon=>{%>
-                  <div class="d-flex align-items-center mb-4">
-                    <div class="coupon-container">
-                        <p class="coupon-type"><%= coupon.discountType %></p>
-                        <p class="coupon-code">Code: <%= coupon.code %></p>
-                        <div id="discountPercentage" class="price  discount-percentage">
-                            Discount: <%= coupon.discountValue %>%
-                        </div>
-                    </div>
-                </div>
                 
+
+                <% if (availableCoupons.length > 0) { %>
+                  <% availableCoupons.forEach(coupon => { %>
+                    <% if (coupon.isActive) { %>
+                      <div class="d-flex align-items-center mb-4">
+                        <div class="coupon-container">
+                          <p class="coupon-type"><%= coupon.discountType %></p>
+                          <p class="coupon-code">Code: <%= coupon.code %></p>
+                          <div id="discountPercentage" class="price  discount-percentage">
+                            Discount: <%= coupon.discountValue %>%
+                          </div>
+                        </div>
+                      </div>                    
+                      <% } %>
                   <% }); %>
+                <% } else { %>
+                  <p>No coupons available at this moment</p>
+                <% } %>
+                
 
 
 

@@ -26,7 +26,13 @@ let userSchema = new mongoose.Schema({
     image: {
         type: String,
         default: "user.png",
-    }
+    },
+    referralCode:String,
+    referredBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    
     
 })
 

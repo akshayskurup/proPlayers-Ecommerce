@@ -1,7 +1,5 @@
 pending
-Filter pagination sort and search for every grid : admin side
 clear the offer before review 
-invoice is taking the phone. it need to be taken from selected address
 
 completed
 Confirmation if required,No results found placeholder
@@ -15,6 +13,7 @@ Delete single image
 Image preview need to updated with change files
 Expiry for return
 reason for cancelling product
+Filter pagination sort and search for every grid : admin side
 
 
 
@@ -23,13 +22,26 @@ next week task
  
  	
 User side :
-Referal offer
+referral code design check that is working
 Admin side :
-Banner management
+
 
 
 completed
+Banner management
+Referal offer
 Admin Dashboard - Chart with filter(yearly,monthly etc.)
 Invoice download
 Offer module(product offer, category offer,)
 Sales Report - Pdf and excel download(with order summary)
+design the product for the offer
+
+
+
+
+
+
+
+
+
+wallet management need to transfer

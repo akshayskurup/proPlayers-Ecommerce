@@ -84,7 +84,7 @@
           </div>
         </div> 
         
-        <%if(totalPages){%>
+        <!-- <%if(totalPages){%>
         
         <div class="pagination-container">
           <ul class="pagination">
@@ -95,8 +95,20 @@
               <% } %>
           </ul>
       </div>
-      <%}%>
-      
+      <%}%> -->
+      <div class="pagination-container">
+        <div class="pagination">
+          <% for (let i = 1; i <= totalPages; i++) { %>
+              <% if (sortOrder === 'highToLow') { %>
+                  <a href="/products/high-to-low?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+              <% } else if (sortOrder === 'lowToHigh') { %>
+                  <a href="/products/low-to-high?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+              <% } else{ %>
+                <a href="/allProducts?page=<%= i %>"><%= i %></a>
+              <%}%>
+          <% } %>
+      </div>
+  </div>
       
             </section>
         

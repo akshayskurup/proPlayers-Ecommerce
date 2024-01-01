@@ -15,7 +15,34 @@
                     <h1 class="page-header">Users</h1>
                 </div>
                 <!-- /.col-lg-12 -->
+                
             </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <form action="/user-management" method="GET">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="search" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">Search</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <form action="/user-management" method="GET">
+                            <select class="form-control" id="sortDropdown" name="sort" onchange="this.form.submit()">
+                                <option value="" <%= (!req.query.sort || req.query.sort === '') ? 'selected' : '' %>>Select</option>
+                                <option value="latest" <%= (req.query.sort === 'latest') ? 'selected' : '' %>>Latest User</option>
+                                <option value="older" <%= (req.query.sort === 'older') ? 'selected' : '' %>>Older User</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+            
+            
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">

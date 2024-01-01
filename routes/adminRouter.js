@@ -13,6 +13,7 @@ const addCategoryController = require('../controller/addCategoryController')
 const productManagementController = require("../controller/productManagementController")
 const offerManagementController = require('../controller/offerManagementController')
 const salesReportController = require('../controller/salesReportController')
+const bannerController = require('../controller/bannerController')
 
 
 
@@ -79,5 +80,12 @@ adminRouter.post('/add-offer',offerManagementController.handleData)
 adminRouter.get('/offer-management/toggle/:offerId',offerManagementController.toggleListOffer)
 adminRouter.get('/offer-management/edit/:offerId',offerManagementController.editOffer)
 adminRouter.post('/edit-offer/:offerId',offerManagementController.handleEditOffer)
+
+adminRouter.get('/banner-management',bannerController.showBanners)
+adminRouter.get('/banner-management/toggle/:bannerId',bannerController.toggle)
+adminRouter.get('/banner-management/edit/:bannerId',bannerController.showBannerEdit)
+adminRouter.post('/edit-banner/:bannerId',bannerController.upload,bannerController.handleBannerEdit)
+adminRouter.get('/add-banner',bannerController.addBanner)
+adminRouter.post('/add-banner',bannerController.upload,bannerController.handleData)
 
 module.exports=adminRouter

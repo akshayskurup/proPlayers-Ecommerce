@@ -1,0 +1,125 @@
+<%-include("adminHeader.ejs")%>
+
+
+
+  <form class="form-horizontal mx-auto" style="margin-top: 60px; margin-left: 50px;" method="post" action="/add-banner" onsubmit="return validate()" enctype="multipart/form-data" id="add-banner">
+    <fieldset>
+
+      <!-- Form Name -->
+      <center>
+        <legend>Add Banner</legend>
+      </center>
+
+      <div class="row">
+        
+        <center><div id="message" class="text-danger"></div></center>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">Image</label>
+            <div class="col-md-4">
+                <input id="image" name="image" class="form-control input-md" type="file" onchange="previewImage(event)">
+                <img id="preview" src="#" alt="Preview" style="max-width: 100%; max-height: 150px; margin-top: 10px; display: none;">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name">Title</label>
+            <div class="col-md-4">
+              <input id="title" name="title" placeholder="title" class="form-control input-md"
+                 type="text">
+    
+            </div>
+          </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="product_name">Link</label>
+        <div class="col-md-4">
+          <input id="link" name="link" placeholder="link" class="form-control input-md"
+             type="text">
+
+        </div>
+      </div>
+          <!-- Button -->
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="product_name"></label>
+            <div class="col-md-4">
+              <button id="button" name="button" type="submit">Submit</button>
+
+            </div>
+          </div>
+    </fieldset>
+  </form>
+
+
+    <!-- jQuery -->
+    <script src="/js/adminJs/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/js/adminJs/bootstrap.min.js"></script>
+  
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="/js/adminJs/metisMenu.min.js"></script>
+  
+    <!-- DataTables JavaScript -->
+    <script src="/js/adminJs/dataTables/jquery.dataTables.min.js"></script>
+    <script src="/js/adminJs/dataTables/dataTables.bootstrap.min.js"></script>
+  
+    <!-- Custom Theme JavaScript -->
+    <script src="/js/adminJs/startmin.js"></script>
+  <script>
+    function previewImage(event) {
+      validateImage();
+    const input = event.target;
+    const preview = document.getElementById('preview');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.src = '#';
+        preview.style.display = 'none';
+    }
+}
+
+var message = document.getElementById("message")
+    function validate(){
+        var title = document.getElementById("title").value.trim()
+        var link = document.getElementById("link").value.trim()
+        var image = document.getElementById('image')
+
+        
+        message.innerText = "";
+
+        if(title=="" || link=="" || image==""){
+            message.innerText = "Please fill all the field"
+            return false
+        }
+        if(title.length>=75){
+            message.innerText = "Title need to less the 75 words"
+            return false
+        }
+
+        return true
+        
+    }
+    function validateImage() {
+  var input = document.getElementById('image');
+  var fileName = input.value;
+  var allowedExtensions = /\.(jpg|jpeg|png|webp)$/i;
+
+  if (!allowedExtensions.test(fileName)) {
+    message.innerText='Invalid file type. Please upload an image with a valid extension (jpg, jpeg, png, webp).'
+    input.value = '';
+    return false;
+  }
+}
+  </script>
+
+  </body>
+  </html>

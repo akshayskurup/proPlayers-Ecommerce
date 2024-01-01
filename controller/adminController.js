@@ -204,6 +204,7 @@ adminController.getAdditionalRevenueChartData = async (req, res) => {
                 { $match: { OrderStatus: 'Delivered' } },
                 { $group: { _id: { $week: "$orderDate" }, totalRevenue: { $sum: "$totalAmount" } } }
             ];
+            
         } else if (filter === 'monthly') {
             aggregateOptions = [
                 { $match: { OrderStatus: 'Delivered' } },
@@ -226,6 +227,7 @@ adminController.getAdditionalRevenueChartData = async (req, res) => {
 
         // Fetch additional revenue data based on the selected filter
         const additionalRevenueData = await Order.aggregate(aggregateOptions);
+        console.log("additionalRevenueData",additionalRevenueData)
 
 
         res.json(additionalRevenueData);

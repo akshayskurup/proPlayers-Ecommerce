@@ -17,6 +17,19 @@
             </div>
             <!-- /.col-lg-12 -->
         </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <form action="/order-management" method="GET">
+                        <select class="form-control" id="sortDropdown" name="sort" onchange="this.form.submit()">
+                            <option value="" <%= (!req.query.sort || req.query.sort === '') ? 'selected' : '' %>>Select</option>
+                            <option value="latest" <%= (req.query.sort === 'latest') ? 'selected' : '' %>>Latest Order</option>
+                            <option value="older" <%= (req.query.sort === 'older') ? 'selected' : '' %>>Older Order</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
         <!-- /.row -->
         <div class="row">
             <div class="col-lg-12">

@@ -6,8 +6,32 @@
     
 }
 
+.carousel-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35); 
+  }
 
-
+  .carousel-caption {
+    color: white; 
+  }
+.carousel-button{
+    background-color: #ffffff00;
+    border: 2px solid white;
+    color: white;
+    border-radius: 2px;
+    font-size: 15px;
+}
+.carousel-button:hover{
+    background-color: #0000007c;
+    color: white;
+    border-radius: 2px;
+    
+}
 
 .container{
     max-width: 1220px;

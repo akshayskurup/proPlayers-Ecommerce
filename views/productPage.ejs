@@ -16,9 +16,12 @@
                     </div>
                     <div class="d-flex justify-content-center mb-3">
                         <% product.image.forEach((image, index) => { %>
+                            <% if(image!=null){%>
+                            
                             <a class="border mx-1 rounded-2" onclick="openLightbox('<%= image %>')">
                                 <img width="80" height="90" class="rounded-2" src="<%= image %>" />
                             </a>
+                            <%}%>
                         <% }) %>
                     </div>
                 </aside>
@@ -34,8 +37,8 @@
                         <h4 class="title text-dark">
                             <%=product.productName%>
                         </h4>
-                        <div class="d-flex flex-row my-3">
-                            <div class="text-warning mb-1 me-2">
+                        <div class="d-flex flex-row my-2">
+                            <!-- <div class="text-warning mb-1 me-2">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -45,29 +48,14 @@
                                     4.5
                                 </span>
                             </div>
-                            <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span>
+                            <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span> -->
                             <% if( product.totalQuantity <= 0){%>
-                                <span class="text-danger ms-2">Out Of Stock</span>
+                                <span class="text-danger ">Out Of Stock</span>
                             <%}else{%>
-                                <span class="text-success ms-2">In stock</span>
+                                <span class="text-success ">In stock</span>
                             <%}%>
                             
                         </div>
-
-                        <div class="mb-3">
-                           
-                            <span class="h5">₹<%=product.price%></span>
-                            <%if(product.discount!=0){%>
-                                <span class="h6" style="margin-left: 10px; text-decoration: line-through;">₹<%=product.originalPrice%></span>
-                            <span class="h6" style="color: red;"><%=product.discount%>% off</span>
-                            <%}%>
-                            
-                        </div>
-
-                        <p>
-                            <%=product.description%>
-                        </p>
-
                         <div class="row">
 
                             <dt class="col-3">Size</dt>
@@ -78,6 +66,22 @@
 
                             <dt class="col-3">Released Date</dt>
                             <dd class="col-9"><%=product.releasedDate.toLocaleDateString()%></dd>
+                        </div>
+
+                        
+
+                        <p>
+                            <%=product.description%>
+                        </p>
+
+                        <div class="mb-3">
+                           <span class="h4">Price: </span>
+                            <span  style="font-size: 30px ;">₹<%=product.price%></span>
+                            <%if(product.discount!=0){%>
+                                <span class="h6" style="margin-left: 10px; text-decoration: line-through;">₹<%=product.originalPrice%></span>
+                            <span class="h6" style="color: red;"><%=product.discount%>% off</span>
+                            <%}%>
+                            
                         </div>
                         
                         <hr />
