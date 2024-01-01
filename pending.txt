@@ -1,5 +1,4 @@
 pending
-Filter pagination sort and search for every grid : admin side
 clear the offer before review 
 
 completed
@@ -14,6 +13,7 @@ Delete single image
 Image preview need to updated with change files
 Expiry for return
 reason for cancelling product
+Filter pagination sort and search for every grid : admin side
 
 
 
@@ -22,6 +22,7 @@ next week task
  
  	
 User side :
+referral code design check that is working
 Admin side :
 
 

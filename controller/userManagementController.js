@@ -6,9 +6,19 @@ userManagementController.showData = async(req,res)=>{
     
     try{
         const message = req.query.message
-        const users = await User.find()
-        if(req.session.AdminLogin){
-            res.render('userManagement',{users,message})
+        let users;
+
+        if (req.query.search) {
+            const trimmedSearch = req.query.search.trim();
+            users = await User.find({ name: { $regex: new RegExp(trimmedSearch, 'i') } });        
+        }if (req.query.sort === 'latest') {
+            users = await User.find().sort({ _id: -1 });
+        } else if (req.query.sort === 'older') {
+            users = await User.find().sort({ _id: 1 });
+        } else {
+            users = await User.find();
+        }if(req.session.AdminLogin){
+            res.render('userManagement',{users,message,req})
         }else{
             res.redirect('/')
         }
@@ -17,11 +27,6 @@ userManagementController.showData = async(req,res)=>{
         res.status(500).send("Server Error")
     }
 }
-
-
-
-
-
       userManagementController.blockUser = async (req, res) => {
         try {
             const userId = req.params.id;

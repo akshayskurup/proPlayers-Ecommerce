@@ -14,7 +14,8 @@
             <label class="col-md-4 control-label" for="image">Image</label>
             <div class="col-md-4">
                 <input id="image" name="image" class="form-control input-md" type="file" onchange="previewImage(event)">
-                <img   id="preview" src="<%= Banner.image %>" alt="Preview" style="max-width: 100%; max-height: 150px; margin-top: 10px; <% if (!Banner.image) { %> display: none; <% } %> ">
+                
+                <img id="preview" src="<%= Banner.image %>" alt="Preview" style="max-width: 100%; max-height: 150px; margin-top: 10px;<% if (!Banner.image) { %> display: none;<% } %>">
             </div>
         </div>
 

@@ -276,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let myChart; // Reference to the chart instance
 
 // Function to update the chart based on the selected filter
+// Function to update the chart based on the selected filter
 async function updateChart() {
     const filter = document.getElementById('filter').value;
 
@@ -283,10 +284,15 @@ async function updateChart() {
         const response = await fetch(`/admin/additional-revenue-chart?filter=${filter}`);
         const data = await response.json();
 
-        // Sort the data based on the week number
-        data.sort((a, b) => a._id - b._id);
+        // Sort the data based on the date or week number
+        data.sort((a, b) => {
+            const dateA = filter === 'daily' ? new Date(a._id) : a._id;
+            const dateB = filter === 'daily' ? new Date(b._id) : b._id;
+            return dateA - dateB;
+        });
+        
 
-        // Convert week or month numbers to formatted date strings
+        // Convert date or week numbers to formatted date strings
         const formattedLabels = data.map(item => formatLabel(item._id, filter));
 
         // Destroy the existing chart before creating a new one
@@ -294,7 +300,7 @@ async function updateChart() {
             myChart.destroy();
         }
 
-        // Assuming you have a function to update the chart, replace the following line with your implementation
+        // Update the chart with the new data
         updateChartWithData(formattedLabels, data);
     } catch (error) {
         console.error("Error fetching additional revenue data:", error);
@@ -306,7 +312,7 @@ function formatLabel(value, filter) {
     if (filter === 'daily') {
         return dayjs(value).format('YYYY-MM-DD');
     }else if (filter === 'weekly') {
-        return formatISOWeekDate(value);
+        return `Week ${value}`;
     } else if (filter === 'monthly') {
         return formatMonthDate(value);
     } else if (filter === 'yearly') {
@@ -325,7 +331,7 @@ function formatISOWeekDate() {
 
     // Format the ISOWeekDate as "YYYY-MM-DD"
     const localDate = currentDate.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata' });
-    return `${localDate} (W${weekNumber})`;
+    return `(W${weekNumber})`;
 }
 
 // Function to get ISO week number
