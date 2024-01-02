@@ -1,4 +1,24 @@
 <%- include('header.ejs')%>
+<style>
+  .all-products{
+    position: relative;
+    background-image: url('/homeimgs/product bg2.png');
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-position: center, top right, center center;
+    background-repeat: repeat-y, no-repeat, repeat;
+    background-attachment: fixed, scroll, fixed;
+  }
+  .all-products::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for the overlay darkness */
+      }
+</style>
 
 <div class="all-products">
 
@@ -14,8 +34,8 @@
       
         <!--search bar end-->
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-danger" style="margin-left: 120px; margin-right: 140px;">
-          <div class="container-fluid bg-danger">
+        <nav class="navbar navbar-expand-lg navbar-light" style="margin-left: 120px; margin-right: 140px; background: #00000000; color: white;">
+          <div class="container-fluid">
             
             
             <div class="collapse navbar-collapse" id="navbarSupportedContent" >
@@ -84,39 +104,36 @@
           </div>
         </div> 
         
-        <!-- <%if(totalPages){%>
-        
-        <div class="pagination-container">
-          <ul class="pagination">
-              <% for (let i = 1; i <= totalPages; i++) { %>
-                  <li class="<%= currentPage === i ? 'active' : '' %>">
-                      <a href="/allProducts?page=<%= i %>"><%= i %></a>
-                  </li>
-              <% } %>
-          </ul>
-      </div>
-      <%}%> -->
-      <div class="pagination-container">
+      <div class="pagination-container" style="position: relative;">
         <div class="pagination">
           <% for (let i = 1; i <= totalPages; i++) { %>
               <% if (sortOrder === 'highToLow') { %>
-                  <a href="/products/high-to-low?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+                <li class="<%= currentPage === i ? 'active' : '' %>">
+                  <a href="/allproducts/high-to-low?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+                </li>
               <% } else if (sortOrder === 'lowToHigh') { %>
-                  <a href="/products/low-to-high?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+                <li class="<%= currentPage === i ? 'active' : '' %>">
+                  <a href="/allproducts/low-to-high?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+                </li>
               <% } else{ %>
-                <a href="/allProducts?page=<%= i %>"><%= i %></a>
+                <li class="<%= currentPage === i ? 'active' : '' %>">
+                  <a href="/allProducts?page=<%= i %>"><%= i %></a>
+                </li>
               <%}%>
           <% } %>
       </div>
   </div>
       
-            </section>
+            
         
-    </main>
-  </div>
+    
+
 </div>
 <%}else{%>
-  <p class="text-center">No products found</p>
+  <div class="no mt-5">
+     <p class="text-center" style="position: relative; padding-bottom: 114.5px; color: yellow;">No products found</p>
+  </div>
+ 
 <%}%>
     
     

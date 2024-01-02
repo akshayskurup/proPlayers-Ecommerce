@@ -13,14 +13,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                
-
                 <h1 class="page-header">Coupon Management</h1>
             </div>
             <!-- /.col-lg-12 -->
         </div>
         <!-- /.row -->
         <div class="row">
+            <center><div id="message" class="message" style="color:green; font-weight: bold;"><%=updateMessage%></div></center>
+
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <!-- /.panel-heading -->
@@ -94,7 +94,10 @@
                     responsive: true
                 });
             });
-
+            var messageElement = document.getElementById('message')
+            setTimeout(()=>{
+                messageElement.style.display = 'none'
+            },3000)
             
         </script>
 

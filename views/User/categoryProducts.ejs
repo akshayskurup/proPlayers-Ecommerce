@@ -1,5 +1,25 @@
 <%- include('header.ejs')%>
 
+<style>
+  body{
+    position: relative;
+    background-image: url('/homeimgs/product bg2.png');
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-position: center, top right, center center;
+    background-repeat: repeat-y, no-repeat, repeat;
+    background-attachment: fixed, scroll, fixed;
+  }
+  body::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for the overlay darkness */
+      }
+</style>
                 <!--search bar-->
                 <div class="Search row-cols-1 row-cols-md-2 row-cols-lg-4 pt-5 mt-5 text-center">
                   <div class="input-group align-items-center">
@@ -11,8 +31,8 @@
       
         <!--search bar end-->
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-danger" style="margin-left: 120px; margin-right: 140px;">
-          <div class="container-fluid bg-danger">
+        <nav class="navbar navbar-expand-lg navbar-light " style="color: white; background: #00000000;margin-left: 120px; margin-right: 140px;">
+          <div class="container-fluid ">
             
             
             <div class="collapse navbar-collapse" id="navbarSupportedContent" >
@@ -49,11 +69,12 @@
                 
                   
 
+        <div class="category-products">
+
+        
         <div class="container mt-5">
-          
           <div class="row g-5">
-            <% if(products){%>
-            
+            <% if (products && products.length > 0) { %>            
               <% products.forEach((item) => { %>
               
                 <div class="col-md-3" style="width: 250px; margin-left: 45px;">
@@ -90,7 +111,7 @@
                     <% } %>
                 </ul>
             </div> -->
-            <div class="pagination-container">
+            <div class="pagination-container" style="position: relative;">
               <ul class="pagination">
                   <% for (let i = 1; i <= totalPages; i++) { %>
                       <li class="<%= currentPage === i ? 'active' : '' %>">
@@ -102,14 +123,17 @@
           
           
               <%}else{%>
-              <p>No Products Found</p>
-              <%}%>
+                <div class="container mt-5 pb-5">
+                  <p style="padding-bottom: 60px; position: relative;color: yellow; text-align: center;">No Products Found</p>
+                </div>              
+                <%}%>
           </div>
       </div>
             </section>
         
     </main>
   </div>
+</div>
   
     
     

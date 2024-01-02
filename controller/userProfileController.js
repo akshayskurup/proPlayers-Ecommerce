@@ -139,16 +139,13 @@ userProfileController.deleteAddress = async (req, res) => {
             return res.status(404).json({ success: false, error: 'User not found' });
         }
 
-        // Ensure the addressIndex is within bounds
         if (addressIndexToDelete < 0 || addressIndexToDelete >= user.address.length) {
             return res.status(400).json({ success: false, error: 'Invalid address index' });
         }
 
-        // Remove the address at the specified index
         user.address.splice(addressIndexToDelete, 1);
         await user.save();
 
-        // Respond with success
         res.json({ success: true });
     } catch (error) {
         console.error(error);
@@ -226,7 +223,6 @@ userProfileController.handleUserData = async (req, res) => {
 
             finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
         } else {
-            // If no new image is provided, use the existing image path
             const existingUser = await User.findById(userId);
             finalImagePath = existingUser.image;
         }

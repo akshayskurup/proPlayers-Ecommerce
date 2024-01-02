@@ -1,12 +1,21 @@
 <style>
  footer {
     position: relative;
-    background-image: url('/homeimgs/footer2.jpg');
+    background-image: url('/homeimgs/footer-bg.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center, top right, center center;
     background-repeat: repeat-y, no-repeat, repeat;
     background-attachment: fixed, scroll, fixed;
+}
+footer::before{
+  content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.603);
 }
 
 </style>
@@ -14,7 +23,7 @@
     <!-- Grid container -->
     <div class="container p-4 pb-0">
       <!-- Section: Social media -->
-      <section class="mb-4">
+      <section class="mb-4" style="position: relative;">
         <!-- Facebook -->
         <a
         data-mdb-ripple-init
@@ -23,17 +32,7 @@
           href="#!"
           role="button"
           ><i class="fab fa-facebook-f"></i
-        ></a>
-  
-        <!-- Twitter -->
-        <a
-          data-mdb-ripple-init
-          class="btn text-white btn-floating m-1"
-          style="background-color: #55acee;"
-          href="#!"
-          role="button"
-          ><i class="fab fa-twitter"></i
-        ></a>
+        ></a>        
   
         <!-- Google -->
         <a
@@ -55,25 +54,9 @@
           ><i class="fab fa-instagram"></i
         ></a>
   
-        <!-- Linkedin -->
-        <a
-          data-mdb-ripple-init
-          class="btn text-white btn-floating m-1"
-          style="background-color: #0082ca;"
-          href="#!"
-          role="button"
-          ><i class="fab fa-linkedin-in"></i
-        ></a>
-        <!-- Github -->
-        <a
-          data-mdb-ripple-init
-          class="btn text-white btn-floating m-1"
-          style="background-color: #333333;"
-          href="#!"
-          role="button"
-          ><i class="fab fa-github"></i
-        ></a>
-      </section>
+       
+        
+      
       <!-- Section: Social media -->
     </div>
     <!-- Grid container -->
@@ -83,6 +66,7 @@
       © 2023 Copyright:Pro Players
       
     </div>
+  </section>
     <!-- Copyright -->
   </footer>
 <!-- End Footer -->

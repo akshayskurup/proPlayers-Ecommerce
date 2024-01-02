@@ -16,9 +16,10 @@ const storage = multer.diskStorage({
 bannerController.upload = multer({ storage: storage }).single('image');
 
 bannerController.showBanners = async(req,res)=>{
+    const updateMessage = req.query.successMessage || ""
     const banners = await banner.find()
     try {
-        res.render('Admin/bannerManagement',{banners})
+        res.render('Admin/bannerManagement',{banners,updateMessage})
     } catch (error) {
         console.errror("Error displaying the banner", error)
         res.status(500).send("internal server error")
@@ -52,7 +53,7 @@ bannerController.handleData = async(req,res)=>{
                 title:title
             });
             await newBanner.save()
-            res.redirect('/product-management')
+            res.redirect('/product-management?successMessage=Banner Added successfully')
     } catch (error) {
         console.error('Error handling data:', error);
             res.status(500).send('Internal Server Error');
@@ -100,12 +101,9 @@ bannerController.handleBannerEdit = async (req, res) => {
             return res.status(404).send('Banner not found');
         }
 
-        // Check if a new image is provided
         if (req.file) {
-            // Remove the old image file if it exists
             if (Banner.image) {
                 try {
-                    // Construct the path to the old image and delete it
                     const oldImagePath = './public' + Banner.image;
                     await fs.unlink(oldImagePath);
                 } catch (err) {
@@ -113,7 +111,6 @@ bannerController.handleBannerEdit = async (req, res) => {
                 }
             }
 
-            // Set the path for the new image
             Banner.image = '/bannerimgs/' + req.file.filename;
         }
 
@@ -122,7 +119,7 @@ bannerController.handleBannerEdit = async (req, res) => {
 
         await Banner.save();
 
-        res.redirect('/banner-management'); // Redirect to the appropriate page after editing
+        res.redirect('/banner-management?successMessage=Banner Edited successfully')
     } catch (error) {
         console.error('Error editing banner:', error);
         res.status(500).send('Internal Server Error');

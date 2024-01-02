@@ -15,7 +15,6 @@ const sendOTP = async (email, otp) => {
     },
   });
 
-  // Email content
   const mailOptions = {
     from: 'akshayskurup@gmail.com',
     to: email,
@@ -78,7 +77,6 @@ console.log("ref input",referral)
   try {
     await sendOTP(email, generatedOTP);
 
-    // Redirect to OTP input form
     res.redirect(`/signup-otp?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`);
   } catch (err) {
     console.error("Error during OTP sending:", err);
@@ -126,12 +124,10 @@ signupController.verifyOTP = async (req, res) => {
 
   const otpExpirationTime = 50 * 1000;
 
-  // Check if OTP has expired
   if (Date.now() - signupData.timestamp > otpExpirationTime) {
     return res.status(400).json({ success: false, message: 'OTP has expired. Please request a new one.' });
   }
 
-  // Verify enteredOTP
   if (enteredOTP === signupData.generatedOTP) {
     const saltround = 10;
     const hashedPassword = await bcrypt.hash(signupData.password, saltround);

@@ -6,29 +6,77 @@
     <title>OTP Verification</title>
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'>
     <link rel="stylesheet" href="/css/signupOTP.css">
+    <style>
+      body {
+          background-image: url('/homeimgs/loginimgs.jpg'); /* Replace with your image path */
+          background-size: cover;
+          background-position: center;
+          height: 90vh;
+          margin: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          
+      }
+      body::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for the overlay darkness */
+      }
+  
+  
+      .container {
+          background-color: rgba(255, 255, 255, 0);
+          border-radius: 10px;
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          position: relative;
+          z-index: 1;
+      }
+  
+      .navbar {
+          background-color: #dc354600; /* Bootstrap red color */
+          
+      }
+      h4, p{
+        color: rgba(240, 248, 255, 0.671);
+      }
+      .btn{
+        border: 2px solid #ff9d35;
+      }
+      .btn:hover{
+        background: #ff9d35;
+        
+      }
+  </style>
 </head>
 <body>
-    <section class="container-fluid bg-body-tertiary d-block">
+    <div class="container ">
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-4" style="min-width: 500px;">
-              <div class="card bg-white mb-5 mt-5 border-0" style="box-shadow: 0 12px 15px rgba(0, 0, 0, 0.02);">
+              <div class="card mb-5 mt-5 border-0" style=" background: #dc354600;">
                 <div class="card-body p-5 text-center">
                   <h4>Verify</h4>
                   <p>Your code was sent to you via email</p>
                   <div id="errorMessages" class="bg-danger"></div>
                   <div id="successMessages" class="bg-success"></div>
-                  <p id="countdown-timer" class="text-muted mb-0"></p>
+                  <p id="countdown-timer" class="text mb-0"></p>
                   <form id="otpVerificationForm" action="/reset-password/verify-otp" method="post">
                     <div class="otp-field mb-4">
                       <label for="enteredOTP">Enter OTP:</label>
                       <input id="enteredOTP" style="width: 300px;" type="number" name="enteredOTP" required />
                     </div>
       
-                    <button class="btn btn-primary mb-3" type="submit">Verify</button>
+                    <button class="btn mb-3" type="submit">Verify</button>
                   </form>
                   
                   <form id="resendForm">
-                    <p class="resend text-muted mb-0">
+                    <p class="resend text mb-0">
                       Didn't receive code? <a id="resendLink" onclick="resendOTP()">Request again</a>
                     </p>
                   </form>
@@ -37,7 +85,7 @@
               </div>
             </div>
           </div>
-      </section>
+    </div>
       <script>
         let countdown = 50; // Resend cooldown in seconds
         let timer;

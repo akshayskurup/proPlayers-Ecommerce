@@ -8,7 +8,7 @@ orderManagementController.showData = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const skip = (page - 1) * ITEMS_PER_PAGE;
 
-        let orderDetails; // Declare orderDetails variable outside the conditions
+        let orderDetails; 
 
         if (req.query.sort === 'latest') {
             orderDetails = await orders
@@ -35,7 +35,6 @@ orderManagementController.showData = async (req, res) => {
                 .skip(skip)
                 .limit(ITEMS_PER_PAGE);
         } else {
-            // Default sorting if no sort query is present
             orderDetails = await orders
                 .find()
                 .sort({ _id: -1 })

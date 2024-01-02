@@ -60,7 +60,6 @@ homeController.showHome = async (req, res) => {
     }
 
     try {
-        // Now that the offer prices have been updated, fetch other data and render the home page
         const product = await productSchema.find({ isListed: true }).populate('productCategory').sort({_id:-1}).limit(8);
         const categories = await category.find();
         const banners = await banner.find()
@@ -69,7 +68,6 @@ homeController.showHome = async (req, res) => {
         console.log('user id', userId);
         console.log('home', req.session.UserLogin);
 
-        // Render the home page
         res.render('User/homePage', { userId, product, categories, banners, offers });
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -141,7 +139,6 @@ homeController.showData = async (req, res) => {
 
                 const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
-                // Ensure that the current page is within the valid range
                 const validPage = Math.min(Math.max(page, 1), totalPages);
 
                 const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
@@ -208,7 +205,6 @@ homeController.searchCategoryProducts = async (req, res) => {
 
                 const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
 
-                // Ensure that the current page is within the valid range
                 const validPage = Math.min(Math.max(page, 1), totalPages);
 
                 const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
@@ -333,7 +329,6 @@ homeController.showProducts = async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        // Render the home page
         res.render('User/allProducts', { userId, product:products, categories, currentPage: validPage, totalPages, searchQuery,sortOrder: '' });
     } catch (error) {
         console.error('Error fetching data:', error);

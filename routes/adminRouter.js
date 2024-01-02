@@ -62,8 +62,6 @@ adminRouter.post('/product-management/edit/:id', productManagement.upload.fields
 adminRouter.post('/remove-image',productManagement.removeImage)
 adminRouter.get('/product-management/toggle-list/:id', productManagementController.toggleListProduct);
 
-// adminRouter.get('/adminPanel/edit/:id',editCategoryController.showEditData)
-// adminRouter.post('/adminPanel/edit/:id',editCategoryController.handleEditData)
 
 
 

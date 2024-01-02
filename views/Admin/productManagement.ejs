@@ -107,18 +107,7 @@
         </div>
       </div>
 
-          <!-- File Button -->
-          <!-- Add this to your HTML form -->
-<!-- <div class="form-group">
-  <label class="col-md-4 control-label" for="filebutton">main_image</label>
-  <div class="col-md-4">
-      <input id="image_uploader" name="image" class="input-file" type="file" accept=".jpg, .jpeg, .png, .webp">
-      <img id="imagePreview" src="#" alt="Preview" style="width: 200px; height: 200px;">
-      <button id="cropButton" type="button">Crop Image</button>
-       Add hidden input to store cropped image data 
-      <input type="hidden" id="croppedImageData" name="croppedImage1" >
-  </div>
-</div> -->
+
 
 
 <div class="form-group">
@@ -160,18 +149,38 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-              <div style="float: right; margin-top: 45px;">
-                <form action="/search-products" method="get">
-                <input type="text" name="query" id="">
-                <button type="submit">search</button>
-              </form>
-              </div>
+              
                 <h1 class="page-header">Tables</h1>
                 
             </div>
            
             <!-- /.col-lg-12 -->
         </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <form action="/search-products" method="get">
+              <div class="input-group">
+                      <input type="text" class="form-control" name="query" placeholder="Search...">
+
+                      <span class="input-group-btn">
+                          <button class="btn btn-default" type="submit">Search</button>
+                      </span>
+                  </div>
+              </form>
+          </div>
+          <div class="col-lg-2">
+              <div class="form-group">
+                  <form action="/product-management" method="GET">
+                      <select class="form-control" id="sortDropdown" name="sort" onchange="this.form.submit()">
+                          <option value="" >Select</option>
+                          <option value="latest" >Latest</option>
+                          <option value="older" >Older</option>
+                      </select>
+                  </form>
+              </div>
+          </div>
+          
+      </div>
         <!-- /.row -->
         <div class="row">
             <div class="col-lg-12" >
@@ -222,13 +231,14 @@
                                 </tbody>
                                 <div class="pagination-container">
                                   <ul class="pagination">
-                                      <% for (let i = 1; i <= totalPages; i++) { %>
-                                          <li class="<%= currentPage === i ? 'active' : '' %>">
-                                              <a href="/product-management?page=<%= i %>"><%= i %></a>
-                                          </li>
-                                      <% } %>
+                                    <% for (let i = 1; i <= totalPages; i++) { %>
+                                      <li class="<%= currentPage === i ? 'active' : '' %>">
+                                        <a href="/product-management?page=<%= i %>&sort=<%= req.query.sort %>"><%= i %></a>
+                                      </li>
+                                    <% } %>
                                   </ul>
-                              </div>
+                                </div>
+                                
                             </table>
                         </div>
                     </div>

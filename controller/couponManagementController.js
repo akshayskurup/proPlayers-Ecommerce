@@ -3,8 +3,15 @@ let coupon = require('../model/couponSchema')
 
 
 couponManagementController.showData = async(req,res)=>{
-  const couponData = await coupon.find().sort({_id:-1})
-    res.render('Admin/couponManagement',{couponData})
+  let updateMessage = req.query.successMessage || ""
+  try {
+    const couponData = await coupon.find().sort({_id:-1})
+    res.render('Admin/couponManagement',{couponData,updateMessage})
+  } catch (error) {
+    console.error("Error during fetching coupon:", err);
+    res.status(500).send('Internal Server Error');
+  }
+  
 }
 
 couponManagementController.addCoupon = (req,res)=>{
@@ -33,7 +40,7 @@ couponManagementController.handleCoupon = async (req,res)=>{
             expiry
           });
         const savedCoupon = await newCoupon.save()
-        res.redirect('/coupon-management')
+        res.redirect('/coupon-management?successMessage=Coupon Added successfully')
     }
     catch(err){
         console.error("Error during coupon creation:", err);
@@ -51,7 +58,6 @@ couponManagementController.toggleListCategory = async (req, res) => {
       const Coupon = await coupon.findById(couponId);
 
       if (Coupon) {
-          // Toggle isListed value
           if (Coupon.expiry > new Date()) {
             Coupon.isActive = !Coupon.isActive;
             Coupon.isExpired = false
@@ -96,7 +102,7 @@ couponManagementController.handleEditData = async(req,res)=>{
     if (couponData.expiry > new Date()) {
       await coupon.findOneAndUpdate({_id:couponId}, { isExpired: false });
     }
-    res.redirect('/coupon-management')
+    res.redirect('/coupon-management?successMessage=Coupon Edited successfully')
   }
   catch(err){
     console.error('Error on updating Edit Data:', err);
