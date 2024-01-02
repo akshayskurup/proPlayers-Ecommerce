@@ -3,7 +3,6 @@ const app = express();
 const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const routes = require('./routes/router');
 const connectDB = require('./model/database');
 const nocache = require("nocache");
 const crypto = require('crypto');
@@ -47,6 +46,8 @@ app.use(adminRouter);
 // Set view engine and views
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+
 
 // Start the server
 const port = process.env.PORT || 3000;

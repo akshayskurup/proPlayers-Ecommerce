@@ -18,14 +18,12 @@ offerManagementController.checkAndExpireOffers = async () => {
             offer.isActive = false;
             await offer.save();
 
-            // Handle product expiration based on discountOn
             if (offer.discountOn === 'category' && offer.selectedCategory) {
                 const categoryId = offer.selectedCategory;
                 const productsInCategory = await productSchema.find({ productCategory: categoryId });
                 console.log("productsInCategory",productsInCategory)
 
                 for (const product of productsInCategory) {
-                    // Revert the product prices and discounts to their original values
                     product.price = product.originalPrice;
                     product.originalPrice = 0;
                     product.discount = 0;
@@ -35,7 +33,6 @@ offerManagementController.checkAndExpireOffers = async () => {
                 const productId = offer.selectedProducts;
                 const product = await productSchema.findOne({ _id: productId });
 
-                // Revert the product prices and discounts to their original values
                 product.price = product.originalPrice;
                 product.originalPrice = 0;
                 product.discount = 0;
@@ -51,9 +48,10 @@ offerManagementController.checkAndExpireOffers = async () => {
 
 offerManagementController.showOffers = async (req,res)=>{
     const allOffers = await offerSchema.find().populate('selectedCategory').populate('selectedProducts')
+    let updateMessage = req.query.successMessage || ""
     try {
         await offerManagementController.checkAndExpireOffers();
-        res.render('offerManagement',{allOffers,message:""})
+        res.render('Admin/offerManagement',{allOffers,message:"",updateMessage})
     } catch (error) {
         console.error("Error during coupon showing:", error);
     res.status(500).send('Internal Server Error');
@@ -64,7 +62,7 @@ offerManagementController.showOffers = async (req,res)=>{
 offerManagementController.showAddOffer = async (req,res)=>{
     const products = await productSchema.find()
     const categories = await categorySchema.find()
-    res.render('addOffer',{products,categories,message:""})
+    res.render('Admin/addOffer',{products,categories,message:""})
 }
 
 offerManagementController.handleData =async (req,res)=>{
@@ -89,7 +87,7 @@ try {
 
 
     if (existingNameOffer) {
-        return res.render("addOffer", {
+        return res.render("Admin/addOffer", {
             products,
             categories,
           message: "Duplicate Discount Name not allowed.",
@@ -97,7 +95,7 @@ try {
       }
   
       if (selectedCategory && existingCategoryOffer) {
-        return res.render("addOffer", {
+        return res.render("Admin/addOffer", {
           products,
           categories,
           message: "An offer for this category already exists.",
@@ -105,7 +103,7 @@ try {
       }
   
       if (selectedProducts && existingProductOffer) {
-        return res.render("addOffer", {
+        return res.render("Admin/addOffer", {
             products,
             categories,
           message: "An offer for this product already exists.",
@@ -140,7 +138,6 @@ try {
                 product.discount = discountValue;
                 product.price = discountedPrice;
         
-                // Save the updated product
                 await product.save();
                 console.log("After save")
             }
@@ -161,7 +158,7 @@ try {
 
     console.log("Save before")
     const savedOffer = await newOffer.save()
-    res.redirect('/offer-management')
+    res.redirect('/offer-management?successMessage=Offer Added successfully');
 
 } catch (error) {
     console.error("Error during coupon creation:", error);
@@ -178,7 +175,7 @@ offerManagementController.toggleListOffer = async (req, res) => {
 
         if (offer) {
             if (offer.endDate <= new Date()) {
-                return res.render('offerManagement',{allOffers, message:'Offer has expired'});
+                return res.render('Admin/offerManagement',{allOffers, message:'Offer has expired',updateMessage:""});
             }
             if (offer.discountOn === 'category' && offer.selectedCategory) {
                 const categoryId = offer.selectedCategory;
@@ -246,7 +243,7 @@ offerManagementController.editOffer = async (req,res)=>{
         const formattedEndDate = offers.endDate.toISOString().split('T')[0];
 
 
-        res.render("editOffer",{offers,categories,products,formattedStartDate,formattedEndDate,message:""})
+        res.render("Admin/editOffer",{offers,categories,products,formattedStartDate,formattedEndDate,message:""})
     } catch (error) {
         
     }
@@ -277,7 +274,7 @@ offerManagementController.handleEditOffer = async (req, res) => {
         if (offerName !== offers.offerName) {
             const existingNameOffer = await offerSchema.findOne({ offerName });
             if (existingNameOffer) {
-                return res.render("editOffer", {
+                return res.render("Admin/editOffer", {
                     offers,
                     formattedStartDate,
                     formattedEndDate,
@@ -292,11 +289,10 @@ offerManagementController.handleEditOffer = async (req, res) => {
         let modifiedSelectedProducts = selectedProducts;
 
         if (discountOn === 'category') {
-            // Check uniqueness for selectedCategory only if it has changed
             if (selectedCategory !== offers.selectedCategory) {
                 const existingCategoryOffer = await offerSchema.findOne({ selectedCategory, _id: { $ne: offerId }});
                 if (existingCategoryOffer) {
-                    return res.render("editOffer", {
+                    return res.render("Admin/editOffer", {
                         offers,
                         formattedStartDate,
                         formattedEndDate,
@@ -314,14 +310,13 @@ offerManagementController.handleEditOffer = async (req, res) => {
             modifiedSelectedCategory = null;
             modifiedSelectedProducts = selectedProducts;
 
-            // Check uniqueness for selectedProducts only if it has changed
             if (selectedProducts !== offers.selectedProducts) {
                 const existingProductOffer = await offerSchema.findOne({
                     selectedProducts,
-                    _id: { $ne: offerId } // Exclude the current offer
+                    _id: { $ne: offerId }
                 });
                 if (existingProductOffer) {
-                    return res.render("editOffer", {
+                    return res.render("Admin/editOffer", {
                         offers,
                         formattedStartDate,
                         formattedEndDate,
@@ -356,7 +351,7 @@ offerManagementController.handleEditOffer = async (req, res) => {
         });
 
         console.log("Save before");
-        res.redirect('/offer-management');
+        res.redirect('/offer-management?successMessage=Offer updated successfully');
 
     } catch (error) {
         console.error("Error during coupon creation:", error);

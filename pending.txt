@@ -22,7 +22,7 @@ next week task
  
  	
 User side :
-referral code design check that is working
+password reset form design
 Admin side :
 
 
@@ -44,4 +44,3 @@ design the product for the offer
 
 
 
-wallet management need to transfer

@@ -1,0 +1,172 @@
+<%- include('header.ejs') %>
+
+
+      <!-- cart + summary -->
+      <section class="bg-light " style="margin-top: 130px;">
+        <div class="container">
+          <div class="row">
+            <!-- cart -->       
+            <div class="col-lg-9">
+              <div class="card border shadow-0">
+                <div class="m-4">
+                  <h4 class="card-title mb-4">Your shopping cart</h4>
+                  <% if (isEmptyCart) { %>
+                    <p>No items in the cart.</p>
+                <% } else { %> 
+                  <% items.forEach(item=>{%>  
+                  <div class="row gy-3 mb-4 productItems" data-product-price="<%= item.productId.price%>">
+                    
+                    <div class="col-lg-5">
+                      <div class="me-lg-5">
+                        <div class="d-flex">
+                          <img src="<%= item.productId.image[0] %>" class="border rounded me-3" style="width: 96px; height: 116px;" />
+                          <div class="">
+                            <a href="/product-page/<%=item.productId._id%>" class="nav-link"><%=item.productId.productName%></a>
+                            <p class="text-muted"><%=item.productId.productCategory.categoryName%></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+                      <div class="">
+                        <div class="input-group mb-3 product-quantity" style="width: 125px; padding-right: 20px;">
+                          
+                          
+                            <button class="btn btn-white border border-secondary px-1 minusButton" type="button" data-mdb-ripple-color="dark" <%= item.quantity === 1 ? 'disabled' : ''%>>
+                              <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="text" name="quantityValue" class="form-control text-center border border-secondary quantityInput" style="width: 50px;" value="<%=item.quantity%>" data-product-id="<%=item.productId._id%>" data-total-quantity="<%= item.productId.totalQuantity %>" />
+                            <button class="btn btn-white border border-secondary px-1 plusButton" type="button" data-mdb-ripple-color="dark" <%= item.quantity === item.productId.totalQuantity ? 'disabled' : ''%>>
+                              <i class="fas fa-plus"></i>
+                            </button>
+                          
+                      </div>
+                      
+                      </div>
+                      <div class="">
+                        <% if (item.productId.totalQuantity > 0) { %>
+                        <text class="h6 total-price" data-product-id="<%= item.productId._id %>" data-price="<%= item.productId.price %>">₹<%= item.productId.price * item.quantity %></text> <br />
+                        <small class="text-muted text-nowrap">₹<%=item.productId.price%> / per item </small>
+                        <% } else { %>
+                          <span class="text-danger">Out of Stock</span>
+                        <% } %>
+                      </div>
+                    </div>
+                    <div class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
+                      <div class="float-md-end">
+                        <input type="hidden" value="<%=item.productId._id%>" name="productId" class="productId">
+                        <button type="button"  class="btn btn-light border text-danger icon-hover-danger removeItemButton">
+                          Remove
+                        </button>
+                      
+                        
+                      </div>
+                    </div>
+                  </div>     
+                  <% }); %>
+                </div>
+      
+                
+              </div>
+            </div>
+            <!-- cart -->
+            <!-- summary -->
+            <div class="col-lg-3">
+              <div class="card mb-3 border shadow-0">
+                <div class="card-body">
+                  <form>
+                    <div class="card shadow-0 border">
+                        <div class="card-body">
+                          <div class="d-flex justify-content-between">
+                            
+                          </div>
+                          
+                          <hr />
+                          <div class="d-flex justify-content-between">
+                            <p class="mb-2">Cart Summary:</p>
+                            <p id="cart-summary" class="cart-summary mb-2 fw-bold">₹<%=totalPrice%></p>
+                          </div>
+                          
+              
+                          <div class="mt-3">
+                            <a href="/checkOut" class="btn  w-100 shadow-0 mb-2" id="make-purchase-btn"> Make Purchase </a>
+                            <a href="#" class="btn btn-light w-100 border mt-2"> Back to shop </a>
+                          </div>
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              
+            <!-- summary -->
+          </div>
+        </div>
+      </section>
+      <!-- cart + summary -->
+     
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Use event delegation to handle the click event on the container
+            document.body.addEventListener('click', async function (event) {
+                try {
+                    // Check if the clicked element has the removeItemButton class
+                    if (event.target.classList.contains('removeItemButton')) {
+                        // Find the parent .productItems element
+                        const removedItem = event.target.closest('.productItems');
+    
+                        if (removedItem) {
+                            // Get the productId from the .productId element within the removedItem
+                            const productIdElement = removedItem.querySelector('.productId');
+                            const quantityInput = removedItem.querySelector('.quantityInput');
+
+    
+                            if (productIdElement) {
+                                const productId = productIdElement.value;
+                                const productPrice = removedItem.dataset.productPrice;
+
+                                const response = await fetch(`/cart-item-remove/${productId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                });
+    
+                                if (response.ok) {
+                                    console.log('Item removed successfully');
+                                    removedItem.remove(); // Remove the item from the DOM
+                                    // You can also update the total price or perform other UI updates here
+
+                                    const cartSummaryElement = document.getElementById('cart-summary');
+                            const quantity = parseFloat(quantityInput.value);
+                            const totalPrice = parseFloat(cartSummaryElement.textContent.slice(1)); // Remove '₹' and convert to float
+                            const newTotalPrice = totalPrice - (parseFloat(productPrice) * quantity);
+                            cartSummaryElement.textContent = `₹${newTotalPrice.toFixed(2)}`;
+
+
+
+                                } else {
+                                    // Handle errors, maybe show an alert to the user
+                                    console.error('Error removing item from the cart');
+                                }
+                            } else {
+                                console.error('.productId element not found in the removed item');
+                            }
+                        } else {
+                            console.error('.productItems parent element not found');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+    
+    
+      
+ <%- include('footer.ejs')%>

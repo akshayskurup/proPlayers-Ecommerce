@@ -1,0 +1,142 @@
+<%- include('header.ejs')%>
+<style>
+  .all-products{
+    position: relative;
+    background-image: url('/homeimgs/product bg2.png');
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-position: center, top right, center center;
+    background-repeat: repeat-y, no-repeat, repeat;
+    background-attachment: fixed, scroll, fixed;
+  }
+  .all-products::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for the overlay darkness */
+      }
+</style>
+
+<div class="all-products">
+
+
+                <!--search bar-->
+                <div class="Search row-cols-1 row-cols-md-2 row-cols-lg-4 pt-5 mt-5 text-center">
+                  <div class="input-group align-items-center">
+                      
+                  </div>
+              </div>
+
+              
+      
+        <!--search bar end-->
+
+        <nav class="navbar navbar-expand-lg navbar-light" style="margin-left: 120px; margin-right: 140px; background: #00000000; color: white;">
+          <div class="container-fluid">
+            
+            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+              <ul class="navbar-nav ml-auto mb-2 mb-lg-0 " >
+                
+                <li class="nav-item dropdown ">
+                  <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sort
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="/allProducts/high-to-low">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="/allProducts/low-to-high">Price: Low to High</a></li> 
+                  </ul>
+                </li>
+              </ul>
+              <a class="px-4 nav-link" href="/allProducts">All</a>
+              <% categories.forEach(category=>{%>
+                <a class="px-4 nav-link" href="/products/<%=category.categoryName%>"><%=category.categoryName%></a>
+              <%})%>
+              
+              
+              <form action="/searchProducts" method="GET" class="d-flex" style="margin-left: auto;">
+                <input type="search" name="query" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" style="width: 280px;" />
+                    <button type="submit" class="btn search-button" data-mdb-ripple-init>Search</button>
+              </form>
+
+              
+              
+            </div>
+          </div>
+        </nav>
+       
+                
+                  
+        
+
+        <% if(product.length>0){%>
+        <div class="container mt-5">
+          <div class="row g-5">
+            <% product.forEach((item) => { %>
+              
+              <div class="col-md-3" style="width: 250px; margin-left: 45px;">
+                <div class="card product-card" style="background: #0d0e1b;">
+                  <img height="250px" src="<%= item.image[0] %>" class="card-img-top" alt="...">
+                  <div class="card-body">
+                    <div class="product-name"><%= item.productName %></div>
+                    <div class="row">
+                      <div class="col">
+                        <a href="/product-page/<%= item._id %>" class="btn" id="view-btn">View</a>
+                      </div>
+                      <div class="col">
+                        <p style="margin-bottom: 7px;">₹<%= item.price %></p><br>
+                        
+                        <%if(item.discount&&item.discount!=0){%>
+                          <p style="margin-top: -35px;margin-bottom: 3px; font-size: 15px; color: red;"><%= item.discount %>% off</p>
+
+                        <%}%>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            <% }); %>
+          </div>
+        </div> 
+        
+      <div class="pagination-container" style="position: relative;">
+        <div class="pagination">
+          <% for (let i = 1; i <= totalPages; i++) { %>
+              <% if (sortOrder === 'highToLow') { %>
+                <li class="<%= currentPage === i ? 'active' : '' %>">
+                  <a href="/allproducts/high-to-low?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+                </li>
+              <% } else if (sortOrder === 'lowToHigh') { %>
+                <li class="<%= currentPage === i ? 'active' : '' %>">
+                  <a href="/allproducts/low-to-high?page=<%= i %>" <% if (currentPage === i) { %>class="active"<% } %>><%= i %></a>
+                </li>
+              <% } else{ %>
+                <li class="<%= currentPage === i ? 'active' : '' %>">
+                  <a href="/allProducts?page=<%= i %>"><%= i %></a>
+                </li>
+              <%}%>
+          <% } %>
+      </div>
+  </div>
+      
+            
+        
+    
+
+</div>
+<%}else{%>
+  <div class="no mt-5">
+     <p class="text-center" style="position: relative; padding-bottom: 114.5px; color: yellow;">No products found</p>
+  </div>
+ 
+<%}%>
+    
+    
+    <!-- End Main -->
+
+    <%- include('footer.ejs')%>

@@ -8,16 +8,16 @@ const userAuth = async(req,res,next)=>{
         const user = await User.findOne({email})
 
         if(!user){
-           return res.render('login',{message:"No User Found"})
+           return res.render('User/login',{message:"No User Found"})
         }
 
         if(user.isBlocked){
-            return res.render('login',{message:"Access Blocked"})
+            return res.render('User/login',{message:"Access Blocked"})
         }
 
         const passwordMatch = await bcrypt.compare(password,user.password)
         if(!passwordMatch){
-            return res.render('login',{message:"Wrong Password"})
+            return res.render('User/login',{message:"Wrong Password"})
         }
         req.session.UserLogin = true;
         req.session.userId = user._id

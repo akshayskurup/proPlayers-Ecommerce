@@ -6,18 +6,13 @@ const loginController = require('../controller/loginController')
 const signupController = require('../controller/signupController')
 const homeController = require('../controller/homeController')
 const userProfileController = require('../controller/userProfileController')
-const userEditProfileController = require('../controller/userEditProfileController')
 const productPageController = require('../controller/productPageController')
-const categoryProductsController = require('../controller/categoryProductsController')
 const passwordResetController = require('../controller/passwordResetController')
 const cartController = require('../controller/cartController')
 const checkOutController = require('../controller/checkOutController')
 const addAddressController = require('../controller/addAddressController')
 const ordersController = require('../controller/ordersController')
-const allProductsController = require('../controller/allProductsController')
-const walletManagementController = require('../controller/walletManagementController')
 const pdfController = require('../controller/pdfController')
-
 
 
 
@@ -42,11 +37,16 @@ userRouter.post('/reset-password/new-password', passwordResetController.resetPas
 
 userRouter.get('/home',checkBlocked,homeController.showHome)
 userRouter.post('/home/logout',homeController.logOut)
+userRouter.get('/wallet',checkBlocked,homeController.showWallet)
+userRouter.get('/products/:category',checkBlocked,homeController.showData)
+userRouter.get('/products/:category/sort/:sortDirection', homeController.sortProducts);
+userRouter.get('/categoryProducts/:category',checkBlocked,homeController.searchCategoryProducts)
+userRouter.get('/allProducts',checkBlocked,homeController.showProducts)
+userRouter.get('/searchProducts',homeController.searchProducts)
+userRouter.get('/allProducts/high-to-low',homeController.sortHighToLow)
+userRouter.get('/allProducts/low-to-high',homeController.sortLowToHigh)
 
-userRouter.get('/allProducts',allProductsController.showProducts)
-userRouter.get('/searchProducts',allProductsController.searchProducts)
-userRouter.get('/products/high-to-low',allProductsController.sortHighToLow)
-userRouter.get('/products/low-to-high',allProductsController.sortLowToHigh)
+
 
 userRouter.get('/user-profile', userProfileController.showUserData)
 userRouter.get('/add-address',userProfileController.addAddress)
@@ -56,19 +56,12 @@ userRouter.post('/edit-update',userProfileController.UpdateAddress)
 userRouter.post('/delete-address',userProfileController.deleteAddress)
 userRouter.get('/change-password',userProfileController.showChangePassword)
 userRouter.post('/change-password',userProfileController.handleChangePassword)
+userRouter.get('/user-edit-profile',userProfileController.showData)
+userRouter.post('/user-edit-profile', userProfileController.upload.single("profilePicture"),userProfileController.handleUserData)
 
-userRouter.get('/user-edit-profile',userEditProfileController.showData)
-userRouter.post('/user-edit-profile', userEditProfileController.upload.single("profilePicture"),userEditProfileController.handleUserData)
 
 userRouter.get('/product-page/:id',checkBlocked,productPageController.showData)
 userRouter.post('/product-page/add-to-cart/:id',productPageController.addToCart)
-
-userRouter.get('/products/:category',checkBlocked,categoryProductsController.showData)
-userRouter.get('/categoryProducts/:category', categoryProductsController.showData);
-// userRouter.get('/products/:category/low-to-high',categoryProductsController.sortLowToHigh)
-// userRouter.get('/products/:category/:sort',categoryProductsController.sortHighToLow)
-userRouter.get('/products/:category/sort/:sortDirection', categoryProductsController.sortProducts);
-
 
 userRouter.get('/cart',checkBlocked,cartController.showCart)
 userRouter.post('/cart-item-remove/:id',cartController.removeItem)
@@ -88,13 +81,11 @@ userRouter.get('/order-confirmed',checkBlocked,checkOutController.orderConfirmed
 userRouter.get('/checkOut/addAddress',checkBlocked,addAddressController.showForm)
 userRouter.post('/checkOut/addAddress',addAddressController.handleData)
 
-userRouter.get('/orders',ordersController.showData)
+userRouter.get('/orders',checkBlocked,ordersController.showData)
 userRouter.post('/orders/:orderId',ordersController.cancelOrder)
 userRouter.post('/orders-return/:orderId',ordersController.returnOrder)
 userRouter.get('/order-details/:orderId',ordersController.orderDetails)
-// userRouter.get('/download-invoice/:orderId',ordersController.generatePdf)
 userRouter.get('/generate-invoice/:orderId',pdfController.generateInvoice);
 
-userRouter.get('/wallet',walletManagementController.showData)
 
 module.exports=userRouter

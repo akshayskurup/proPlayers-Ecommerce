@@ -21,7 +21,7 @@ productPageController.showData = async (req, res) => {
         const product = await productSchema.findById(productId).populate('productCategory');
         const categories = await category.find();
         if(req.session.UserLogin){
-            res.render('productPage', { product, userId, categories,isItemInCart });
+            res.render('User/productPage', { product, userId, categories,isItemInCart });
         }
         else{
             res.redirect('/')

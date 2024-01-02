@@ -55,22 +55,7 @@
 
 
 
-.price {
-    color: #FF136F;
-    margin-top: 20px;
-}
 
-.watch {
-    background-image: linear-gradient(152.07deg, #FF9C35 1.47%, #FFD019 97.17%);
-}
-
-.bag {
-    background-image: linear-gradient(180deg, #FF589B -0.01%, #FF136F 99.99%);
-}
-
-.shoes {
-    background-image: linear-gradient(170.41deg, #4289FF -10.89%, #3F07F8 92.77%);
-}
 
 .all-categories {
     background-color: #F4F4F4;

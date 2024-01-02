@@ -15,7 +15,6 @@ const generateInvoice = async (req, res) => {
 
     const doc = new PDFDocument();
 
-    // Set font styles
     doc.font('Helvetica-Bold');
     doc.fontSize(18);
 
@@ -80,7 +79,6 @@ const generateInvoice = async (req, res) => {
     res.status(500).send('Error generating the invoice');
   }
 };
-//module exports 
 module.exports = {
   generateInvoice
 }

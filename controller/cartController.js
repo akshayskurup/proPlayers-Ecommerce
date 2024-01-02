@@ -26,7 +26,7 @@ cartController.showCart = async (req, res) => {
 
             const totalPrice = calculateTotalPrice(items);
             if(req.session.UserLogin){
-                res.render("cart", { items, userId, totalPrice, isEmptyCart: items.length === 0 , categories});
+                res.render("User/cart", { items, userId, totalPrice, isEmptyCart: items.length === 0 , categories});
             }
             else{
                 res.redirect('/')
@@ -34,7 +34,7 @@ cartController.showCart = async (req, res) => {
 
         } else {
             if(req.session.UserLogin){
-                res.render("cart", { items:[], userId, totalPrice:0, isEmptyCart: true ,categories});
+                res.render("User/cart", { items:[], userId, totalPrice:0, isEmptyCart: true ,categories});
             }
             else{
                 res.redirect('/')
@@ -52,23 +52,6 @@ cartController.emptyCart = (req,res)=>{
     const userId = req.session.userId;
     res.render("emptyCart",{userId})
 }
-
-// cartController.removeItem = async (req,res)=>{
-//     const userId = req.session.userId
-//     const productIdToRemove = req.params.id
-//     console.log("product id to remove: ",productIdToRemove)
-//     console.log("user id to remove product: ",userId)
-//     try {
-//         const updatedCart = await cart.findOneAndUpdate(
-//             { userId: userId },
-//             { $pull: { items: { productId: productIdToRemove } } },
-//             { new: true })
-//         res.redirect('/cart')
-//     } catch (error) {
-//         console.log("error during removing",error)
-//         res.status(500).send("Internal server error")
-//     }
-// }
 
 cartController.removeItem = async (req, res) => {
     const userId = req.session.userId;

@@ -23,7 +23,7 @@ ordersController.showData = async (req,res)=>{
         
 
 
-        res.render('orders', { userOrders, userId, categories, currentPage: page, totalPages });
+        res.render('User/orders', { userOrders, userId, categories, currentPage: page, totalPages });
     } catch (error) {
         console.error('Error fetching user orders:', error);
         res.status(500).send('Internal Server Error');
@@ -104,7 +104,6 @@ ordersController.returnOrder = async (req, res) => {
             return res.status(404).send('Order not found');
         }
 
-        // Check if the order has been delivered
         if (order.OrderStatus === 'Delivered') {
             const currentDate = new Date();
             const twoDaysAfterDelivery = new Date(order.deliveredAt);
@@ -112,10 +111,8 @@ ordersController.returnOrder = async (req, res) => {
             console.log("Inside the return controller1")
 
             if (currentDate.getTime() <= twoDaysAfterDelivery.getTime()) {
-                // Return is allowed within the two-day window
                 console.log("Inside the return controller2")
 
-                // Rest of the return order logic...
                 const userWallet = await wallet.findOne({ userId: order.customer });
 
                 if (!userWallet) {
@@ -149,7 +146,6 @@ ordersController.returnOrder = async (req, res) => {
             } else {
                 console.log("Inside the return controller3")
 
-                // Return is not allowed after two days
                 return res.status(400).send('Return not allowed after two days of delivery');
             }
         } else {
@@ -162,55 +158,6 @@ ordersController.returnOrder = async (req, res) => {
 };
 
 
-
-
-
-// ordersController.returnOrder = async (req, res) => {
-//     try {
-//         const orderId = req.params.orderId;
-        
-
-//         const order = await orders.findById(orderId);
-//         if (!order) {
-//             return res.status(404).send('Order not found');
-//         }
-//         let userWallet = await wallet.findOne({userId:order.customer})
-//         if(!userWallet){
-//             userWallet = new wallet({
-//                 userId:order.customer,
-//                 balance:0,
-//                 transactionHistory:[]
-//             })
-//             await userWallet.save();
-
-//         }
-//         if (order.OrderStatus === 'Delivered') {
-//             const orderAmount = order.totalAmount
-//             userWallet.balance += orderAmount;
-//             userWallet.transactionHistory.push({
-//                 transaction: 'Money Added',
-//                 amount: orderAmount,
-//             });
-//             for (const item of order.items) {
-//                 const productId = item.product._id;
-//                 const quantityToRestore = item.quantity;
-//                 await Product.findByIdAndUpdate(productId, {
-//                     $inc: { totalQuantity: quantityToRestore }
-//                 });
-//             }
-//             await orders.findByIdAndUpdate(orderId, { OrderStatus: 'Returned' });
-//             await userWallet.save();
-
-//             return res.json({success:true})
-//         } else {
-//             return res.status(400).send('Invalid order status for return');
-//         }
-//     } catch (error) {
-//         console.error('Error cancelling order:', error);
-//         res.status(500).json({ success: false, error: 'Internal Server Error' });
-//     }
-// };
-
 ordersController.orderDetails = async (req,res)=>{
     try {
         const userId = req.session.userId;
@@ -218,49 +165,13 @@ ordersController.orderDetails = async (req,res)=>{
         const orderId = req.params.orderId
         const orderDetails = await orders.findOne({ _id: orderId }).populate('items.product');
         const customer = await User.findById(userId)
-        res.render('orderDetails', { orderDetails,userId,categories,customer });
+        res.render('User/orderDetails', { orderDetails,userId,categories,customer });
 
     } catch (error) {
         
     }
     
 }
-
-
-
-ordersController.generatePdf = async (req, res) => {
-    try {
-      const orderId = req.params.orderId;
-      // Get the absolute path to the project directory
-      const projectDir = path.resolve(__dirname, '..'); // Assuming "controller" is one level above
-  
-      // Generate PDF with order details
-      const pdfFileName = `invoice_${Date.now()}.pdf`;
-      const pdfPath = path.join(projectDir, 'public', 'invoices', pdfFileName);
-  
-      // Generate the PDF and get the file path
-      const generatedPath = await pdfController.generateInvoice(orderId, pdfPath, res);
-
-  
-      // Wait for the PDF generation to complete before sending the download response
-     
-      res.download(generatedPath, 'invoice.pdf', (downloadErr) => {
-        // Remove the PDF file after the download is completed or if there's an error
-        console.log('Removing PDF file:', generatedPath);
-        // Uncomment the next line if you want to remove the file after download
-        // fs.unlinkSync(generatedPath);
-  
-        if (downloadErr) {
-          console.error(downloadErr);
-          res.status(500).send('Download Failed');
-        }
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
-    }
-  };
-  
 
 
 

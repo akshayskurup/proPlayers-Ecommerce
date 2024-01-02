@@ -11,7 +11,7 @@ let adminController = {}
 
 adminController.showAdminLogin = (req,res)=>{
     if(!req.session.AdminLogin){
-        res.render('admin',{message:""})
+        res.render('Admin/admin',{message:""})
     }
     else{
         res.redirect('/adminPanel')
@@ -31,13 +31,13 @@ adminController.handleAdminLogin = async (req, res) => {
         const admin = await adminSchema.findOne({ email, password });
 
         if (!admin) {
-            res.render("admin", { message: "No admin with this email" });
+            res.render("Admin/admin", { message: "No admin with this email" });
         } else if (req.body.password !== admin.password) {
-             res.render("admin", { message: "Password is incorrect" });
+             res.render("Admin/admin", { message: "Password is incorrect" });
         }
         req.session.AdminLogin = true;
         console.log('Successfully logged in');
-        res.render("adminPanel",{orderCount,deliveredOrder,activeCoupon,activeOffer});
+        res.render("Admin/adminPanel",{orderCount,deliveredOrder,activeCoupon,activeOffer});
     } catch (error) {
         console.log("Error",error)
         res.status(500).send({ error: "Internal Server Error" });
@@ -55,7 +55,7 @@ adminController.showadminPanel=async(req,res)=>{
 
     try {
         if(req.session.AdminLogin){
-            res.render("adminPanel",{deliveredOrder,orderCount,activeCoupon,activeOffer})
+            res.render("Admin/adminPanel",{deliveredOrder,orderCount,activeCoupon,activeOffer})
         }
         else{
             res.redirect('/admin')
@@ -80,19 +80,17 @@ adminController.logOut = (req,res)=>{
 
 adminController.getOrderGraphData = async (req, res) => {
     try {
-        // Fetch order count data grouped by date
         const orderGraphData = await Order.aggregate([
-            { $match: { OrderStatus: 'Delivered' } }, // Include only delivered orders
+            { $match: { OrderStatus: 'Delivered' } }, 
             {
                 $group: {
                     _id: { $dateToString: { format: '%Y-%m-%d', date: '$orderDate' } },
                     orderCount: { $sum: 1 }
                 }
             },
-            { $sort: { _id: 1 } } // Sort the result by date
+            { $sort: { _id: 1 } } 
         ]);
 
-        // Check if _id is defined before using localeCompare
         const sortedOrderGraphData = orderGraphData.sort((a, b) => {
             const aId = a._id || '';
             const bId = b._id || '';
@@ -108,12 +106,10 @@ adminController.getOrderGraphData = async (req, res) => {
 
 
 
-// Add a new method to fetch revenue data
 adminController.getDeliveredRevenueData = async (req, res) => {
     try {
-        // Fetch weekly delivered revenue data
         const weeklyRevenueData = await Order.aggregate([
-            { $match: { OrderStatus: 'Delivered' } }, // Include only delivered orders
+            { $match: { OrderStatus: 'Delivered' } }, 
             {
                 $group: {
                     _id: { $week: "$orderDate" },
@@ -122,9 +118,8 @@ adminController.getDeliveredRevenueData = async (req, res) => {
             }
         ]);
 
-        // Fetch monthly delivered revenue data
         const monthlyRevenueData = await Order.aggregate([
-            { $match: { OrderStatus: 'Delivered' } }, // Include only delivered orders
+            { $match: { OrderStatus: 'Delivered' } },
             {
                 $group: {
                     _id: { $month: "$orderDate" },
@@ -133,9 +128,9 @@ adminController.getDeliveredRevenueData = async (req, res) => {
             }
         ]);
 
-        // Fetch yearly delivered revenue data
+        
         const yearlyRevenueData = await Order.aggregate([
-            { $match: { OrderStatus: 'Delivered' } }, // Include only delivered orders
+            { $match: { OrderStatus: 'Delivered' } }, 
             {
                 $group: {
                     _id: { $year: "$orderDate" },
@@ -152,12 +147,10 @@ adminController.getDeliveredRevenueData = async (req, res) => {
 };
 
 
-// Modified method to fetch order data and category information
 adminController.getOrderData = async (req, res) => {
     try {
-        // Fetch orders with populated product and category information
         const orders = await Order.find({
-            OrderStatus: 'Delivered' // Filter only delivered orders
+            OrderStatus: 'Delivered' 
         }).populate({
             path: 'items.product',
             populate: {
@@ -166,7 +159,6 @@ adminController.getOrderData = async (req, res) => {
             }
         });
 
-        // Organize data for doughnut chart
         const categoryData = {};
 
         orders.forEach(order => {
@@ -194,11 +186,10 @@ adminController.getOrderData = async (req, res) => {
 };
 adminController.getAdditionalRevenueChartData = async (req, res) => {
     try {
-        const { filter } = req.query; // Extract the filter parameter from the query string
+        const { filter } = req.query; 
 
         let aggregateOptions = [];
 
-        // Adjust the date grouping based on the selected filter
         if (filter === 'weekly') {
             aggregateOptions = [
                 { $match: { OrderStatus: 'Delivered' } },
@@ -221,11 +212,9 @@ adminController.getAdditionalRevenueChartData = async (req, res) => {
                 { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$orderDate' } }, totalRevenue: { $sum: '$totalAmount' } } }
             ];
         }else {
-            // Handle invalid or missing filter parameter
             return res.status(400).json({ error: "Invalid filter parameter" });
         }
 
-        // Fetch additional revenue data based on the selected filter
         const additionalRevenueData = await Order.aggregate(aggregateOptions);
         console.log("additionalRevenueData",additionalRevenueData)
 

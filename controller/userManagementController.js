@@ -18,7 +18,7 @@ userManagementController.showData = async(req,res)=>{
         } else {
             users = await User.find();
         }if(req.session.AdminLogin){
-            res.render('userManagement',{users,message,req})
+            res.render('Admin/userManagement',{users,message,req})
         }else{
             res.redirect('/')
         }

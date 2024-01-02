@@ -1,0 +1,109 @@
+<%-include("adminHeader.ejs")%>
+
+
+       
+
+
+
+
+
+
+<div id="page-wrapper" style="margin-top: 20px;">
+    <a href="/add-banner"><div class=" btn btn-success w-10">Add Banner</div></a>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                
+
+                <h1 class="page-header">Banner Management</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <center><div id="message" class="message" style="color:green; font-weight: bold;"><%=updateMessage%></div></center>
+
+            <center><div id="message" class="message" style="color: red; font-weight: bold;"></div></center>
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>link</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <% banners.forEach(banner=>{%>
+
+                                    
+                                    
+                                        <tr>
+                                            <td><img src="<%=banner.image%>" alt="img not available" style="width: 240px;height: 150px;"></td>
+                                            <td style="vertical-align: middle;"><%=banner.title%></td>
+                                            <td style="vertical-align: middle;"><%=banner.redirectLink%></td>
+                                            <td style="vertical-align: middle;"><%=banner.isActive?"Active":"Not Active"%></td>
+                                            
+                                            <td style="vertical-align: middle;">
+                                            <a href="/banner-management/toggle/<%=banner._id%>" title="<%= banner.isActive ? 'Deactivate' : 'Activate' %>">
+                                                <%= banner.isActive ? 'Deactivate' : 'Activate' %>
+                                            </a></td>
+                                            <td style="vertical-align: middle;">
+                                            <a href="/banner-management/edit/<%=banner._id%>">Edit</a>
+                                            </td>
+                                        </tr>
+                                        <%})%>
+                                            
+
+
+
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+        <!-- jQuery -->
+        <script src="/js/adminJs/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="/js/adminJs/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="/js/adminJs/metisMenu.min.js"></script>
+
+        <!-- DataTables JavaScript -->
+        <script src="/js/adminJs/dataTables/jquery.dataTables.min.js"></script>
+        <script src="/js/adminJs/dataTables/dataTables.bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="/js/adminJs/startmin.js"></script>
+
+        <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+        <script>
+            $(document).ready(function () {
+                $('#dataTables-example').DataTable({
+                    responsive: true
+                });
+            });
+
+            var messageElement = document.getElementById('message')
+            setTimeout(()=>{
+                messageElement.style.display = 'none'
+            },3000)
+
+            
+        </script>
+
+    </body>
+
+</html>
