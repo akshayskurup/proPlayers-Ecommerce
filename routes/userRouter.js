@@ -41,8 +41,13 @@ userRouter.get('/wallet',checkBlocked,homeController.showWallet)
 userRouter.get('/products/:category',checkBlocked,homeController.showData)
 userRouter.get('/products/:category/sort/:sortDirection', homeController.sortProducts);
 userRouter.get('/categoryProducts/:category',checkBlocked,homeController.searchCategoryProducts)
+userRouter.get('/categoryProducts/:category/sort/:sortDirection', checkBlocked, homeController.searchAndSortCategoryProducts);
+
 userRouter.get('/allProducts',checkBlocked,homeController.showProducts)
 userRouter.get('/searchProducts',homeController.searchProducts)
+
+userRouter.get('/searchProducts/sort/:sortOrder', homeController.searchAndSortProducts);
+
 userRouter.get('/allProducts/high-to-low',homeController.sortHighToLow)
 userRouter.get('/allProducts/low-to-high',homeController.sortLowToHigh)
 

@@ -43,8 +43,9 @@
                     Sort
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="/products/<%=productCategory%>/sort/-1">Price: High to Low</a></li>
-                    <li><a class="dropdown-item" href="/products/<%=productCategory%>/sort/1">Price: Low to High</a></li> 
+                    <li><a class="dropdown-item" href="/categoryProducts/<%= productCategory %>/sort/-1?search=<%= searchQuery %>">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="/categoryProducts/<%= productCategory %>/sort/1?search=<%= searchQuery %>">Price: Low to High</a></li>
+                  </ul>
                   </ul>
                 </li>
               </ul>
@@ -115,7 +116,7 @@
               <ul class="pagination">
                   <% for (let i = 1; i <= totalPages; i++) { %>
                       <li class="<%= currentPage === i ? 'active' : '' %>">
-                          <a href="/products/<%= productCategory %>/<%= sortDirection ? 'sort/' + sortDirection : '' %>?page=<%= i %>&sortField=<%= sortField %>"><%= i %></a>
+                        <a href="/categoryProducts/<%= productCategory %><% if (sortDirection) { %>/sort/<%= sortDirection %><% } %>?page=<%= i %>&sortField=<%= sortField %>&search=<%= searchQuery %>"><%= i %></a>
                       </li>
                   <% } %>
               </ul>

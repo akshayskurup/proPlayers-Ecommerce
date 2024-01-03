@@ -10,18 +10,45 @@ document.addEventListener('DOMContentLoaded', function () {
         const totalPriceElement = document.querySelector(`.total-price[data-product-id="${quantityInput.dataset.productId}"]`);
 
         minusButton.addEventListener('click', function () {
+            var message = document.getElementById('message')
+
             if (quantityInput.value > 1) {
                 quantityInput.value--;
                 // Trigger input event after decrementing
                 quantityInput.dispatchEvent(new Event('input'));
+                message.innerText = ''
+                message.style.display = 'block'
+
             }
         });
 
+        // plusButton.addEventListener('click', function () {
+        //     quantityInput.value++;
+        //     // Trigger input event after incrementing
+        //     quantityInput.dispatchEvent(new Event('input'));
+        // });
+
         plusButton.addEventListener('click', function () {
-            quantityInput.value++;
-            // Trigger input event after incrementing
-            quantityInput.dispatchEvent(new Event('input'));
+            const totalQuantity = parseInt(quantityInput.dataset.totalQuantity, 10);
+            const currentQuantity = parseInt(quantityInput.value, 10);
+            var message = document.getElementById('message')
+            message.innerText = ''
+                quantityInput.value++;
+                // Trigger input event after incrementing
+                quantityInput.dispatchEvent(new Event('input'));
+                if (currentQuantity+1 === totalQuantity) {
+                
+                    message.innerText = 'Product quantity has reached its limit'
+                    setTimeout(()=>{
+                        message.style.display = 'none'
+                    },2000)
+    
+                }else{
+                    message.innerText = ''
+                }
+            
         });
+        
 
         // Add input event listener to validate input as a number
         quantityInput.addEventListener('input', function () {
@@ -122,3 +149,6 @@ document.addEventListener('DOMContentLoaded', function () {
      
     }
 });
+
+
+

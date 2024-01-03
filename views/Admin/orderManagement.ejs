@@ -60,8 +60,9 @@
                                             <td><%=order.paymentMethod%></td>
                                             <td><%=order.totalAmount%></td>
                                             <td>
-                                                <form action="/order-management-update/<%= order._id %>" method="post" class="update-status-form">
-                                                <select name="order_status" onchange="this.form.submit()">
+                                                
+                                            <form action="/order-management-update/<%= order._id %>" method="post" class="update-status-form">
+                                              <select name="order_status" onchange="confirmStatusUpdate('<%= order._id %>')">
                                                 <% if(order.OrderStatus ==='Order Placed'|| order.OrderStatus==='Shipped'){%>
                                                 <option value="Order Placed" <%= order.OrderStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
                                                 <option value="Shipped" <%= order.OrderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
@@ -138,6 +139,9 @@
         <!-- Custom Theme JavaScript -->
         <script src="/js/adminJs/startmin.js"></script>
 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
         <!-- Page-Level Demo Scripts - Tables - Use for reference -->
         <script>
             $(document).ready(function () {
@@ -192,6 +196,25 @@
             });
         });
     });
+    function confirmStatusUpdate(orderId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to update the order status. Confirm?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, submit the form to update the status
+                document.querySelector(`form.update-status-form[action="/order-management-update/${orderId}"]`).submit();
+            }
+            else{
+                window.location.href = '/order-management'
+            }
+        });
+    }
         </script>
 
     </body>

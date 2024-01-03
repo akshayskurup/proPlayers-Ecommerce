@@ -1,46 +1,13 @@
-pending
-clear the offer before review 
+Add more filters
+Complete wishlist
+Add more details in sales report
 
+
+----------
 completed
-Confirmation if required,No results found placeholder
-Need to add validations for every forms
-Form validations for coupon
-There must be common layout for all pages : admin
-Confirmation for cancelling product
-Filter pagination sort and search should be interconnected
-multiple images upload not done : not proper
-Delete single image 
-Image preview need to updated with change files
-Expiry for return
-reason for cancelling product
-Filter pagination sort and search for every grid : admin side
-
-
-
-
-next week task
- 
- 	
-User side :
-password reset form design
-Admin side :
-
-
-
-completed
-Banner management
-Referal offer
-Admin Dashboard - Chart with filter(yearly,monthly etc.)
-Invoice download
-Offer module(product offer, category offer,)
-Sales Report - Pdf and excel download(with order summary)
-design the product for the offer
-
-
-
-
-
-
-
-
+----------
+Edit images issue
+Search & filter together
+Show stock out warning
+Admin confirmation on return
 
