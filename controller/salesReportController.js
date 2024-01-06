@@ -72,9 +72,11 @@ salesReportController.generateExcelReport = async (req, res) => {
         const dataForExcel = salesData.map(entry => ({
             'Order ID': entry.orderId,
             'Customer': entry.customer.name,
+            'Products': entry.items.map(item => item.product.productName).join(', '), // assuming productName is a property of each item
             'Total Amount': entry.totalAmount,
             'Order Date': entry.orderDate.toLocaleDateString()
         }));
+        
 
         // Calculate total orders and total amount
         let totalOrders = 0;

@@ -1,13 +1,15 @@
-Add more filters
 Complete wishlist
-Add more details in sales report
 
+pagination in genre
 
 ----------
 completed
 ----------
+while edit product show the selected genre
 Edit images issue
 Search & filter together
 Show stock out warning
 Admin confirmation on return
+Add more details in sales report
+Add more filters
 

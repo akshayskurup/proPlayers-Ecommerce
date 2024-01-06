@@ -147,7 +147,7 @@ productManagementController.searchProducts = async (req, res) => {
 // }
 
 productManagementController.handleData = async (req, res) => {
-  const { productName, productCategory, publisher, size, totalQuantity, description, releasedDate, price, convertedSize } = req.body;
+  const { productName, productCategory, productGenre, publisher, size, totalQuantity, description, releasedDate, price, convertedSize } = req.body;
   console.log('Request Body:', req.body);
   const capitalizedProductName = productName.toLowerCase().replace(/(?:^|\s)\S/g, function (char) {
       return char.toUpperCase();
@@ -199,6 +199,9 @@ productManagementController.handleData = async (req, res) => {
               price,
               image: imagePaths
           });
+          if (productCategory === '657fc26292aaf07d17328e08') {
+            newProduct.productGenre = productGenre;
+        }
 
           const savedProduct = await newProduct.save();
           await category.findOneAndUpdate(
@@ -346,6 +349,7 @@ productManagementController.handleEditData = async (req, res) => {
     description,
     releasedDate,
     price,
+    productGenre
   } = req.body;
 
   let categories = await category.find();
@@ -408,19 +412,40 @@ productManagementController.handleEditData = async (req, res) => {
         }
       });
 
+      // const updatedProduct = await productSchema.findByIdAndUpdate(
+      //   productId,
+      //   {
+      //     productName: capitalizedProductName,
+      //     productCategory,
+      //     publisher,
+      //     size: req.body.convertedSize,
+      //     totalQuantity,
+      //     description,
+      //     releasedDate,
+      //     price,
+      //     image: gameImages,
+      //   },
+      //   { new: true }
+      // );
+      const updatedProductData = {
+        productName: capitalizedProductName,
+        productCategory,
+        publisher,
+        size: req.body.convertedSize,
+        totalQuantity,
+        description,
+        releasedDate,
+        price,
+        image: gameImages,
+      };
+
+      if (productCategory === '657fc26292aaf07d17328e08') {
+        updatedProductData.productGenre = productGenre;
+    }
+
       const updatedProduct = await productSchema.findByIdAndUpdate(
         productId,
-        {
-          productName: capitalizedProductName,
-          productCategory,
-          publisher,
-          size: req.body.convertedSize,
-          totalQuantity,
-          description,
-          releasedDate,
-          price,
-          image: gameImages,
-        },
+        updatedProductData,
         { new: true }
       );
 

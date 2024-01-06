@@ -26,7 +26,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
             <div class="col-md-4">
-                <select id="product_categorie" name="productCategory" class="form-control">
+                <select id="product_categorie" name="productCategory" class="form-control" onchange="toggleGenreDropdown()">
                   <% categories.forEach(category => { %>
                     <option  value="<%= category._id %>" <%= product.productCategory === category._id ? 'selected' : '' %>>
                         <%= category.categoryName %>
@@ -34,6 +34,19 @@
                 <% }); %>
                 </select>
             </div>
+        </div>
+
+        <div class="form-group" id="genre">
+          <label class="col-md-4 control-label" for="product_name">Genre</label>
+          <div class="col-md-4">
+            <select id="product_genre" name="productGenre" class="form-control">
+                  <option value="Action"<%= product.productGenre === "Action" ? 'selected' : '' %>>Action</option>
+                  <option value="Adventure"<%= product.productGenre === "Adventure" ? 'selected' : '' %>>Adventure</option>
+                  <option value="Fighting"<%= product.productGenre === "Fighting" ? 'selected' : '' %>>Fighting</option>
+                  <option value="Racing"<%= product.productGenre === "Racing" ? 'selected' : '' %>>Racing</option>        
+          </select>
+    
+          </div>
         </div>
     
           
@@ -383,6 +396,21 @@ async function removeImage(imageIndex) {
       errorElement.innerHTML = "No image selected";
     }
   }
+
+  function toggleGenreDropdown() {
+        var categoryDropdown = document.getElementById('product_categorie');
+        var genreDropdown = document.getElementById('genre');
+
+        // Check if the selected option in the category dropdown is "GAMES"
+        var selectedCategory = categoryDropdown.options[categoryDropdown.selectedIndex].text;
+
+        // Show or hide the genre dropdown based on the selected category
+        if (selectedCategory === 'GAMES') {
+            genreDropdown.style.display = 'block';
+        } else {
+            genreDropdown.style.display = 'none';
+        }
+    }
 
       </script>
 <%-include('adminFooter.ejs')%>
