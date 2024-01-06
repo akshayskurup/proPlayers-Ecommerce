@@ -66,12 +66,13 @@
                       Genre
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown" >
-                    
-                      
-                        <li><a class="dropdown-item" href="/categoryProducts/GAMES/Action">Action</a></li>
+                    <% genreList.forEach(Genre=>{%>
+                      <li><a class="dropdown-item" href="/categoryProducts/GAMES/<%=Genre.genre%>"><%=Genre.genre%></a></li>
+                    <%})%>
+                        <!-- <li><a class="dropdown-item" href="/categoryProducts/GAMES/Action">Action</a></li>
                         <li><a class="dropdown-item" href="/categoryProducts/GAMES/Adventure">Adventure</a></li>
                         <li><a class="dropdown-item" href="/categoryProducts/GAMES/Fighting">Fighting</a></li>
-                        <li><a class="dropdown-item" href="/categoryProducts/GAMES/Racing">Racing</a></li>
+                        <li><a class="dropdown-item" href="/categoryProducts/GAMES/Racing">Racing</a></li> -->
                     </ul>
                   </li>
                 </ul>

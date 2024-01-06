@@ -6,6 +6,7 @@ let offerSchema = require('../model/offerSchema')
 let banner = require('../model/bannerSchema')
 let offer = require('../model/offerSchema')
 const wallet = require("../model/walletSchema")
+const genres = require('../model/genreSchema')
 
 const { query } = require('express'); 
 const ITEMS_PER_PAGE = 8;
@@ -128,6 +129,7 @@ homeController.showData = async (req, res) => {
             const Category = await category.findOne({ categoryName: productCategory, isListed: true });
             const categories = await category.find();
             const sortDirection = req.query.sortDirection || ""
+            const genreList = await genres.find()
 
             if (Category) {
                 const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
@@ -157,6 +159,7 @@ homeController.showData = async (req, res) => {
                 if (req.session.UserLogin) {
                     res.render('User/categoryProducts', {
                         sort:"",
+                        genreList,
                         genre:"",
                         products,
                         productCategory,
@@ -185,6 +188,8 @@ homeController.searchCategoryProducts = async (req, res) => {
     try {
         const userId = req.session.userId;
         const productCategory = req.params.category;
+        const genreList = await genres.find()
+
 
         if (userId && req.session.UserLogin) {
             const user = await User.findById(userId);
@@ -225,6 +230,7 @@ homeController.searchCategoryProducts = async (req, res) => {
                 if (req.session.UserLogin) {
                     res.render('User/categoryProducts', {
                         sort: "",
+                        genreList,
                         genre:"",
                         products,
                         productCategory,
@@ -256,6 +262,7 @@ homeController.sortProducts = async (req, res) => {
         const userId = req.session.userId;
         const productCategory = req.params.category;
         const categories = await category.find();
+        const genreList = await genres.find()
         const page = parseInt(req.query.page) || 1;
         const sortDirection = parseInt(req.params.sortDirection) || -1; 
         const sortField = req.query.sortField || 'price'; 
@@ -276,6 +283,7 @@ homeController.sortProducts = async (req, res) => {
             res.render('User/categoryProducts', {
                 sortDirection,
                 userId,
+                genreList,
                 genre:"",
                 query: "",
                 products: product,
@@ -312,6 +320,7 @@ homeController.searchAndSortCategoryProducts = async (req, res) => {
             const searchQuery = req.query.search || '';
             const Category = await category.findOne({ categoryName: productCategory, isListed: true });
             const categories = await category.find();
+            const genreList = await genres.find()
 
             if (Category) {
                 const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
@@ -345,6 +354,7 @@ homeController.searchAndSortCategoryProducts = async (req, res) => {
                     res.render('User/categoryProducts', {
                         sort: "",
                         products: sortedProducts,
+                        genreList,
                         genre:"",
                         productCategory,
                         userId,
@@ -388,7 +398,8 @@ homeController.showGenreProducts = async (req, res) => {
 
             const page = parseInt(req.query.page) || 1;
             const searchQuery = req.query.search || '';
-            const sortDirection = parseInt(req.query.sort) || 0; // 0 for default, -1 for descending, 1 for ascending
+            const sortDirection = parseInt(req.query.sort) || 0;
+            const genreList = await genres.find()
 
             const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
             
@@ -427,6 +438,7 @@ if (sortDirection !== 0) {
                 sort: sortDirection,
                 products,
                 productCategory,
+                genreList,
                 genre,
                 userId,
                 totalPages,
@@ -463,7 +475,9 @@ homeController.showSortedGenreProducts = async (req, res) => {
 
             const page = parseInt(req.query.page) || 1;
             const searchQuery = req.query.search || '';
-            const sortDirection = parseInt(req.params.sortDirection) || 0; // 0 for default, -1 for descending, 1 for ascending
+            const sortDirection = parseInt(req.params.sortDirection) || 0;
+            const genreList = await genres.find()
+
 
             const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
 
@@ -501,6 +515,7 @@ homeController.showSortedGenreProducts = async (req, res) => {
                 sort: sortDirection,
                 products,
                 productCategory,
+                genreList,
                 genre,
                 userId,
                 totalPages,

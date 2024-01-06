@@ -6,6 +6,7 @@ const multer = require('multer');
 const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
+const genres = require('../model/genreSchema')
 
 
 
@@ -24,6 +25,7 @@ productManagementController.showData = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const skip = (page - 1) * ITEMS_PER_PAGE;
         const updateMess=req.query.update||""
+        const genre = await genres.find()
         let products
 
          products = await productSchema.find().sort({_id:-1}).populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
@@ -38,7 +40,7 @@ productManagementController.showData = async (req, res) => {
              products = await productSchema.find().sort({_id:1}).populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
         }
         if (req.session.AdminLogin) {
-            res.render('Admin/productManagement', { categories, products, currentPage: page, totalPages, message: "",updateMess,req });
+            res.render('Admin/productManagement', { categories,genre, products, currentPage: page, totalPages, message: "",updateMess,req });
         } else {
             res.redirect('/admin');
         }
@@ -55,6 +57,7 @@ productManagementController.searchProducts = async (req, res) => {
       const page = parseInt(req.query.page) || 1;
       const skip = (page - 1) * ITEMS_PER_PAGE;
       const updateMess=req.query.update||""
+      const genre = await genres.find()
 
       const products = await productSchema.find().populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
       const categories = await category.find();
@@ -70,7 +73,7 @@ productManagementController.searchProducts = async (req, res) => {
           isListed: true,
           productName: searchQuery === ' ' ? { $regex: new RegExp('.*', 'i') }  : { $regex: new RegExp(`^${searchQuery}`, 'i') }
       }).populate('productCategory');
-      res.render('Admin/productManagement', { categories, products:product, currentPage: page, totalPages, message: "",updateMess,req });
+      res.render('Admin/productManagement', { categories,genre, products:product, currentPage: page, totalPages, message: "",updateMess,req });
 
   } catch (error) {
       console.error('Error searching products:', error);
@@ -158,6 +161,7 @@ productManagementController.handleData = async (req, res) => {
   const files = req.files;
   const imagePaths = files.map((file) => '/productimgs/' + file.filename);
   const updateMess = req.query.update || "";
+  const genre = await genres.find()
 
   try {
       const page = parseInt(req.query.page) || 1;
@@ -181,7 +185,7 @@ productManagementController.handleData = async (req, res) => {
 
       if (existingProduct.length > 0) {
           console.log('Product with the same name already exists.');
-          return res.render("Admin/productManagement", { products, categories, currentPage: page, totalPages, message: "Product Name already exists", updateMess: "", req });
+          return res.render("Admin/productManagement", { products,genre, categories, currentPage: page, totalPages, message: "Product Name already exists", updateMess: "", req });
 
       } else {
           while (imagePaths.length < 4) {
@@ -242,8 +246,9 @@ productManagementController.showEditForm = async (req, res) => {
   const productId = req.params.id
   const product = await productSchema.findById(productId);
   const categories = await category.find()
+  let genre = await genres.find()
   const formattedReleasedDate = product.releasedDate.toISOString().split('T')[0];
-  res.render('Admin/editProduct', {product, productId, categories, message: "",formattedReleasedDate })
+  res.render('Admin/editProduct', {product, productId, categories,genre, message: "",formattedReleasedDate })
 }
 
 
@@ -353,6 +358,7 @@ productManagementController.handleEditData = async (req, res) => {
   } = req.body;
 
   let categories = await category.find();
+  const genre = await genres.find()
   let product = await productSchema.findById(productId);
 
   const capitalizedProductName = productName
@@ -371,6 +377,7 @@ productManagementController.handleEditData = async (req, res) => {
       return res.render("Admin/editProduct", {
         categories,
         product,
+        genre,
         message: "Product name already exists",
         productId,
         formattedReleasedDate: "",

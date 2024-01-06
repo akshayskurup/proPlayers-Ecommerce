@@ -14,6 +14,7 @@ const productManagementController = require("../controller/productManagementCont
 const offerManagementController = require('../controller/offerManagementController')
 const salesReportController = require('../controller/salesReportController')
 const bannerController = require('../controller/bannerController')
+const genreController = require('../controller/genreManagementController')
 
 
 
@@ -89,5 +90,12 @@ adminRouter.get('/banner-management/edit/:bannerId',bannerController.showBannerE
 adminRouter.post('/edit-banner/:bannerId',bannerController.upload,bannerController.handleBannerEdit)
 adminRouter.get('/add-banner',bannerController.addBanner)
 adminRouter.post('/add-banner',bannerController.upload,bannerController.handleData)
+
+adminRouter.get('/genre-management',genreController.showGenre)
+adminRouter.get('/genre-management/add-genre',genreController.addGenre)
+adminRouter.post('/genre-management/add',genreController.handleAddData)
+adminRouter.get('/genre-management/toggle-list/:id',genreController.toggle)
+adminRouter.get('/genre-management/edit/:id',genreController.showEditGenre)
+adminRouter.post('/genre-management/edit/:id',genreController.handleEditGenre)
 
 module.exports=adminRouter

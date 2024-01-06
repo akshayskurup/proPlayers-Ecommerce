@@ -40,10 +40,13 @@
           <label class="col-md-4 control-label" for="product_name">Genre</label>
           <div class="col-md-4">
             <select id="product_genre" name="productGenre" class="form-control">
-                  <option value="Action"<%= product.productGenre === "Action" ? 'selected' : '' %>>Action</option>
+              <% genre.forEach(Genre=>{%>
+                <option value="<%=Genre.genre%>" <%= product.productGenre === Genre.genre ? 'selected' : '' %>><%=Genre.genre%></option>
+              <%})%>
+                  <!-- <option value="Action"<%= product.productGenre === "Action" ? 'selected' : '' %>>Action</option>
                   <option value="Adventure"<%= product.productGenre === "Adventure" ? 'selected' : '' %>>Adventure</option>
                   <option value="Fighting"<%= product.productGenre === "Fighting" ? 'selected' : '' %>>Fighting</option>
-                  <option value="Racing"<%= product.productGenre === "Racing" ? 'selected' : '' %>>Racing</option>        
+                  <option value="Racing"<%= product.productGenre === "Racing" ? 'selected' : '' %>>Racing</option>         -->
           </select>
     
           </div>

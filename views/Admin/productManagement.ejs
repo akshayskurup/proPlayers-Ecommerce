@@ -32,11 +32,14 @@
         <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
         <div class="col-md-4">
             <select id="product_categorie" name="productCategory" class="form-control" onchange="toggleGenreDropdown()">
-                <% categories.forEach(category => { %>
-                    <option value="<%= category._id %>">
-                        <%= category.categoryName %>
-                    </option>
-                <% }); %>
+              <% categories.forEach(category => { %>
+                <% if (category.isListed) { %>
+                  <option value="<%= category._id %>">
+                    <%= category.categoryName %>
+                  </option>
+                <% } %>
+              <% }); %>
+              
             </select>
         </div>
     </div>
@@ -46,10 +49,13 @@
       <label class="col-md-4 control-label" for="product_name">Genre</label>
       <div class="col-md-4">
         <select id="product_genre" name="productGenre" class="form-control">
-              <option value="Action">Action</option>
+          <% genre.forEach(Genre=>{%>
+            <option value="<%=Genre.genre%>"><%=Genre.genre%></option>
+          <%})%>
+              <!-- <option value="Action">Action</option>
               <option value="Adventure">Adventure</option>
               <option value="Fighting">Fighting</option>
-              <option value="Racing">Racing</option>        
+              <option value="Racing">Racing</option>         -->
       </select>
 
       </div>
