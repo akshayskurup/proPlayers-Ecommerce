@@ -11,6 +11,7 @@ let productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'categories'
     },
+    productGenre:String,
     publisher:String,
     size:String,
     totalQuantity:{

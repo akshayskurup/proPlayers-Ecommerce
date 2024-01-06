@@ -59,17 +59,13 @@
     }
 
     .navbar-nav .nav-item.active .nav-link,
-        .navbar-nav .nav-item.show .nav-link {
-            color: #ffcc00 !important; 
-        }
-        .navbar-nav .nav-link:hover {
-            color: #fb7b24 !important; /* Choose your preferred hover color */
-        }
+    .navbar-nav .nav-item.show .nav-link {
+        color: #fb7b24 !important; 
+    }
 
-        
-        .nav-item.active a {
-    color: #fb7b24; /* Change this to your desired color */
-}
+    .navbar-nav .nav-link:hover {
+        color: #fb7b24 !important; /* Choose your preferred hover color */
+    }
 </style>
 
 </head>
@@ -83,15 +79,15 @@
 
         
   <nav class="navbar navbar-expand-lg fixed-top navbar-light p-3 shadow-sm " style="background: #0b091f;">
-    <div class="container" >
+    <div class="container">
         <a class="navbar-brand" href="/home"><i class="fa-solid fa-gamepad fa-bounce me-2"></i><strong>Pro Players</strong></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
 
-            <ul class="navbar-nav ms-auto" >
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i></i> Categories
@@ -108,6 +104,9 @@
                   
                 <li class="nav-item">
                     <a class="nav-link mx-2 text-uppercase" href="/allProducts"><i class="fa-solid fa-box me-1"></i></i>Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link mx-2 text-uppercase" href="/wishlist"><i class="fa-solid fa-heart me-1"></i> wishlist</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link mx-2 text-uppercase" href="/cart"><i class="fa-solid fa-cart-shopping me-1"></i> Cart</a>
@@ -132,15 +131,16 @@
 </nav>
     </header>
 
-    <script>
-        // Get the current URL path
-        var path = window.location.pathname;
     
-        // Select the corresponding navigation link based on the path
-        var activeLink = document.querySelector('a[href="' + path + '"]');
-    
-        // Add the "active" class to the selected link
-        if (activeLink) {
-            activeLink.classList.add('active');
+<script>
+    var currentPath = window.location.pathname;
+
+    var navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+    navLinks.forEach(function (link) {
+        if (link.getAttribute('href') === currentPath) {
+            // Add the 'active' class if the href matches the current path
+            link.parentNode.classList.add('active');
         }
-    </script>
+    });
+</script>

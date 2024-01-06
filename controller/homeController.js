@@ -6,6 +6,7 @@ let offerSchema = require('../model/offerSchema')
 let banner = require('../model/bannerSchema')
 let offer = require('../model/offerSchema')
 const wallet = require("../model/walletSchema")
+const genres = require('../model/genreSchema')
 
 const { query } = require('express'); 
 const ITEMS_PER_PAGE = 8;
@@ -127,9 +128,11 @@ homeController.showData = async (req, res) => {
             const searchQuery = req.query.search || '';
             const Category = await category.findOne({ categoryName: productCategory, isListed: true });
             const categories = await category.find();
+            const sortDirection = req.query.sortDirection || ""
+            const genreList = await genres.find()
 
             if (Category) {
-                const searchPattern = new RegExp(searchQuery, 'i');
+                const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
 
                 const totalProducts = await productSchema.countDocuments({
                     productCategory: Category._id,
@@ -156,13 +159,17 @@ homeController.showData = async (req, res) => {
                 if (req.session.UserLogin) {
                     res.render('User/categoryProducts', {
                         sort:"",
+                        genreList,
+                        genre:"",
                         products,
                         productCategory,
                         userId,
                         categories,
                         totalPages,
                         currentPage: validPage,
-                         sortDirection:"", sortField:""
+                         sortDirection, 
+                         sortField:"",
+                         searchQuery
                     });
                 }
             } else {
@@ -181,6 +188,8 @@ homeController.searchCategoryProducts = async (req, res) => {
     try {
         const userId = req.session.userId;
         const productCategory = req.params.category;
+        const genreList = await genres.find()
+
 
         if (userId && req.session.UserLogin) {
             const user = await User.findById(userId);
@@ -195,7 +204,7 @@ homeController.searchCategoryProducts = async (req, res) => {
             const categories = await category.find();
 
             if (Category) {
-                const searchPattern = new RegExp(searchQuery.trim(), 'i');
+                const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
 
                 const totalProducts = await productSchema.countDocuments({
                     productCategory: Category._id,
@@ -221,6 +230,8 @@ homeController.searchCategoryProducts = async (req, res) => {
                 if (req.session.UserLogin) {
                     res.render('User/categoryProducts', {
                         sort: "",
+                        genreList,
+                        genre:"",
                         products,
                         productCategory,
                         userId,
@@ -251,6 +262,7 @@ homeController.sortProducts = async (req, res) => {
         const userId = req.session.userId;
         const productCategory = req.params.category;
         const categories = await category.find();
+        const genreList = await genres.find()
         const page = parseInt(req.query.page) || 1;
         const sortDirection = parseInt(req.params.sortDirection) || -1; 
         const sortField = req.query.sortField || 'price'; 
@@ -271,6 +283,8 @@ homeController.sortProducts = async (req, res) => {
             res.render('User/categoryProducts', {
                 sortDirection,
                 userId,
+                genreList,
+                genre:"",
                 query: "",
                 products: product,
                 productCategory,
@@ -278,6 +292,7 @@ homeController.sortProducts = async (req, res) => {
                 currentPage: page,
                 totalPages,
                 sortField,
+                searchQuery
             });
         } else {
             console.log(`Category '${productCategory}' not listed`);
@@ -289,10 +304,438 @@ homeController.sortProducts = async (req, res) => {
     }
 };
 
+homeController.searchAndSortCategoryProducts = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const productCategory = req.params.category;
+
+        if (userId && req.session.UserLogin) {
+            const user = await User.findById(userId);
+            if (user && user.isBlocked) {
+                req.session.UserLogin = false;
+                return res.redirect('/');
+            }
+
+            const page = parseInt(req.query.page) || 1;
+            const searchQuery = req.query.search || '';
+            const Category = await category.findOne({ categoryName: productCategory, isListed: true });
+            const categories = await category.find();
+            const genreList = await genres.find()
+
+            if (Category) {
+                const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
+
+                const totalProducts = await productSchema.countDocuments({
+                    productCategory: Category._id,
+                    isListed: true,
+                    productName: { $regex: searchPattern },
+                });
+
+                const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+                const validPage = Math.min(Math.max(page, 1), totalPages);
+
+                const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+                const limit = ITEMS_PER_PAGE;
+
+                const sortDirection = parseInt(req.params.sortDirection) || -1;
+                const sortField = req.query.sortField || 'price';
+
+                const sortedProducts = await productSchema.find({
+                    productCategory: Category._id,
+                    isListed: true,
+                    productName: { $regex: searchPattern },
+                })
+                .sort({ [sortField]: sortDirection })
+                .skip(skip)
+                .limit(limit);
+
+                if (req.session.UserLogin) {
+                    res.render('User/categoryProducts', {
+                        sort: "",
+                        products: sortedProducts,
+                        genreList,
+                        genre:"",
+                        productCategory,
+                        userId,
+                        categories,
+                        totalPages,
+                        currentPage: validPage,
+                        sortDirection,
+                        sortField,
+                        searchQuery,
+                    });
+                }
+            } else {
+                console.log(`Category '${productCategory}' not listed`);
+                res.redirect('/');
+            }
+        } else {
+            res.redirect('/');
+        }
+    } catch (error) {
+        console.error('Error in searchAndSortCategoryProducts:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+//Genre Products
+
+homeController.showGenreProducts = async (req, res) => {
+    try {
+        const genre = req.params.genre;
+        const userId = req.session.userId;
+        const categories = await category.find();
+        const productCategory = req.params.category
+
+
+        if (userId && req.session.UserLogin) {
+            const user = await User.findById(userId);
+            if (user && user.isBlocked) {
+                req.session.UserLogin = false;
+                return res.redirect('/');
+            }
+
+            const page = parseInt(req.query.page) || 1;
+            const searchQuery = req.query.search || '';
+            const sortDirection = parseInt(req.query.sort) || 0;
+            const genreList = await genres.find()
+
+            const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
+            
+
+            const totalProducts = await productSchema.countDocuments({
+                isListed: true,
+                productGenre: genre,
+                productName: { $regex: searchPattern },
+            });
+
+            const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+            const validPage = Math.min(Math.max(page, 1), totalPages);
+
+            const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+            const limit = ITEMS_PER_PAGE;
+
+            const sortField = 'price'; // Modify this based on the field you want to sort by (e.g., "price", "createdAt", etc.)
+            const sortOptions = {};
+
+// Check if sortDirection is not the default (0)
+if (sortDirection !== 0) {
+    sortOptions[sortField] = sortDirection;
+}
+
+            const products = await productSchema.find({
+                isListed: true,
+                productGenre: genre,
+                productName: { $regex: searchPattern },
+            })
+            .sort(sortOptions)
+            .skip(skip)
+            .limit(limit);
+
+            res.render('User/categoryProducts', {
+                sort: sortDirection,
+                products,
+                productCategory,
+                genreList,
+                genre,
+                userId,
+                totalPages,
+                currentPage: validPage,
+                sortDirection: sortDirection,
+                sortField: sortField,
+                searchQuery,
+                categories
+            });
+        } else {
+            res.redirect('/');
+        }
+    } catch (error) {
+        console.error('Error in showGenreProducts:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
+homeController.showSortedGenreProducts = async (req, res) => {
+    try {
+        const genre = req.params.genre;
+        const userId = req.session.userId;
+        const categories = await category.find();
+        const productCategory = req.params.category
+
+
+        if (userId && req.session.UserLogin) {
+            const user = await User.findById(userId);
+            if (user && user.isBlocked) {
+                req.session.UserLogin = false;
+                return res.redirect('/');
+            }
+
+            const page = parseInt(req.query.page) || 1;
+            const searchQuery = req.query.search || '';
+            const sortDirection = parseInt(req.params.sortDirection) || 0;
+            const genreList = await genres.find()
+
+
+            const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
+
+            const totalProducts = await productSchema.countDocuments({
+                isListed: true,
+                productGenre: genre,
+                productName: { $regex: searchPattern },
+            });
+
+            const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+            const validPage = Math.min(Math.max(page, 1), totalPages);
+
+            const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+            const limit = ITEMS_PER_PAGE;
+
+            const sortField = 'price'; // Modify this based on the field you want to sort by (e.g., "price", "createdAt", etc.)
+            const sortOptions = {};
+
+            // Check if sortDirection is not the default (0)
+            if (sortDirection !== 0) {
+                sortOptions[sortField] = sortDirection;
+            }
+
+            const products = await productSchema.find({
+                isListed: true,
+                productGenre: genre,
+                productName: { $regex: searchPattern },
+            })
+            .sort(sortOptions) // Use sortOptions object to handle default value
+            .skip(skip)
+            .limit(limit);
+
+            res.render('User/categoryProducts', {
+                sort: sortDirection,
+                products,
+                productCategory,
+                genreList,
+                genre,
+                userId,
+                totalPages,
+                currentPage: validPage,
+                sortDirection: sortDirection,
+                sortField: sortField,
+                searchQuery,
+                categories
+            });
+        } else {
+            res.redirect('/');
+        }
+    } catch (error) {
+        console.error('Error in showSortedGenreProducts:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+// homeController.showGenreProducts = async (req, res) => {
+//     try {
+//         const genre = req.params.genre;
+//         const userId = req.session.userId;
+
+//         if (userId && req.session.UserLogin) {
+//             const user = await User.findById(userId);
+//             if (user && user.isBlocked) {
+//                 req.session.UserLogin = false;
+//                 return res.redirect('/');
+//             }
+
+//             const page = parseInt(req.query.page) || 1;
+//             const searchQuery = req.query.search || '';
+//             const categories = await category.find();
+
+//             const searchPattern = new RegExp(`^${searchQuery.trim()}`, 'i');
+
+//             const totalProducts = await productSchema.countDocuments({
+//                 isListed: true,
+//                 productGenre: genre,
+//                 productName: { $regex: searchPattern },
+//             });
+
+//             const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+
+//             const validPage = Math.min(Math.max(page, 1), totalPages);
+
+//             const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+//             const limit = ITEMS_PER_PAGE;
+
+//             const products = await productSchema.find({
+//                 isListed: true,
+//                 productGenre: genre,
+//                 productName: { $regex: searchPattern },
+//             })
+//             .skip(skip)
+//             .limit(limit);
+
+//             res.render('User/categoryProducts', {
+//                 sort: "",
+//                 products,
+//                 productCategory: "GAMES",
+//                 genre,
+//                 userId,
+//                 totalPages,
+//                 currentPage: validPage,
+//                 sortDirection: "",
+//                 sortField: "",
+//                 searchQuery,
+//                 categories
+//             });
+//         } else {
+//             res.redirect('/');
+//         }
+//     } catch (error) {
+//         console.error('Error in showGenreProducts:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
+
+
 
 
 //All Products
 
+
+// homeController.showProducts = async (req, res) => {
+//     const userId = req.session.userId;
+
+//     if (!req.session.UserLogin || !userId) {
+//         return res.redirect('/');
+//     }
+
+//     const user = await User.findById(userId);
+//     if (user && user.isBlocked) {
+//         req.session.UserLogin = false;
+//         return res.redirect('/');
+//     }
+
+//     try {
+//         const categories = await category.find();
+
+//         const page = parseInt(req.query.page) || 1;
+//         const searchQuery = req.query.search || '';
+//         const totalProducts = await productSchema.countDocuments({
+//             isListed: true,
+//             productName: { $regex: new RegExp(searchQuery, 'i') },
+            
+//         });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+//         const validPage = Math.min(Math.max(page, 1), totalPages);
+
+//         const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+//         const limit = ITEMS_PER_PAGE;
+
+        
+
+//         const products = await productSchema
+//             .find({ isListed: true, productName: { $regex: new RegExp(searchQuery, 'i') } })
+//             .populate('productCategory')
+//             .skip(skip)
+//             .limit(limit);
+
+//         res.render('User/allProducts', { userId, product:products, categories, currentPage: validPage, totalPages, searchQuery,sortOrder: '' });
+//     } catch (error) {
+//         console.error('Error fetching data:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
+// homeController.searchProducts = async (req, res) => {
+//     console.log("search")
+//     const userId = req.session.userId;
+//     const searchQuery = req.query.query;
+//         const categories = await category.find();
+//         const page = parseInt(req.query.page) || 1;
+//         const totalProducts = await productSchema.countDocuments({
+//             isListed: true,
+//             productName: { $regex: new RegExp(searchQuery, 'i') },
+            
+//         });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+//         const validPage = Math.min(Math.max(page, 1), totalPages);
+
+//         const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+//         const limit = ITEMS_PER_PAGE;
+//     try {
+        
+
+//         if (!searchQuery || searchQuery.trim()=="") {
+//             return res.redirect('/allProducts');
+//         }
+//         const product = await productSchema.find({
+//             isListed: true,
+//             productName: searchQuery === ' ' ? { $regex: new RegExp('.*', 'i') }  : { $regex: new RegExp(`^${searchQuery}`, 'i') }
+//         }).populate('productCategory').skip(skip).limit(limit);
+
+//         const categories = await category.find();
+
+//         res.render('User/allProducts', {userId, query: searchQuery, product, categories,totalPages,currentPage: validPage,sortOrder: '' });
+//     } catch (error) {
+//         console.error('Error searching products:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// }; 
+// homeController.sortHighToLow = async (req, res) => {
+//     try {
+//         console.log("inside hight to low")
+//         const userId = req.session.userId;
+//         const categories = await category.find();
+
+//         const page = parseInt(req.query.page) || 1;
+//         const totalProducts = await productSchema.countDocuments({
+//             isListed: true
+//         });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+//         const validPage = Math.min(Math.max(page, 1), totalPages);
+
+//         const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+//         const limit = ITEMS_PER_PAGE;
+//         console.log("Before find");
+//         const product = await productSchema
+//             .find({ isListed: true })
+//             .sort({ price: -1 })
+//             .populate('productCategory')
+//             .skip(skip)
+//             .limit(limit);
+//             console.log("before render");
+//         res.render('User/allProducts', { userId, query: "", product, categories, totalPages, currentPage: validPage,sortOrder: 'highToLow' });
+//     } catch (error) {
+//         console.error('Error during sort products:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
+// homeController.sortLowToHigh = async (req, res) => {
+//     try {
+//         const userId = req.session.userId;
+//         const categories = await category.find();
+
+//         const page = parseInt(req.query.page) || 1;
+//         const totalProducts = await productSchema.countDocuments({
+//             isListed: true
+//         });
+//         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+//         const validPage = Math.min(Math.max(page, 1), totalPages);
+
+//         const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+//         const limit = ITEMS_PER_PAGE;
+
+//         const product = await productSchema
+//             .find({ isListed: true })
+//             .sort({ price: 1 })
+//             .populate('productCategory')
+//             .skip(skip)
+//             .limit(limit);
+
+//         res.render('User/allProducts', { userId, query: "", product, categories, totalPages, currentPage: validPage,sortOrder: 'lowToHigh' });
+//     } catch (error) {
+//         console.error('Error during sort products:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
 
 homeController.showProducts = async (req, res) => {
     const userId = req.session.userId;
@@ -315,7 +758,6 @@ homeController.showProducts = async (req, res) => {
         const totalProducts = await productSchema.countDocuments({
             isListed: true,
             productName: { $regex: new RegExp(searchQuery, 'i') },
-            
         });
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
         const validPage = Math.min(Math.max(page, 1), totalPages);
@@ -329,49 +771,80 @@ homeController.showProducts = async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        res.render('User/allProducts', { userId, product:products, categories, currentPage: validPage, totalPages, searchQuery,sortOrder: '' });
+        res.render('User/allProducts', { userId, product: products, categories, currentPage: validPage, totalPages, query: searchQuery, sortOrder: '' });
     } catch (error) {
         console.error('Error fetching data:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 homeController.searchProducts = async (req, res) => {
     const userId = req.session.userId;
     const searchQuery = req.query.query;
+
+    try {
         const categories = await category.find();
         const page = parseInt(req.query.page) || 1;
         const totalProducts = await productSchema.countDocuments({
             isListed: true,
             productName: { $regex: new RegExp(searchQuery, 'i') },
-            
         });
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
         const validPage = Math.min(Math.max(page, 1), totalPages);
 
         const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
         const limit = ITEMS_PER_PAGE;
-    try {
-        
 
-        if (!searchQuery || searchQuery.trim()=="") {
+        if (!searchQuery || searchQuery.trim() == "") {
             return res.redirect('/allProducts');
         }
         const product = await productSchema.find({
             isListed: true,
-            productName: searchQuery === ' ' ? { $regex: new RegExp('.*', 'i') }  : { $regex: new RegExp(`^${searchQuery}`, 'i') }
+            productName: searchQuery === ' ' ? { $regex: new RegExp('.*', 'i') } : { $regex: new RegExp(`^${searchQuery}`, 'i') }
         }).populate('productCategory').skip(skip).limit(limit);
 
-        const categories = await category.find();
-
-        res.render('User/allProducts', {userId, query: searchQuery, product, categories,totalPages,currentPage: validPage,sortOrder: '' });
+        res.render('User/allProducts', { userId, query: searchQuery, product, categories, totalPages, currentPage: validPage, sortOrder: '' });
     } catch (error) {
         console.error('Error searching products:', error);
         res.status(500).send('Internal Server Error');
     }
-}; 
+};
+
+homeController.searchAndSortProducts = async (req, res) => {
+    const userId = req.session.userId;
+    const searchQuery = req.query.query;
+
+    try {
+        const categories = await category.find();
+        const page = parseInt(req.query.page) || 1;
+        const totalProducts = await productSchema.countDocuments({
+            isListed: true,
+            productName: { $regex: new RegExp(`^${searchQuery}`, 'i') },
+        });
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+        const validPage = Math.min(Math.max(page, 1), totalPages);
+
+        const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
+        const limit = ITEMS_PER_PAGE;
+
+        const sortOrder = req.params.sortOrder || 'default';
+
+        const product = await productSchema
+            .find({ isListed: true, productName: { $regex: new RegExp(`^${searchQuery}`, 'i') } })
+            .populate('productCategory')
+            .sort(sortOrder === 'highToLow' ? { price: -1 } : sortOrder === 'lowToHigh' ? { price: 1 } : {})
+            .skip(skip)
+            .limit(limit);
+
+        res.render('User/allProducts', { userId, query: searchQuery, product, categories, totalPages, currentPage: validPage, sortOrder: sortOrder });
+    } catch (error) {
+        console.error('Error searching and sorting products:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 homeController.sortHighToLow = async (req, res) => {
     try {
-        console.log("inside hight to low")
         const userId = req.session.userId;
         const categories = await category.find();
 
@@ -384,20 +857,21 @@ homeController.sortHighToLow = async (req, res) => {
 
         const skip = Math.max((validPage - 1) * ITEMS_PER_PAGE, 0);
         const limit = ITEMS_PER_PAGE;
-        console.log("Before find");
+
         const product = await productSchema
             .find({ isListed: true })
             .sort({ price: -1 })
             .populate('productCategory')
             .skip(skip)
             .limit(limit);
-            console.log("before render");
-        res.render('User/allProducts', { userId, query: "", product, categories, totalPages, currentPage: validPage,sortOrder: 'highToLow' });
+
+        res.render('User/allProducts', { userId, query: "", product, categories, totalPages, currentPage: validPage, sortOrder: 'highToLow' });
     } catch (error) {
         console.error('Error during sort products:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 homeController.sortLowToHigh = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -420,7 +894,7 @@ homeController.sortLowToHigh = async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-        res.render('User/allProducts', { userId, query: "", product, categories, totalPages, currentPage: validPage,sortOrder: 'lowToHigh' });
+        res.render('User/allProducts', { userId, query: "", product, categories, totalPages, currentPage: validPage, sortOrder: 'lowToHigh' });
     } catch (error) {
         console.error('Error during sort products:', error);
         res.status(500).send('Internal Server Error');

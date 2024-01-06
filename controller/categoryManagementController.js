@@ -19,36 +19,69 @@ categoryManagementController.showData = async (req, res) => {
     }
 };
 
+// categoryManagementController.toggleListCategory = async (req, res) => {
+//     const categoryId = req.params.id;
+
+//     try {
+//         const categories = await category.findById(categoryId);
+
+//         const categoryProducts = categories.products
+//         console.log(categoryProducts)
+
+//         if (categories) {
+//             // Toggle isListed value
+//             categories.isListed = !categories.isListed;
+//             await categories.save();
+//             if(categoryProducts){
+//                 for(const product of categoryProducts){
+//                     const Product = await productSchema.findById(product);
+
+//                     Product.isListed = !Product.isListed
+//                     await Product.save()
+//                 }
+//             }
+//             res.redirect('/category-management');
+//         } else {
+//             res.status(404).send('Category not found');
+//         }
+//     } catch (error) {
+//         console.error('Error toggling category list status:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
 categoryManagementController.toggleListCategory = async (req, res) => {
     const categoryId = req.params.id;
-
+  
     try {
-        const categories = await category.findById(categoryId);
-
-        const categoryProducts = categories.products
-        console.log(categoryProducts)
-
-        if (categories) {
-            // Toggle isListed value
-            categories.isListed = !categories.isListed;
-            await categories.save();
-            if(categoryProducts){
-                for(const product of categoryProducts){
-                    const Product = await productSchema.findById(product);
-
-                    Product.isListed = !Product.isListed
-                    await Product.save()
-                }
-            }
-            res.redirect('/category-management');
-        } else {
-            res.status(404).send('Category not found');
+      const categories = await category.findById(categoryId);
+  
+      if (!categories) {
+        return res.status(404).send('Category not found');
+      }
+  
+      categories.isListed = !categories.isListed;
+      await categories.save();
+  
+      const categoryProducts = categories.products;
+  
+      if (categoryProducts) {
+        for (const product of categoryProducts) {
+          const Product = await productSchema.findById(product);
+  
+          if (Product) {
+            Product.isListed = !Product.isListed;
+            await Product.save();
+          }
         }
+      }
+  
+      res.redirect('/category-management');
     } catch (error) {
-        console.error('Error toggling category list status:', error);
-        res.status(500).send('Internal Server Error');
+      console.error('Error toggling category list status:', error);
+      res.status(500).send('Internal Server Error');
     }
-};
+  };
+  
 
 //add category 
 categoryManagementController.showaddForm = (req,res)=>{

@@ -9,6 +9,7 @@ const userProfileController = require('../controller/userProfileController')
 const productPageController = require('../controller/productPageController')
 const passwordResetController = require('../controller/passwordResetController')
 const cartController = require('../controller/cartController')
+const wishlistController = require('../controller/wishlistController')
 const checkOutController = require('../controller/checkOutController')
 const addAddressController = require('../controller/addAddressController')
 const ordersController = require('../controller/ordersController')
@@ -41,8 +42,16 @@ userRouter.get('/wallet',checkBlocked,homeController.showWallet)
 userRouter.get('/products/:category',checkBlocked,homeController.showData)
 userRouter.get('/products/:category/sort/:sortDirection', homeController.sortProducts);
 userRouter.get('/categoryProducts/:category',checkBlocked,homeController.searchCategoryProducts)
+userRouter.get('/categoryProducts/:category/sort/:sortDirection', checkBlocked, homeController.searchAndSortCategoryProducts);
+userRouter.get('/categoryProducts/:category/:genre', homeController.showGenreProducts);
+userRouter.get('/categoryProducts/:category/:genre/sort/:sortDirection', homeController.showSortedGenreProducts);
+
+
 userRouter.get('/allProducts',checkBlocked,homeController.showProducts)
 userRouter.get('/searchProducts',homeController.searchProducts)
+
+userRouter.get('/searchProducts/sort/:sortOrder', homeController.searchAndSortProducts);
+
 userRouter.get('/allProducts/high-to-low',homeController.sortHighToLow)
 userRouter.get('/allProducts/low-to-high',homeController.sortLowToHigh)
 
@@ -62,10 +71,16 @@ userRouter.post('/user-edit-profile', userProfileController.upload.single("profi
 
 userRouter.get('/product-page/:id',checkBlocked,productPageController.showData)
 userRouter.post('/product-page/add-to-cart/:id',productPageController.addToCart)
+userRouter.post('/product-page/add-to-wishlist/:id',productPageController.addToWishlist)
 
 userRouter.get('/cart',checkBlocked,cartController.showCart)
 userRouter.post('/cart-item-remove/:id',cartController.removeItem)
 userRouter.put('/cart-update-quantity/:productId',cartController.updateQuantity)
+
+userRouter.get('/wishlist',checkBlocked,wishlistController.showWishlist)
+userRouter.post('/wishlist-item-remove/:id',checkBlocked,wishlistController.remove)
+userRouter.post('/wishlist-move-to-cart/:id',wishlistController.moveToCart)
+
 
 userRouter.get('/checkout',checkBlocked,checkOutController.showData)
 userRouter.post('/validateCoupon',checkOutController.validateCoupon)

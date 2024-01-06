@@ -1,5 +1,29 @@
 <%-include("header.ejs")%>  
 
+<style>
+    .swal-wide{
+    width:250px !important;
+    height: 290px;
+    font-size: 10px;
+    
+}
+#addToWishlistButton{
+    background-color: #0d0e1b;
+    border: 2px solid #fb7b24;
+}
+#addToWishlistButton:hover{
+    background-color: #fb7b24;
+    border: 2px solid #fb7b24;
+}
+.cartButton{
+    background-color: #0d0e1b;
+    border: 2px solid #fb7b24;
+}
+.cartButton:hover{
+    background-color: #fb7b24;
+    border: 2px solid #fb7b24;
+}
+</style>
 
     <!-- content -->
     
@@ -16,7 +40,7 @@
                     </div>
                     <div class="d-flex justify-content-center mb-3">
                         <% product.image.forEach((image, index) => { %>
-                            <% if(image!=null){%>
+                            <% if(image!=null&&image!=""){%>
                             
                             <a class="border mx-1 rounded-2" onclick="openLightbox('<%= image %>')">
                                 <img width="80" height="90" class="rounded-2" src="<%= image %>" />
@@ -85,17 +109,22 @@
                         </div>
                         
                         <hr />
-
+                        
+                            
+                            <button class="btn btn-primary shadow-0"  id="addToWishlistButton" data-product-id="<%= product._id %>" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>>
+                                <i class=" fa fa-heart <%=isItemInWishlist ? 'text-danger' : '' %>" id="wishlistIcon"></i>
+                            </button>
+                        
+                        
                         
                         <% if(isItemInCart){%>
-                            <a href="/cart" type="submit" class="btn btn-primary shadow-0" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>>
+                            <a href="/cart" type="submit" class="btn btn-primary shadow-0 cartButton" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>>
                                 <i class="me-1 fa fa-shopping-basket"></i> View Cart
                             </a>
                             
                             <% } else { %>
                                 <form action="/product-page/add-to-cart/<%=product._id%>" class="btn " method="post" id="addToCartForm">
-                                    <!-- <a href="#" class="btn btn-primary shadow-0" > <i class="me-1 fa fa-shopping-basket"></i> Add to cart </a> -->
-                                    <button type="submit" class="btn btn-primary shadow-0" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>><i class="me-1 fa fa-shopping-basket"></i>Add to cart</button>
+                                    <button type="submit" class="btn btn-primary shadow-0 cartButton" <%= product.totalQuantity <= 0 ? 'disabled' : '' %>><i class="me-1 fa fa-shopping-basket"></i>Add to cart</button>
                                 </form>       
                             <% } %>
                         
@@ -131,15 +160,51 @@
                           icon: 'success',
                           title: 'Item Added To Cart',
                           text: 'Your item has been successfully added to cart.',
+                          customClass: 'swal-wide',
+
                         }).then((result) => {
                     if (result.isConfirmed) {
-                        // If the user clicks 'Yes', submit the form
                         form.submit();
                     }
                 });
             });
         }
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const addToWishlistButton = document.getElementById('addToWishlistButton');
+    const wishlistIcon = document.getElementById('wishlistIcon');
+
+    addToWishlistButton.addEventListener('click', async function () {
+        const productId = addToWishlistButton.getAttribute('data-product-id');
+
+        try {
+            const response = await fetch(`/product-page/add-to-wishlist/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (data.message === 'Product added to wishlist successfully.') {
+                    wishlistIcon.classList.add('text-danger'); // Change heart color to red
+                } else if (data.message === 'Product removed from wishlist successfully.') {
+                    wishlistIcon.classList.remove('text-danger'); // Remove heart color
+                } else {
+                    alert('An error occurred while updating the wishlist.');
+                }
+            } else {
+                console.error('Error updating wishlist');
+            }
+        } catch (error) {
+            console.error('Internal Server Error', error);
+        }
+    });
+});
+
 
 
 

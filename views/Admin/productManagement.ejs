@@ -31,16 +31,35 @@
       <div class="form-group">
         <label class="col-md-4 control-label" for="product_categorie">PRODUCT CATEGORY</label>
         <div class="col-md-4">
-            <select id="product_categorie" name="productCategory" class="form-control">
-                <% categories.forEach(category => { %>
-                    <option value="<%= category._id %>">
-                        <%= category.categoryName %>
-                    </option>
-                <% }); %>
+            <select id="product_categorie" name="productCategory" class="form-control" onchange="toggleGenreDropdown()">
+              <% categories.forEach(category => { %>
+                <% if (category.isListed) { %>
+                  <option value="<%= category._id %>">
+                    <%= category.categoryName %>
+                  </option>
+                <% } %>
+              <% }); %>
+              
             </select>
         </div>
     </div>
     
+
+    <div class="form-group" id="genre">
+      <label class="col-md-4 control-label" for="product_name">Genre</label>
+      <div class="col-md-4">
+        <select id="product_genre" name="productGenre" class="form-control">
+          <% genre.forEach(Genre=>{%>
+            <option value="<%=Genre.genre%>"><%=Genre.genre%></option>
+          <%})%>
+              <!-- <option value="Action">Action</option>
+              <option value="Adventure">Adventure</option>
+              <option value="Fighting">Fighting</option>
+              <option value="Racing">Racing</option>         -->
+      </select>
+
+      </div>
+    </div>
 
 
       <div class="form-group">
@@ -457,8 +476,20 @@ setTimeout(() => {
             reader.readAsDataURL(files[i]);
         }
     }
+    function toggleGenreDropdown() {
+        var categoryDropdown = document.getElementById('product_categorie');
+        var genreDropdown = document.getElementById('genre');
 
+        // Check if the selected option in the category dropdown is "GAMES"
+        var selectedCategory = categoryDropdown.options[categoryDropdown.selectedIndex].text;
 
+        // Show or hide the genre dropdown based on the selected category
+        if (selectedCategory === 'GAMES') {
+            genreDropdown.style.display = 'block';
+        } else {
+            genreDropdown.style.display = 'none';
+        }
+    }
   </script>
 
 

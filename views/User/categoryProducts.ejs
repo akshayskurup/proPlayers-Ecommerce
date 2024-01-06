@@ -17,7 +17,7 @@
           right: 0;
           bottom: 0;
           left: 0;
-          background: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for the overlay darkness */
+          background: rgba(0, 0, 0, 0.5); 
       }
 </style>
                 <!--search bar-->
@@ -43,21 +43,51 @@
                     Sort
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="/products/<%=productCategory%>/sort/-1">Price: High to Low</a></li>
-                    <li><a class="dropdown-item" href="/products/<%=productCategory%>/sort/1">Price: Low to High</a></li> 
+                    <!-- <li><a class="dropdown-item" href="/categoryProducts/<%= productCategory %>/sort/-1?search=<%= searchQuery %>">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="/categoryProducts/<%= productCategory %>/sort/1?search=<%= searchQuery %>">Price: Low to High</a></li> -->
+                    <li><a class="dropdown-item" href="/categoryProducts/<%= productCategory %><%= genre ? '/'+genre : '' %>/sort/-1?sort=-1&search=<%= searchQuery %>">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="/categoryProducts/<%= productCategory %><%= genre ? '/'+genre : '' %>/sort/1?sort=-1&search=<%= searchQuery %>">Price: Low to High</a></li>
+
+
+                  </ul>
                   </ul>
                 </li>
               </ul>
+
+             
               <a class="px-4 nav-link" href="/allProducts">All</a>
+
+
+              <%if( productCategory ==="GAMES"){%>
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0 " >
+                
+                  <li class="nav-item dropdown " id="genreDropdown">
+                    <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Genre
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" >
+                    <% genreList.forEach(Genre=>{%>
+                      <li><a class="dropdown-item" href="/categoryProducts/GAMES/<%=Genre.genre%>"><%=Genre.genre%></a></li>
+                    <%})%>
+                        <!-- <li><a class="dropdown-item" href="/categoryProducts/GAMES/Action">Action</a></li>
+                        <li><a class="dropdown-item" href="/categoryProducts/GAMES/Adventure">Adventure</a></li>
+                        <li><a class="dropdown-item" href="/categoryProducts/GAMES/Fighting">Fighting</a></li>
+                        <li><a class="dropdown-item" href="/categoryProducts/GAMES/Racing">Racing</a></li> -->
+                    </ul>
+                  </li>
+                </ul>
+              <%}%>
+              
               <% categories.forEach(category=>{%>
                 <a class="px-4 nav-link" href="/products/<%=category.categoryName%>"><%=category.categoryName%></a>
               <%})%>
               
               
-              <form action="/categoryProducts/<%= productCategory %>" method="GET" class="d-flex" style="margin-left: auto;">
+              <form action="/categoryProducts/<%=productCategory%>/<%= genre %>" method="GET" class="d-flex" style="margin-left: auto;">
                 <input type="search" name="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" style="width: 280px;" />
                 <button type="submit" class="btn search-button" data-mdb-ripple-init>Search</button>
             </form>
+            
             
 
               
@@ -115,7 +145,7 @@
               <ul class="pagination">
                   <% for (let i = 1; i <= totalPages; i++) { %>
                       <li class="<%= currentPage === i ? 'active' : '' %>">
-                          <a href="/products/<%= productCategory %>/<%= sortDirection ? 'sort/' + sortDirection : '' %>?page=<%= i %>&sortField=<%= sortField %>"><%= i %></a>
+                        <a href="/categoryProducts/<%= productCategory %><% if (sortDirection) { %>/sort/<%= sortDirection %><% } %>?page=<%= i %>&sortField=<%= sortField %>&search=<%= searchQuery %>"><%= i %></a>
                       </li>
                   <% } %>
               </ul>
@@ -140,3 +170,24 @@
     <!-- End Main -->
 
     <%- include('footer.ejs')%>
+
+ 
+<!-- <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get the genre dropdown element
+        var genreDropdown = document.getElementById("genreDropdown");
+
+        // Get the current URL
+        var currentUrl = window.location.pathname;
+
+        // Check if the URL contains "/products/GAMES"
+        if (currentUrl.includes("/products/GAMES")) {
+            // Show the genre dropdown
+            genreDropdown.style.display = 'block';
+        } else {
+            // Hide the genre dropdown
+            genreDropdown.style.display = 'none';
+        }
+    });
+</script> -->
+
