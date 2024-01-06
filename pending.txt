@@ -3,7 +3,7 @@ Complete wishlist
 pagination in genre
 
 ----------
-completed
+completedd
 ----------
 while edit product show the selected genre
 Edit images issue
