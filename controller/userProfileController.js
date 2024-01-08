@@ -9,13 +9,14 @@ const fs = require('fs');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // cb(null, 'D:/First Project/public/cropped-images/'); 
-        cb(null, '/home/ubuntu/proPlayers-Ecommerce/public/cropped-images/'); 
-        const originalPath = 'D:/First Project/public/cropped-images/';
+        // cb(null, '/home/ubuntu/proPlayers-Ecommerce/public/cropped-images/'); 
 
-        // Normalize and construct the path without the drive letter
-        const destinationPath = path.join(...originalPath.split(path.sep).slice(1));
+        const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
+
+        // Construct the destination path relative to the server path
+        const destinationPath = path.join(serverPath, 'public', 'cropped-images');
+
         cb(null, destinationPath);
-
 
     },
     filename: function (req, file, cb) {
@@ -217,10 +218,8 @@ userProfileController.handleUserData = async (req, res) => {
 
     try {
         const croppedImageData = req.file;
-        
-        const originalPath = 'D:/First Project/public/cropped-images/';
-        const destinationPath = path.join(...originalPath.split(path.sep).slice(1));
-
+        const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
+        const destinationPath = path.join(serverPath, 'public', 'cropped-images');
 
         // const destinationPath = 'D:/First Project/public/cropped-images/';
         // const destinationPath = '/home/ubuntu/proPlayers-Ecommerce/public/cropped-images/';
@@ -229,12 +228,19 @@ userProfileController.handleUserData = async (req, res) => {
         if (croppedImageData) {
             const fileFormat = croppedImageData.mimetype.split('/')[1];
             const filename = `${userId}-${Date.now()}.${fileFormat}`;
+            // const imagePath = path.join(destinationPath, filename);
             const imagePath = path.join(destinationPath, filename);
+
 
             fs.renameSync(croppedImageData.path, imagePath);
 
             // finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
-            finalImagePath = `/${path.relative('/home/ubuntu/proPlayers-Ecommerce/public', imagePath).replace(/\\/g, '/')}`;
+            // finalImagePath = `/${path.relative('/home/ubuntu/proPlayers-Ecommerce/public', imagePath).replace(/\\/g, '/')}`;
+            // finalImagePath = `/${path.relative(serverPath, imagePath).replace(/\\/g, '/')}`;
+            finalImagePath = path.relative(path.join(serverPath, 'public'), imagePath).replace(/\\/g, '/');
+
+            console.log("final image ",finalImagePath)
+
 
         } else {
             const existingUser = await User.findById(userId);
