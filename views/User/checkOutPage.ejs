@@ -171,9 +171,18 @@
                         <input type="hidden" id="selectedState" name="selectedState">
                   <div class="float-end">
                     <a class="btn" id="cancel-btn" href="/cart">Cancel</a>
-                    <button id="continueButton" onclick="handleButtonClick()" class="btn  shadow-0" onclick="btnClick()" type="button">Continue</button>
+                    <%if(totalPrice==0){%>
+                      <button id="continueButton" onclick="handleButtonClick()" class="btn  shadow-0" onclick="btnClick()" type="button" disabled>Continue</button>
+                      
+                    <%}else{%>
+                      <button id="continueButton" onclick="handleButtonClick()" class="btn  shadow-0" onclick="btnClick()" type="button">Continue</button>
 
+                    <%}%>
+                    
                   </div>
+                  <%if(totalPrice==0){%>
+                    <p class="text-danger" style="margin-right: 50%;">Item not selected</p>
+                  <%}%>
                 </div>
               </div>
             </form>
@@ -285,101 +294,6 @@
     return true; // Allow form submission
     
 }
-  // Declare checkoutTotalInput in the global scope
-//   const checkoutTotalInput = document.getElementById('checkout-total-input');
-
-// function checkCoupon() {
-//   const couponCode = document.getElementById('couponCode').value;
-//   const couponMessage = document.getElementById('couponMessage');
-//   const discountPercentageElement = document.getElementById('discountPercentage');
-//   const totalPriceElement = document.getElementById('totalPrice');
-//   const discountValueElement = document.getElementById('discountValue');
-//   const totalAmount = parseFloat(totalPriceElement.textContent.replace('₹', '').trim());
-//   const discountPercentage = parseFloat(discountPercentageElement.getAttribute('data-discount-value'));
-//   const checkoutTotalElement = document.getElementById('checkout-total');
-
-//   const couponCodeInput = document.getElementById('couponCode');
-//   const submitBtn = document.getElementById('submit-btn');
-//   const cancelCouponBtn = document.getElementById('cancel-coupon-btn');
-
-
-//   console.log("asfasdfazsdf", totalAmount);
-
-//   fetch('/validateCoupon', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       couponCode,
-//       totalAmount,
-//       checkoutTotalInput: checkoutTotalInput.value,
-//     }),
-//   })
-//     .then(response => {
-//       if (response.status === 404) {
-//         // Coupon not found
-//         return { isValid: false, message: 'Coupon not found' };
-//       }
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! Status: ${response.status}`);
-//       }
-//       return response.json();
-//     })
-//     .then(data => {
-//       // Handle the response from the server
-//       console.log(data);
-
-//   if (data.isValid) {
-//     // Coupon is valid
-//     couponMessage.textContent = 'Coupon is valid! '
-//     couponMessage.style.color = 'green'; // Set color to green
-//     checkoutTotalElement.textContent = '₹' + data.discountedTotal; // Update total amount
-
-//     document.getElementById('discountedTotal').textContent = '₹' + data.discountedTotal;
-//     discountValueElement.textContent = '- ₹' + data.discountValue;
-//     checkoutTotalInput.value = data.discountedTotal;
-//     console.log("discounted Total ", checkoutTotalInput.value);
-
-//     // Perform additional actions if needed
-//     // Hide the submit button and show the cancel button
-
-//     cancelCouponBtn.style.display = 'inline-block';
-//   } else {
-//     // Coupon is not valid or not found
-//     couponMessage.textContent = data.message || 'Coupon is not valid.';
-//     couponMessage.style.color = 'red'; // Set color to red
-
-//     // Reset the values to default
-//     checkoutTotalElement.textContent = '₹' + totalPrice; // Reset total amount
-//     document.getElementById('discountedTotal').textContent = '₹0'; // Reset discounted total
-//     discountValueElement.textContent = '- ₹0'; // Reset discount value
-//     checkoutTotalInput.value = totalPrice; // Reset input value
-
-//     // Show the submit button and hide the cancel button
-//     submitBtn.style.display = 'inline-block';
-//   }
-//   if(data.isEmpty){
-//         checkoutTotalElement.textContent = '₹' + data.discountedTotal; // Update total amount
-
-// document.getElementById('discountedTotal').textContent = '₹' + data.discountedTotal;
-// discountValueElement.textContent = '- ₹' + data.discountValue;
-// checkoutTotalInput.value = totalPrice;
-// console.log("discounted Total ", checkoutTotalInput.value);
-//       }
-// })
-//     .then(secondResponse => {
-//       // Handle the response from the second server request
-//       console.log(secondResponse);
-//     })
-//     .catch(error => {
-//       console.error('Fetch error:', error);
-//       // Handle errors if needed
-//     });
-
-// }
-
-
 
 
 document.getElementById('cancel-btn').addEventListener('click', cancelCoupon);

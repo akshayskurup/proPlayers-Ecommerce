@@ -18,7 +18,6 @@ const instance = new Razorpay({
 
 checkOutController.showData = async (req, res) => {
     const userId = req.session.userId;
-    console.log("user id:", userId);
 
     try {
         
@@ -29,22 +28,19 @@ checkOutController.showData = async (req, res) => {
         const coupons = await Coupons.find()
         const order = await Order.findOne({customer:userId})
         const items = userCart.items;
-        console.log("caart items",items)
         totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
         req.session.updatedTotalPrice = totalPrice
-        console.log("req.session in checkOut",req.session.updatedTotalPrice)
         const userAddresses = user.address;
         let availableCoupons = [];
         let isCouponAvailable = false;
     
-        console.log("before checking")
         for (const coupon of coupons) {
 
             if (coupon.expiry < new Date()) {
                 await Coupons.updateOne({ code: coupon.code }, { $set: { isExpired: true, isActive: false } });
             }
 
-            console.log(" checking2");
+            
 
             if (coupon.discountType === "First Purchase" && coupon.isActive && !coupon.isExpired){
                 if(!order){
@@ -57,7 +53,6 @@ checkOutController.showData = async (req, res) => {
             
         }
 
-        console.log("Coupon available", availableCoupons);
 
 
             if(req.session.UserLogin){
@@ -80,7 +75,6 @@ checkOutController.showData = async (req, res) => {
 checkOutController.editAddress = async (req, res) => {
     const userId = req.session.userId;
     const { addressIndex } = req.body;
-    console.log("addressIndex",addressIndex)
     
 
     try {
@@ -96,10 +90,8 @@ checkOutController.editAddress = async (req, res) => {
 checkOutController.UpdateAddresss = async (req, res) => {
     const userId = req.session.userId;
     const { addressIndex,mobile, houseName, street, city, pincode, state } = req.body;
-    console.log("addressIndex",addressIndex)
 
     try {
-        console.log("workingg........")
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             {
@@ -128,10 +120,6 @@ checkOutController.UpdateAddresss = async (req, res) => {
 checkOutController.validateCoupon = async (req, res) => {
     const { couponCode, totalAmount , checkoutTotalInput , discountedTotal , discountedValue, checkoutTotal} = req.body;
     try {
-        console.log('Session in validateCoupon:', req.session);
-        console.log("checkoutTotalInput", checkoutTotalInput);
-        console.log("discountedTotal", discountedTotal);
-        console.log("checkoutTotal", checkoutTotal);
 
         const userId = req.session.userId;
         const userCart = await cart.findOne({ userId }).populate('items.productId');
@@ -139,7 +127,6 @@ checkOutController.validateCoupon = async (req, res) => {
 
         const totalPrice = cartController.calculateTotalPrice(items.filter(item => item.productId.totalQuantity > 0));
         const coupon = await Coupons.findOne({ code: couponCode });
-        console.log("total Price before", totalPrice);
 
         if (couponCode === "" || (coupon && coupon.code !== couponCode)) {
             const discountedValue = 0;
@@ -169,17 +156,14 @@ checkOutController.validateCoupon = async (req, res) => {
                 });
 
                 const parsedCheckoutTotalInput = parseFloat(discountedTotal).toFixed(2);
-                console.log("after parsed", parsedCheckoutTotalInput);
 
                 if (!isNaN(parsedCheckoutTotalInput)) {
                     req.session.updatedTotalPrice = parsedCheckoutTotalInput;
                     req.session.save();
-                    console.log("total Price after", req.session.updatedTotalPrice);
                 } else {
                     console.error('Invalid checkoutTotalInput value');
                 }
 
-                console.log("total Price after", totalPrice);
             } else {
                 // Invalid discount or total amount
                 const discountValue = 0;
@@ -217,12 +201,10 @@ checkOutController.handleData = async (req, res) => {
       const userCart = await cart.findOne({ userId }).populate('items.productId');
       const items = userCart.items;
       let userWallet = await wallet.findOne({userId})
-      console.log("req.session",req.session.updatedTotalPrice)
     const user = await User.findById(userId);
     const userAddresses = user.address;
     const inStockItems = items.filter(item => item.productId.totalQuantity > 0);
     const updatedTotalPrice = req.session.updatedTotalPrice;
-    console.log("handle updatePrice",updatedTotalPrice)
     const categories = await category.find()
     const hasItemWithQuantity = items.some(item => item.productId.totalQuantity > 0);
 
@@ -240,7 +222,6 @@ checkOutController.handleData = async (req, res) => {
     }
 
     if (paymentMethod === "Wallet") {
-        console.log("In payment Method");
         userWallet.balance -= updatedTotalPrice;
             userWallet.transactionHistory.push({
                 transaction: 'Money Deducted',
@@ -253,9 +234,7 @@ checkOutController.handleData = async (req, res) => {
     for (const item of inStockItems) {
         const productId = item.productId._id;
         const quantityToReduce = item.quantity;
-  
-        // Update product quantity in the database
-        await Product.updateOne({ _id: productId }, { $inc: { totalQuantity: -quantityToReduce } });
+          await Product.updateOne({ _id: productId }, { $inc: { totalQuantity: -quantityToReduce } });
       }
       const newOrder = new Order({
         customer: userId,
@@ -301,9 +280,7 @@ checkOutController.createOrder = async(req,res)=>{
     const userId = req.session.userId;
     let { paymentOption, totalAmount, currency,razorpay_order_id, razorpay_signature } = req.body;
     try {
-        console.log("paymentOption",paymentOption)
-        console.log("totalAmount",totalAmount)
-        console.log("currency",currency)
+        
         const amount = totalAmount*100
         if(paymentOption==="onlinePayment"){
             const options = {
@@ -313,7 +290,6 @@ checkOutController.createOrder = async(req,res)=>{
                 notes: {},
               };
             const order = await instance.orders.create(options);
-            console.log("ORDER : ", order);
             return res.json({order,paymentOption,amount,currency}); 
         }
     } catch (error) {
@@ -332,16 +308,13 @@ checkOutController.verifyPayment = async(req,res)=>{
     try {
     const userId = req.session.userId;
       const {payment,order,paymentOption, selectedMobile, selectedHouseName, selectedStreet, selectedCity, selectedPincode, selectedState, paymentMethod } = req.body;
-      console.log("req body",req.body)
       const userCart = await cart.findOne({ userId }).populate('items.productId');
       const items = userCart.items;
       let userWallet = await wallet.findOne({userId})
-      console.log("req.session",req.session.updatedTotalPrice)
     const user = await User.findById(userId);
     const userAddresses = user.address;
     const inStockItems = items.filter(item => item.productId.totalQuantity > 0);
     const updatedTotalPrice = req.session.updatedTotalPrice;
-    console.log("handle updatePrice",updatedTotalPrice)
     const categories = await category.find()
     const hasItemWithQuantity = items.some(item => item.productId.totalQuantity > 0);
     const hmac = crypto
@@ -349,10 +322,8 @@ checkOutController.verifyPayment = async(req,res)=>{
       .update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id)
       .digest("hex");
       if(hmac===payment.razorpay_signature){
-        console.log("Verified ...!")
         const userId = req.session.userId;
         let totalAmount=order.amount
-        console.log("total amount : ",totalAmount)
         if (!hasItemWithQuantity) {
             return res.render('User/checkOutPage', { user, userAddresses, totalPrice, items, categories, errorMessage: 'Selected item must be in available' });
           }
@@ -391,7 +362,6 @@ checkOutController.verifyPayment = async(req,res)=>{
             )
         return res.json({ status: true})
       }
-      console.log("verigying working 5")
 
 
     } catch (error) {

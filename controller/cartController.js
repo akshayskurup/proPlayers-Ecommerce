@@ -17,7 +17,6 @@ cartController.showCart = async (req, res) => {
         const userId = req.session.userId;
         const userCart = await cart.findOne({ userId }).populate('items.productId');
         const categories = await category.find()
-        console.log("user cart",userCart)
         if (userCart) {
             const items = userCart.items || [];
             userCart.items.forEach(product => {
@@ -78,13 +77,9 @@ cartController.removeItem = async (req, res) => {
 
  
 cartController.updateQuantity = async (req, res) => {
-    console.log('Update quantity request received');
     const userId = req.session.userId;
     const productId = req.params.productId;
     const newQuantity = req.body.quantity;
-    console.log('req.body:', req.body);
-    console.log('Fetch Request:', `/cart-update-quantity/${productId}`);
-    console.log('req.bosy',req.body)
     try {
         const updatedCart = await cart.findOneAndUpdate(
             { userId, 'items.productId': productId },

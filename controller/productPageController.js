@@ -67,37 +67,7 @@ productPageController.addToCart = async (req, res) => {
     }
 };
 
-// productPageController.addToWishlist = async (req, res) => {
-//     try {
-//         const userId = req.session.userId;
-//         const productId = req.params.id;
-        
 
-//         if (!userId) {
-//             return res.redirect('/');
-//         }
-
-//         let userWishlist = await wishlist.findOne({ userID: userId });
-
-//         if (!userWishlist) {
-//             userWishlist = new wishlist({ userID: userId });
-//             await userWishlist.save();
-//         }
-
-//         if (!userWishlist.items.includes(productId)) {
-//             userWishlist.items.push(productId);
-//             await userWishlist.save();
-
-//             return res.status(200).json({ message: 'Product added to wishlist successfully.' });
-//         } else {
-//             return res.status(400).json({ message: 'Product is already in the wishlist.' });
-//         }
-
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// };
 productPageController.addToWishlist = async (req, res) => {
     try {
         const userId = req.session.userId;

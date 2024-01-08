@@ -12,7 +12,7 @@ addAddressController.handleData = async (req,res)=>{
     const user = await User.findById(userId)
     const { mobile, houseName, street, city, pincode, state } = req.body;
     try {
-        console.log("Inside try")
+        
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             {
@@ -29,14 +29,9 @@ addAddressController.handleData = async (req,res)=>{
             },
             { new: true }
         );
-         console.log("checking ",user.address.mobile)
-        console.log("Before if")
         if (!user.phone) {
-            console.log("inside if")
             user.phone = mobile;
-            console.log("Before save")
             await user.save();
-            console.log("after save") 
         }
 
         

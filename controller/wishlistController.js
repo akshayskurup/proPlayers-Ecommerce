@@ -3,29 +3,6 @@ const wishlist = require('../model/wislistSchema')
 const category = require('../model/categorySchema')
 const Cart = require('../model/cartSchema')
 
-// wishlistController.showWishlist = async (req, res) => {
-//     try {
-//         const userId = req.session.userId;
-
-//         if (!userId) {
-//             return res.redirect('/');
-//         }
-//         const categories = await category.find()
-
-//         const userWishlist = await wishlist.findOne({ userID: userId }).populate('items');
-//         if (!userWishlist) {
-//             userWishlist = new wishlist({ userID: userId });
-//             await userWishlist.save();
-//         }
-//         const items = userWishlist.items || [];
-//         res.render('User/wishlist',{items,categories})
-//         console.log("items",items)
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// };
-
 wishlistController.showWishlist = async (req, res) => {
   try {
     const userId = req.session.userId;

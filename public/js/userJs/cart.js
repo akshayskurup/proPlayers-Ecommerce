@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (quantityInput.value > 1) {
                 quantityInput.value--;
-                // Trigger input event after decrementing
                 quantityInput.dispatchEvent(new Event('input'));
                 message.innerText = ''
                 message.style.display = 'block'
@@ -132,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (cartSummaryElement) {
         cartSummaryElement.textContent = `₹${totalCartPrice.toFixed(2)}`;
     }
+   
 }
 
 
