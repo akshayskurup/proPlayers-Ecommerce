@@ -237,7 +237,9 @@ userProfileController.handleUserData = async (req, res) => {
             // finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
             // finalImagePath = `/${path.relative('/home/ubuntu/proPlayers-Ecommerce/public', imagePath).replace(/\\/g, '/')}`;
             // finalImagePath = `/${path.relative(serverPath, imagePath).replace(/\\/g, '/')}`;
-            finalImagePath = path.relative(path.join(serverPath, 'public'), imagePath).replace(/\\/g, '/');
+            // finalImagePath = path.relative(path.join(serverPath, 'public'), imagePath).replace(/\\/g, '/');
+            finalImagePath = `/${path.relative(path.join(serverPath, 'public'), imagePath).replace(/\\/g, '/')}`;
+
 
             console.log("final image ",finalImagePath)
 
