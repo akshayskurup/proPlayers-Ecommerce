@@ -12,7 +12,12 @@ const genres = require('../model/genreSchema')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'D:/First Project/public/productimgs/');
+      // cb(null, 'D:/First Project/public/productimgs/');
+      const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
+
+        const destinationPath = path.join(serverPath, 'public', 'productimgs');
+
+        cb(null, destinationPath);
     },
     filename: function (req, file, cb) {
       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -84,70 +89,7 @@ productManagementController.searchProducts = async (req, res) => {
 
 
 
-// productManagementController.handleData = async (req, res) => {
-//     const { productName, productCategory, publisher, size, totalQuantity, description, releasedDate, price, convertedSize } = req.body;
-//     console.log('Request Body:', req.body);
-//     const capitalizedProductName = productName.toLowerCase().replace(/(?:^|\s)\S/g, function (char) {
-//         return char.toUpperCase();
-//       });
-//       const ITEMS_PER_PAGE = 10;
-//     let categories = await category.find();
-//     let categoryId;
-//     const files = req.files;
-//     const imagePaths = files.map((file) => '/productimgs/' + file.filename);
-//     const updateMess=req.query.update||""
 
-//     try {
-//       const page = parseInt(req.query.page) || 1;
-//       const skip = (page - 1) * ITEMS_PER_PAGE;
-//       const totalProducts = await productSchema.countDocuments();
-//       const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
-//       const products = await productSchema.find().sort({_id:-1}).populate('productCategory').skip(skip).limit(ITEMS_PER_PAGE);
-
-//         categoryId = new mongoose.Types.ObjectId(productCategory);
-    
-
-//     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-//         console.error("Invalid ObjectId after conversion:", categoryId);
-//     }
-
-//     let existingProduct = await productSchema.find({
-//         $or: [
-//           { productName: capitalizedProductName },
-//           { productName: capitalizedProductName.trim() },
-//         ],
-//       });
-      
-//       if (existingProduct.length > 0) {
-//         console.log('Product with the same name already exists.');
-//         return res.render("Admin/productManagement", { products,categories,currentPage: page, totalPages, message: "Product Name already exists", updateMess:"",req });
-
-//       } else {
-//         const newProduct = new productSchema({
-//             productName:capitalizedProductName,
-//             productCategory: categoryId,
-//             publisher,
-//             size: req.body.convertedSize,
-//             totalQuantity,
-//             description,
-//             releasedDate,
-//             price,
-//             image: imagePaths 
-//           });
-//     const savedProduct = await newProduct.save();
-//     await category.findOneAndUpdate(
-//       { _id: categoryId },
-//       { $push: { products: savedProduct._id } },
-//       { new: true }
-//     );
-
-//     res.redirect('/product-management?update=Successfully%20Inserted%20Product');
-//   }
-//   } catch (err) {
-//     console.error("Error during product creation:", err);
-//     res.status(500).send('Internal Server Error');
-//   }
-// }
 
 productManagementController.handleData = async (req, res) => {
   const { productName, productCategory, productGenre, publisher, size, totalQuantity, description, releasedDate, price, convertedSize } = req.body;

@@ -8,12 +8,9 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        // cb(null, 'D:/First Project/public/cropped-images/'); 
-        // cb(null, '/home/ubuntu/proPlayers-Ecommerce/public/cropped-images/'); 
 
         const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
 
-        // Construct the destination path relative to the server path
         const destinationPath = path.join(serverPath, 'public', 'cropped-images');
 
         cb(null, destinationPath);
@@ -221,23 +218,17 @@ userProfileController.handleUserData = async (req, res) => {
         const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
         const destinationPath = path.join(serverPath, 'public', 'cropped-images');
 
-        // const destinationPath = 'D:/First Project/public/cropped-images/';
-        // const destinationPath = '/home/ubuntu/proPlayers-Ecommerce/public/cropped-images/';
+       
         let finalImagePath;
 
         if (croppedImageData) {
             const fileFormat = croppedImageData.mimetype.split('/')[1];
             const filename = `${userId}-${Date.now()}.${fileFormat}`;
-            // const imagePath = path.join(destinationPath, filename);
             const imagePath = path.join(destinationPath, filename);
 
 
             fs.renameSync(croppedImageData.path, imagePath);
 
-            // finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
-            // finalImagePath = `/${path.relative('/home/ubuntu/proPlayers-Ecommerce/public', imagePath).replace(/\\/g, '/')}`;
-            // finalImagePath = `/${path.relative(serverPath, imagePath).replace(/\\/g, '/')}`;
-            // finalImagePath = path.relative(path.join(serverPath, 'public'), imagePath).replace(/\\/g, '/');
             finalImagePath = `/${path.relative(path.join(serverPath, 'public'), imagePath).replace(/\\/g, '/')}`;
 
 
