@@ -1,25 +1,24 @@
 <%- include('header.ejs')%>
 
 
+</style>
 
         
 <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" style="width: 100%; margin-top: 80px;">
   <div class="carousel-inner">
-    <% banners.forEach(banner=>{%>
-      <% if(banner.image && banner.isActive){%>
-      
-      <div class="carousel-item active" style="height: 500px;">
-        <img src="<%=banner.image%>" class="d-block w-100" alt="...">
-        <div class="carousel-caption">
-          <h3><%=banner.title%></h3>
-          <a class="btn carousel-button" href="<%=banner.redirectLink%>">View Product</a>
-        </div>
-      </div>
-      <%}%>
-    <%})%>
-    
-    
-  </div>
+    <% banners.forEach(banner => { %>
+       <% if (banner.image && banner.isActive) { %>
+          <div class="carousel-item <% if (banner.isActive) { %>active<% } %>" style="height: 500px;">
+             <img src="<%= banner.image %>" class="d-block w-100" alt="...">
+             <div class="carousel-caption">
+                <h3><%= banner.title %></h3>
+                <a class="btn carousel-button" href="<%= banner.redirectLink %>">View Product</a>
+             </div>
+          </div>
+       <% } %>
+    <% }) %>
+ </div>
+ 
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
@@ -29,6 +28,8 @@
     <span class="visually-hidden">Next</span>
   </button>
 </div>
+
+
 
     
         <div class="line"></div>
@@ -118,5 +119,6 @@
   <div class="line"></div>
     
     <!-- End Main -->
-
     <%- include('footer.ejs')%>
+    
+    

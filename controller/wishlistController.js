@@ -37,10 +37,10 @@ wishlistController.showWishlist = async (req, res) => {
 
     const userWishlist = await wishlist.findOne({ userID: userId }).populate('items');
     if (!userWishlist) {
-      userWishlist = new wishlist({ userID: userId });
-      await userWishlist.save();
+      addWishlist = new wishlist({ userID: userId });
+      await addWishlist.save();
     }
-    const items = userWishlist.items || [];
+    const items = userWishlist.items?userWishlist.items:[];
 
     // Fetch the cart items for the user
     const cartItems = await Cart.find({ userId: userId });

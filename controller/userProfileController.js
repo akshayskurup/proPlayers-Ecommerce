@@ -8,7 +8,15 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'D:/First Project/public/cropped-images/'); 
+        // cb(null, 'D:/First Project/public/cropped-images/'); 
+        cb(null, '/home/ubuntu/proPlayers-Ecommerce/public/cropped-images/'); 
+        const originalPath = 'D:/First Project/public/cropped-images/';
+
+        // Normalize and construct the path without the drive letter
+        const destinationPath = path.join(...originalPath.split(path.sep).slice(1));
+        cb(null, destinationPath);
+
+
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -209,9 +217,13 @@ userProfileController.handleUserData = async (req, res) => {
 
     try {
         const croppedImageData = req.file;
+        
+        const originalPath = 'D:/First Project/public/cropped-images/';
+        const destinationPath = path.join(...originalPath.split(path.sep).slice(1));
 
-        const destinationPath = 'D:/First Project/public/cropped-images/';
 
+        // const destinationPath = 'D:/First Project/public/cropped-images/';
+        // const destinationPath = '/home/ubuntu/proPlayers-Ecommerce/public/cropped-images/';
         let finalImagePath;
 
         if (croppedImageData) {
@@ -221,7 +233,9 @@ userProfileController.handleUserData = async (req, res) => {
 
             fs.renameSync(croppedImageData.path, imagePath);
 
-            finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
+            // finalImagePath = `/${path.relative('D:/First Project/public', imagePath).replace(/\\/g, '/')}`;
+            finalImagePath = `/${path.relative('/home/ubuntu/proPlayers-Ecommerce/public', imagePath).replace(/\\/g, '/')}`;
+
         } else {
             const existingUser = await User.findById(userId);
             finalImagePath = existingUser.image;
