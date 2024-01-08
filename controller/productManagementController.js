@@ -12,7 +12,6 @@ const genres = require('../model/genreSchema')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      // cb(null, 'D:/First Project/public/productimgs/');
       const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
 
         const destinationPath = path.join(serverPath, 'public', 'productimgs');
@@ -194,98 +193,6 @@ productManagementController.showEditForm = async (req, res) => {
 }
 
 
-// productManagementController.handleEditData = async (req, res) => {
-//   const productId = req.params.id;
-//   const {
-//     productName,
-//     productCategory,
-//     publisher,
-//     totalQuantity,
-//     description,
-//     releasedDate,
-//     price,
-//   } = req.body;
-
-//   let categories = await category.find();
-//   let product = await productSchema.findById(productId);
-
-//   const capitalizedProductName = productName
-//     .toLowerCase()
-//     .replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
-
-//   try {
-//     const existingProduct = await productSchema.findOne({
-//       $or: [
-//         { productName: capitalizedProductName },
-//         { productName: capitalizedProductName.trim() },
-//       ],
-//     });
-
-//     if (existingProduct && existingProduct._id != productId) {
-//       return res.render("Admin/editProduct", {
-//         categories,
-//         product,
-//         message: "Product name already exists",
-//         productId,
-//         formattedReleasedDate: "",
-//       });
-//     }
-
-//     let gameImages = [];
-//     let existingImages = [];
-
-//     for (let i = 1; i <= 4; i++) {
-//       const fileKey = `gameImages${i}`;
-//       if (req.files[fileKey] && req.files[fileKey].length > 0) {
-//         gameImages[i - 1] = `/productimgs/${req.files[fileKey][0].filename}`;
-//         existingImages.push(product.image[i - 1]);
-
-//       } else {
-//         gameImages[i - 1] = product.image[i - 1];
-//       }
-//     }
-    
-//     const updatedProduct = await productSchema.findByIdAndUpdate(
-//       productId,
-//       {
-//         productName: capitalizedProductName,
-//         productCategory,
-//         publisher,
-//         size: req.body.convertedSize,
-//         totalQuantity,
-//         description,
-//         releasedDate,
-//         price,
-//         image: gameImages,
-//       },
-//       { new: true }
-//     );
-
-//     if (!updatedProduct) {
-//       return res.status(404).send('Product not found');
-//     }
-
-//     existingImages.forEach((existingImagePath) => {
-//       const fullPath = path.join('D:\\First Project\\public', existingImagePath);
-    
-//       try {
-//         if (fs.existsSync(fullPath)) {
-//           fs.unlinkSync(fullPath);
-//           console.log(`Deleted file: ${fullPath}`);
-//         } else {
-//           console.log(`File not found: ${fullPath}`);
-//         }
-//       } catch (err) {
-//         console.error(`Error deleting file: ${fullPath}`, err);
-//       }
-//     });
-//     res.redirect('/product-management?update=Successfully%20Edited%20Product');
-//   } catch (err) {
-//     console.error("Error during updating product:", err);
-//     res.status(500).send('Internal Server Error');
-//   }
-// };
-
 productManagementController.handleEditData = async (req, res) => {
   const productId = req.params.id;
   const {
@@ -361,21 +268,7 @@ productManagementController.handleEditData = async (req, res) => {
         }
       });
 
-      // const updatedProduct = await productSchema.findByIdAndUpdate(
-      //   productId,
-      //   {
-      //     productName: capitalizedProductName,
-      //     productCategory,
-      //     publisher,
-      //     size: req.body.convertedSize,
-      //     totalQuantity,
-      //     description,
-      //     releasedDate,
-      //     price,
-      //     image: gameImages,
-      //   },
-      //   { new: true }
-      // );
+      
       const updatedProductData = {
         productName: capitalizedProductName,
         productCategory,
