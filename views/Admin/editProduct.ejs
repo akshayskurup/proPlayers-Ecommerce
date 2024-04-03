@@ -341,18 +341,20 @@ async function removeImage(imageIndex) {
   }
 
   const productId = document.getElementById('productId').value;
-  const productImagePath = `product.image[${imageIndex}]`;
+  const productImagePath = `gameImages${imageIndex+1}`;
+
   const productImagePathInput = document.querySelector(`input[name="${productImagePath}"]`);
+  console.log('image path checking...',productImagePathInput,productImagePath)
   
   if (productImagePathInput) {
     productImagePathInput.value = '';
-    console.log('Updated form data:', new FormData(document.getElementById('yourFormId')));
+    // console.log('Updated form data:', new FormData(document.getElementById('yourFormId')));
   } else {
     console.error(`Product image path input not found: ${productImagePath}`);
   }
 
   const formInputId = `#gameImages${imageIndex + 1}`;
-  const formInput = document.querySelector(formInputId);
+  const formInput = document.querySelector(`input[name="${productImagePath}"]`);
   if (formInput) {
     formInput.value = '';
   } else {

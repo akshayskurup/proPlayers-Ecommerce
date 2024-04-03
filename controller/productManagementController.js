@@ -7,12 +7,13 @@ const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
 const genres = require('../model/genreSchema')
+var serverPath = path.resolve(__dirname, '..')
 
 
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
+      // const serverPath = path.resolve(__dirname, '..'); // Adjust the number of '..' based on your project structure
 
         const destinationPath = path.join(serverPath, 'public', 'productimgs');
 
@@ -249,7 +250,7 @@ productManagementController.handleEditData = async (req, res) => {
 
     try {
       existingImages.forEach((existingImagePath) => {
-        const fullPath = path.join('D:\\First Project\\public', existingImagePath);
+        const fullPath = path.join(__dirname, '..', 'public', existingImagePath);
 
         if (typeof existingImagePath === 'string') {
           try {
@@ -317,7 +318,7 @@ productManagementController.removeImage = async(req,res)=>{
     const imageIndexToRemove = parseInt(req.body.imageIndexToRemove);
     console.log("Before 1st if")
     if (!isNaN(imageIndexToRemove) && imageIndexToRemove >= 0 && imageIndexToRemove < product.image.length) {
-      const imagePathToRemove = path.join('D:\\First Project\\public', product.image[imageIndexToRemove]);
+      const imagePathToRemove = path.join(__dirname, '..', 'public', product.image[imageIndexToRemove]);
 
       console.log("Before second if")
       try {
